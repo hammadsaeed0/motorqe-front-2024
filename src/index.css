@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body{
+    font-family: 'Poppins', sans-serif;
+     overflow-x: hidden !important;
+}
+
+.h1{
+    @apply   lg:text-5xl md:text-4xl sm:text-3xl text-2xl  font-black text-white uppercase
+}
+
+.h2{
+    @apply md:text-4xl sm:text-3xl text-2xl font-bold  text-black
+}
+.h3{
+    @apply md:text-3xl sm:text-2xl text-xl font-bold  text-black
+}
+
+.h4{
+    @apply text-2xl font-bold  text-black
+}
+
+
+
+.h5{
+    @apply md:text-xl text-lg font-semibold text-black
+}
+
+.h6{
+    @apply text-lg font-semibold text-black
+}
+
+.main_title {
+    line-height: 70px ;
+}
+
+
+@media screen and (max-width:567px) {
+
+    .main_title {
+        line-height: 40px;
+    }
+     
+    
+}
+/* HorizontalScroll.css */
+.scroll-container {
+    width: 100%;
+    white-space: nowrap;
+  }
+  
+  .scroll-item {
+    min-width: 200px; /* Adjust as needed */
+    box-sizing: border-box;
+  }
+
+  .productOverflow::-webkit-scrollbar {
+    display: none;
+}
+
+

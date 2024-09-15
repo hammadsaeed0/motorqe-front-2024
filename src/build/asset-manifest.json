@@ -1,0 +1,43 @@
+{
+  "files": {
+    "main.css": "/static/css/main.a747a978.css",
+    "main.js": "/static/js/main.a9d7bdfb.js",
+    "static/js/787.f1f4ac34.chunk.js": "/static/js/787.f1f4ac34.chunk.js",
+    "static/media/home.png": "/static/media/home.b4be321f53d7e7c33335.png",
+    "static/media/man-washing-his-car-garage 2.png": "/static/media/man-washing-his-car-garage 2.23603c3892b1434d73bd.png",
+    "static/media/image 7.png": "/static/media/image 7.c848481235bb7d1d8d6f.png",
+    "static/media/mechanic-holding-digital-tablet 2.png": "/static/media/mechanic-holding-digital-tablet 2.7f42691ce02f9eefca9d.png",
+    "static/media/contact.png": "/static/media/contact.a9a5176f3fcc692dd701.png",
+    "static/media/news.png": "/static/media/news.3275b7372cb561840936.png",
+    "static/media/ins.png": "/static/media/ins.7bd0e780df8164bceea0.png",
+    "static/media/lowmilage.png": "/static/media/lowmilage.fb40061369d01bf24a01.png",
+    "static/media/location.png": "/static/media/location.59fe626dc863b04e22a3.png",
+    "static/media/featured.png": "/static/media/featured.d9e9887409843a08232d.png",
+    "static/media/new.png": "/static/media/new.f932ee341fafd2062487.png",
+    "static/media/cardcars.png": "/static/media/cardcars.73afa47174f98e39dbb4.png",
+    "static/media/b2.png": "/static/media/b2.f83a269f588fbe2ed186.png",
+    "static/media/b1.png": "/static/media/b1.917380fc67072adf52cf.png",
+    "static/media/plane3.png": "/static/media/plane3.a2754a43e177bfbc79b4.png",
+    "static/media/b4.png": "/static/media/b4.141afbec5542ba705dc2.png",
+    "static/media/booking.png": "/static/media/booking.128a9eb49362a60ae529.png",
+    "static/media/b3.png": "/static/media/b3.e545b564df272e3eec89.png",
+    "static/media/car3.png": "/static/media/car3.860544f985822c52bc8f.png",
+    "static/media/image 50.png": "/static/media/image 50.28a5c996ba6bcc6046f5.png",
+    "static/media/car5.png": "/static/media/car5.68380e5aedf29576e7bb.png",
+    "static/media/car1.png": "/static/media/car1.c0f6cb768e1b62778589.png",
+    "static/media/find.png": "/static/media/find.d217d1fbe84dc7912f36.png",
+    "static/media/car4.png": "/static/media/car4.1832d8d5b7fcc22b248e.png",
+    "static/media/white_logo.png": "/static/media/white_logo.e4d544c6b0442fba2818.png",
+    "static/media/car2.png": "/static/media/car2.c037ca23e97f918cbb69.png",
+    "static/media/time.png": "/static/media/time.4e128df14a7461a2a5d5.png",
+    "static/media/graph.png": "/static/media/graph.5ffe468396a3fdfb1d00.png",
+    "index.html": "/index.html",
+    "main.a747a978.css.map": "/static/css/main.a747a978.css.map",
+    "main.a9d7bdfb.js.map": "/static/js/main.a9d7bdfb.js.map",
+    "787.f1f4ac34.chunk.js.map": "/static/js/787.f1f4ac34.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a747a978.css",
+    "static/js/main.a9d7bdfb.js"
+  ]
+}
