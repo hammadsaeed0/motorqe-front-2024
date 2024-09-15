@@ -168,6 +168,12 @@ const Register = () => {
           if (res?.data?.success === true) {
             setLoader(false);
             toast.success(res?.data?.message);
+            setState({
+              username: "",
+              email: "",
+              phone: "",
+              password: "",
+          });
           } else {
             toast.error(res?.data?.message);
             // Swal.fire(res?.data?.message);
@@ -178,7 +184,7 @@ const Register = () => {
           console.log(error);
   
           setLoader(false);
-          toast(error?.response?.data?.error);
+          toast(error?.response?.data?.message);
         });
      }
   };

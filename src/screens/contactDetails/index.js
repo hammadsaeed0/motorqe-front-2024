@@ -39,7 +39,7 @@ const ContactDetails = () => {
   const user = useSelector((state) => state.authReducer);
   const plan = useSelector((state) => state.planReducer);
 
-  console.log(plan?.userPlan?._id);
+  console.log(plan);
 
  
 
@@ -48,7 +48,7 @@ const ContactDetails = () => {
     e.preventDefault();
     const params = {
       userId: user?.userToken,
-      enrollmentId:plan?.userPlan?._id,
+      enrollmentId:plan?.userPlan?.data?._id,
       title: receivedData.title,
       type_of_ad: receivedData.type_of_ad,
       make: receivedData.make,

@@ -15,15 +15,18 @@ const CarPhotos = () => {
 
   const navigate = useNavigate();
   const user = useSelector((state) => state.authReducer);
-
+  const plan = useSelector((state) => state.planReducer);
+  const userPlans = localStorage.getItem('userPlan');
+  console.log(plan?.userPlan);
+  
   const [loading, setLoader] = useState(false);
-  const [selectedImages, setSelectedImages] = useState(Array(5).fill(null)); // Default to 5 images
-  const [selectedImage, setSelectedImage] = useState(Array(5).fill(null));
+  const [selectedImages, setSelectedImages] = useState(Array(plan?.userPlan?.plan?.maxImages).fill(null)); // Default to 5 images
+  const [selectedImage, setSelectedImage] = useState(Array(plan?.userPlan?.plan?.maxImages).fill(null));
 
   useEffect(() => {
     if (user?.userToken?.plan?.photoLimit) {
-      setSelectedImages(Array(user?.userToken?.plan?.photoLimit).fill(null));
-      setSelectedImage(Array(user?.userToken?.plan?.photoLimit).fill(null));
+      setSelectedImages(Array(plan?.userPlan?.plan?.maxImages).fill(null));
+      setSelectedImage(Array(plan?.userPlan?.plan?.maxImages).fill(null));
     }
   }, [user]);
 
@@ -81,6 +84,8 @@ const CarPhotos = () => {
       }
     } catch (error) {
       console.log(error);
+
+      toast.error('network error')
       setLoader(false);
     }
   };
@@ -182,7 +187,7 @@ const CarPhotos = () => {
           ))}
         </div>
         <span className="text-textColor font-bold">
-          Note: Plans: Silver up to 5 images, Gold up to 10 Images, Platinum up to 15 Images
+          Note: Plans: Silver up to {plan?.userPlan?.plan?.maxImages} images, Gold up to 10 Images, Platinum up to 15 Images
         </span>
       </div>
       <div className="container flex justify-between items-center mx-auto mt-10 mb-20">

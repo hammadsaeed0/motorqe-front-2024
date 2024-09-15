@@ -43,7 +43,10 @@ const CarDetails = () => {
   const [address, setAddress] = useState("");
   const [lat, setLat] = useState(currentLocation.lat);
   const [lng, setLng] = useState(currentLocation.lng);
-
+  const palans = localStorage.getItem('userPlan');
+  const plan = useSelector((state) => state.planReducer);
+  console.log(plan);
+  
   useEffect(() => {
     const getCurrentLocation = () => {
       if (navigator.geolocation) {
@@ -175,8 +178,9 @@ const CarDetails = () => {
   const handlerSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectImages) {
+    if (!selectedImage) {
       toast.error("Please choose your inspection report!");
+      setLoader(false);
     } else {
       setLoader(true);
 
@@ -440,9 +444,9 @@ const CarDetails = () => {
               value={state.vehicle_category}
               name={"vehicle_category"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Vehicle Category</option>
+              <option   value={""} selected>Select Vehicle Category</option>
 
               <option value={'category1'}>category1</option>
               <option value={'category2'}>category2</option>
@@ -465,9 +469,9 @@ const CarDetails = () => {
               value={state.specifications}
               name={"specifications"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Specifications</option>
+              <option value={" "} selected>Select Specifications</option>
               <option value={'BMW'}>BMW</option>
               <option value={'honda'}>Honda</option>
 
@@ -487,9 +491,9 @@ const CarDetails = () => {
               value={state.cylinder}
               name={"cylinder"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Cylinder</option>
+              <option  value={''} selected>Select Cylinder</option>
               <option value={'1'}>1</option>
               <option value={'2'}>2</option>
               <option value={'3'}>3</option>
@@ -511,9 +515,9 @@ const CarDetails = () => {
               value={state.engine_size}
               name={"engine_size"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Engine Size</option>
+              <option value={''} selected>Select Engine Size</option>
               <option>1000-2000</option>
               <option>1000-2000</option>
 
@@ -533,9 +537,9 @@ const CarDetails = () => {
               value={state.wheel_drive}
               name={"wheel_drive"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Wheel Drive</option>
+              <option value={''} selected>Select Wheel Drive</option>
               <option value={'4x4'}>4x4</option>
               <option value={'4WD'}>4WD</option>
 
@@ -555,9 +559,9 @@ const CarDetails = () => {
               value={state.gear_box}
               name={"gear_box"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Gear Box</option>
+              <option value={''} selected>Select Gear Box</option>
 
               {/* {allData?.fieldArrays?.gear_box?.map((item, index) => ( */}
                 {/* <option key={index} value={item}>
@@ -577,9 +581,9 @@ const CarDetails = () => {
               value={state.exterior_colour}
               name={"exterior_colour"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Exterior Colour</option>
+              <option value={''} selected>Select Exterior Colour</option>
               <option value={'black'}>black</option>
               <option value={'green'}>Green</option>
               <option value={'orange'}>Red</option>
@@ -600,9 +604,9 @@ const CarDetails = () => {
               value={state.interior_colour}
               name={"interior_colour"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Interior Colour</option>
+              <option value={''} selected>Select Interior Colour</option>
 
               {/* {allData?.fieldArrays?.interior_colour?.map((item, index) => (
                 <option key={index} value={item}>
@@ -623,9 +627,9 @@ const CarDetails = () => {
               value={state.fuel_type}
               name={"fuel_type"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Fuel Type</option>
+              <option value={''} selected>Select Fuel Type</option>
               <option value={'petroleum	'}>petroleum	</option>
               <option value={'natural gas	'}>natural gas	</option>
 
@@ -646,7 +650,7 @@ const CarDetails = () => {
               placeholder={"Enter Registration Date"}
               label={"Registration Date"}
               // Icon={<FaCalendarAlt className=" text-textColor" size={20} />}
-              required="required"
+              required
             />
           </div>
           <div>
@@ -659,9 +663,9 @@ const CarDetails = () => {
               value={state.warranty}
               name={"warranty"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Warranty</option>
+              <option value={''} selected> Select Warranty</option>
 
               <option value={true}>Yes</option>
               <option value={false}>No</option>
@@ -689,9 +693,9 @@ const CarDetails = () => {
               value={state.inspected}
               name={"inspected"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Inspected</option>
+              <option value={''} selected>Select Inspected</option>
               <option value={true}>Yes</option>
               <option value={false}>No</option>
             </select>
@@ -756,9 +760,9 @@ const CarDetails = () => {
               value={state.price_QR}
               name={"price_QR"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Price (QR)</option>
+              <option value={''} selected>Select Price (QR)</option>
               <option value={'1000'}>1000</option>
               <option value={'2000'}>2000</option>
 
@@ -778,9 +782,9 @@ const CarDetails = () => {
               value={state.price_range}
               name={"price_range"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Price Range</option>
+              <option value={''} selected>Select Price Range</option>
               <option value={'30000-50000'}>10000-30000</option>
               <option value={'30000-50000'}>30000-50000</option>
 
@@ -800,9 +804,9 @@ const CarDetails = () => {
               value={state.negotiable}
               name={"negotiable"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required="required"
+              required
             >
-              <option>Select Negotiable</option>
+              <option value={''} selected>Select Negotiable</option>
 
               <option value={true}>Yes</option>
               <option value={false}>No</option>
