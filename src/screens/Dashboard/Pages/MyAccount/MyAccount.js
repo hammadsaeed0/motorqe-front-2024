@@ -22,6 +22,7 @@ import DashboardNavbar from "../../NavBAr/DashboardNavbar";
 import { useSelector } from "react-redux";
 import { Base_url } from "../../../../utils/Base_url";
 import axios from "axios";
+import { Link } from "react-router-dom";
 const Input = ({ Icon, ...props }) => {
   return (
     <div className="relative flex items-center">
@@ -43,7 +44,27 @@ const MyAccount = () => {
 
   console.log(user);
 
+
+
+  const [garage, setGrage] = useState([]);
+  
   useEffect(() => {
+
+  
+  
+      const params = {
+        user: user?.userToken,
+      };
+      axios
+        .post(`${Base_url}/user/all-my-car`, params)
+        .then((res) => {
+          console.log(res);
+          setGrage(res.data.listings);
+        })
+        .catch((error) => {});
+ 
+
+
     axios
       .get(`${Base_url}/dashboard/user-all-clicks/${user?.userToken?._id}`)
       .then((res) => {
@@ -120,13 +141,13 @@ const MyAccount = () => {
             ></img>
           </div>
 
-          <div
+          <Link to={'/dashboard/my-garage'}
             class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
               <h1 className="font-inter font-bold text-4xl ">
-                {analytics?.pendingApprovals}
+                {garage?.length}
               </h1>
               <p className="text-18"> Pending Listings</p>
             </div>
@@ -134,7 +155,7 @@ const MyAccount = () => {
               src={vector}
               className="w-[72px] h-[72px] top-5 mt-[54px] mr-2"
             ></img>
-          </div>
+          </Link>
 
           <div
             class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex"

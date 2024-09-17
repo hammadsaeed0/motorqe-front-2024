@@ -4,6 +4,7 @@ import { FaCar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import { useSelector } from "react-redux";
+import { FaUser } from "react-icons/fa6";
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -30,7 +31,7 @@ const Header = () => {
           <div className=" flex justify-between gap-10 items-center">
             <img
               src={require("../../assets/images/logo.png")}
-              className="object-contain md:w-[191px] w-[120px]"
+              className="object-contain md:w-[161px] w-[120px]"
               alt=""
             />
             <div className=" xl:block hidden">
@@ -38,7 +39,7 @@ const Header = () => {
                 Icon={<IoSearch size={20} className="  text-textColor" />}
                 placeholder={"Search cars..."}
                 className={
-                  "border-[#0C53AB] border-2 py-2.5  font-normal  text-sm md:w-72 w-60 bg-white"
+                  "border-[#0C53AB] border-2 py-2.5  font-normal  text-sm md:w-36 w-60 bg-white"
                 }
               />
             </div>
@@ -50,41 +51,42 @@ const Header = () => {
         >
           <ion-icon name={`${open ? "close" : "menu"}`}></ion-icon>
         </div>
-        <ul className="lg:flex hidden uppercase items-center gap-8 font-[Poppins]">
+        <ul className="lg:flex hidden uppercase items-center gap-6 font-[Poppins]">
           <li>
-            <Link className="uppercase " to={"/"}>
+            <Link className="uppercase text-sm " to={"/"}>
               Home
             </Link>
           </li>
           {user?.userToken?._id ? (
             <li>
-              <Link className="uppercase" to={"/garage-dashboard/my-account"}>
+              <Link className="uppercase text-sm" to={"/garage-dashboard/my-account"}>
                 Dashboard
               </Link>
             </li>
           ) : null}
 
           <li>
-            <Link className="uppercase" to={"/"}>
+            <Link className="uppercase text-sm" to={"/"}>
               About Us
             </Link>
           </li>
           <li>
-            <Link className="uppercase" to={"/new_lists"}>
+            <Link className="uppercase text-sm" to={"/new_lists"}>
               imported cars
             </Link>
           </li>
 
           <li>
-            <Link className="uppercase" to={"/car_inspection"}>
+            <Link className="uppercase text-sm" to={"/car_inspection"}>
               car services
             </Link>
           </li>
           <li>
-            <Link className="uppercase " to={"/news"}>
+            <Link className="uppercase  text-sm" to={"/news"}>
               News
             </Link>
           </li>
+          
           <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
             <FaCar color="white" />
             <Link
@@ -94,13 +96,26 @@ const Header = () => {
               Sell My Car
             </Link>
           </li>
+          {user?.userToken?
+          
+          <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+          <FaUser color="white" />
+          <Link
+            className="font-medium text-sm text-white capitalize"
+            to={"/dashboard/my-garage"}
+          >
+            My account
+          </Link>
+        </li>:null
+        }
+          
 
-          {/* <li className=" relative">
+          <li className=" relative">
             <button
               onClick={openLanguage}
               id="dropdownDefaultButton"
               data-dropdown-toggle="dropdown"
-              class="text-black bg-white  focus:ring-4 focus:outline-none focus:ring-[#0C53AB] font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
+              class="text-black text-sm bg-white  focus:ring-4 focus:outline-none focus:ring-[#0C53AB] font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center"
               type="button"
             >
               EN
@@ -121,7 +136,7 @@ const Header = () => {
               </svg>
             </button>
 
-            <!-- Dropdown menu -->
+            {/* <!-- Dropdown menu --> */}
             {language === true ? (
               <div
                 id="dropdown"
@@ -160,7 +175,7 @@ const Header = () => {
                 </ul>
               </div>
             ) : null}
-          </li> */}
+          </li>
           {/* <NavLinks /> */}
         </ul>
 

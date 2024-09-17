@@ -22,6 +22,7 @@ import { Base_url } from "../../../../utils/Base_url";
 import axios from "axios";
 import DashboardNavbar from "../../NavBAr/DashboardNavbar";
 import moment from "moment";
+import { useSelector } from "react-redux";
 // import CarDetails from '../../../../carDetails';
 
 const Input = ({ Icon, ...props }) => {
@@ -37,14 +38,19 @@ const Input = ({ Icon, ...props }) => {
 
 const MyGarage = () => {
   const userId = JSON.parse(localStorage.getItem("userToken"));
+  const user = useSelector((state) => state.authReducer);
   const [garage, setGrage] = useState([]);
+  console.log(user?.userToken, "");
 
   useEffect(() => {
+    const params = {
+      user: user?.userToken,
+    };
     axios
-      .get(`${Base_url}/users/users-all-cars/${userId?._id}`)
+      .post(`${Base_url}/user/all-my-car`, params)
       .then((res) => {
         console.log(res);
-        setGrage(res.data.cars);
+        setGrage(res.data.listings);
       })
       .catch((error) => {});
   }, []);
