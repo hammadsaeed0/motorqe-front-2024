@@ -11,10 +11,10 @@ import axios from "axios";
 const ListingCard = ({ item }) => {
   const user = useSelector((state) => state.authReducer);
 
-  console.log(user);
+  console.log(user?.userToken);
 
   const [isLiked, setIsLiked] = useState(
-    item?.favorited_by_users?.includes(user?.userToken?._id)
+    item?.favorited_by_users?.includes(user?.userToken)
   );
 
   const handleLikeDislike = async () => {
@@ -22,11 +22,11 @@ const ListingCard = ({ item }) => {
       setIsLiked(!isLiked);
 
       const params = {
-        userId: user?.userToken?._id,
+        userId: user?.userToken,
         carId: item?._id,
       };
       const response = await axios.post(
-        `${Base_url}/users/add-to-favorites`,
+        `${Base_url}/user/add-favorite`,
         params
       );
 
@@ -39,12 +39,11 @@ const ListingCard = ({ item }) => {
 
   const clickButtons = async (messages) => {
     const params = {
-      userId: user?.userToken?._id,
-      carListingId: item?._id,
-      actionType: messages,
+      id: item?._id,
+      action: messages,
     };
     const response = await axios
-      .post(`${Base_url}/dashboard/button-click`, params)
+      .post(`${Base_url}/user/count-click`, params)
       .then((res) => {
         console.log(res);
       });
@@ -62,6 +61,9 @@ const ListingCard = ({ item }) => {
                 alt=""
               />
             </Link>
+
+
+           
 
             <div className=" absolute top-2 right-2">
               {item?.featured === true ? (
@@ -82,9 +84,9 @@ const ListingCard = ({ item }) => {
                 {isLiked ? (
                   <FaHeart
                     color={"red"}
-                    // onClick={() => {
-                    //   handleLikeDislike(item._id);
-                    // }}
+                    onClick={() => {
+                      handleLikeDislike(item._id);
+                    }}
                     size={20}
                   />
                 ) : (
@@ -97,6 +99,15 @@ const ListingCard = ({ item }) => {
                 )}
               </div>
             </div>
+                 
+
+                 {item?.status==='sold'?
+                  <div className=" absolute top-0 w-full h-full flex justify-center items-center   bg-[rgba(255,255,255,0.5)]">
+                    <img src={require('../../assets/images/sold_img.png')} alt="" />
+                  </div>:null
+                }
+
+           
           </div>
         </div>
         <div className="  justify-between p-4">
@@ -170,9 +181,9 @@ const ListingCard = ({ item }) => {
             </div>
           </div>
 
-          <div className="  sm:flex block justify-between items-center">
+          <div className="  sm:flex block justify-between gap-3 items-center">
             <Button
-              onClick={() => clickButtons("Call")}
+              onClick={() => clickButtons("call")}
               Icons={<IoCall size={20} />}
               label={"Call"}
               className={
@@ -180,7 +191,7 @@ const ListingCard = ({ item }) => {
               }
             />
             <Button
-              onClick={() => clickButtons("Message")}
+              onClick={() => clickButtons("message")}
               Icons={
                 <img src={require("../../assets/images/chat.png")} alt="" />
               }
@@ -190,7 +201,7 @@ const ListingCard = ({ item }) => {
               }
             />
             <Button
-              onClick={() => clickButtons("WhatsApp")}
+              onClick={() => clickButtons("whatsapp")}
               label={"Whatsapp"}
               Icons={<FaWhatsapp size={20} />}
               className={

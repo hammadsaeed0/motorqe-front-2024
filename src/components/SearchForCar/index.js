@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../Button";
 import { Base_url } from "../../utils/Base_url";
 import axios from "axios";
@@ -9,10 +9,39 @@ const SearchForCar = () => {
   const navigate = useNavigate();
   const [filteredResults, setFilteredResults] = useState([]);
   console.log(filteredResults);
+  const [makes, setMakes] = useState([]);
+  const [years, setYears] = useState([]);
+  const [distinct, setDistinct] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${Base_url}/admin/all-make`)
+      .then((res) => {
+        console.log(res.data);
+        setMakes(res.data.data);
+      })
+      .catch((error) => {});
+
+    axios
+      .get(`${Base_url}/admin/all-year`)
+      .then((res) => {
+        console.log(res.data);
+        setYears(res.data.data);
+      })
+      .catch((error) => {});
+
+    axios
+      .get(`${Base_url}/admin/all-distinct-details`)
+      .then((res) => {
+        console.log(res.data);
+        setDistinct(res.data.data);
+      })
+      .catch((error) => {});
+  }, []);
 
   const AllFilterFun = (filterValue) => {
     setLoader(true);
-    const url = `${Base_url}/users/advance-searching`;
+    const url = `${Base_url}/admin/all-cars`;
     const params = {
       engine_size: filterValue,
     };
@@ -33,9 +62,9 @@ const SearchForCar = () => {
 
   const AllYearFun = (filterValue) => {
     setLoader(true);
-    const url = `${Base_url}/users/advance-searching`;
+    const url = `${Base_url}/admin/all-cars`;
     const params = {
-      model: filterValue,
+      years: filterValue,
     };
 
     axios
@@ -54,9 +83,10 @@ const SearchForCar = () => {
 
   const AllBurgetFun = (filterValue) => {
     setLoader(true);
-    const url = `${Base_url}/users/advance-searching`;
+    const url = `${Base_url}/admin/all-cars`;
     const params = {
       price_QR: filterValue,
+      priceTo: filterValue,
     };
 
     axios
@@ -75,7 +105,7 @@ const SearchForCar = () => {
 
   const AllBrandFun = (filterValue) => {
     setLoader(true);
-    const url = `${Base_url}/users/advance-searching`;
+    const url = `${Base_url}/admin/all-cars`;
     const params = {
       make: filterValue,
     };
@@ -96,9 +126,9 @@ const SearchForCar = () => {
 
   const AllBodyFun = (filterValue) => {
     setLoader(true);
-    const url = `${Base_url}/users/advance-searching`;
+    const url = `${Base_url}/admin/all-cars`;
     const params = {
-      make: filterValue,
+      body_type: filterValue,
     };
 
     axios
@@ -136,35 +166,36 @@ const SearchForCar = () => {
           onClick={() => setFilter("brands")}
           className={` border-b-2 py-2.5 border-primary  ${
             allFilter === "brands"
-            ? " text-primary border-b-primary "
-            : "bg-white  border-b-white  text-secondary"
-        }   font-bold w-44 sm:text-base text-sm`}
+              ? " text-primary border-b-primary "
+              : "bg-white  border-b-white  text-secondary"
+          }   font-bold w-44 sm:text-base text-sm`}
         />
         <Button
           label={"Budget"}
           onClick={() => setFilter("budget")}
           className={` border-b-2 py-2.5 border-primary font-bold ${
-            allFilter === "budget"  ? " text-primary border-b-primary "
-            : "bg-white  border-b-white  text-secondary"
-        }   font-bold w-44 sm:text-base text-sm`}
+            allFilter === "budget"
+              ? " text-primary border-b-primary "
+              : "bg-white  border-b-white  text-secondary"
+          }   font-bold w-44 sm:text-base text-sm`}
         />
         <Button
           label={"Year"}
           onClick={() => setFilter("year")}
           className={` border-b-2 py-2.5 border-primary  ${
             allFilter === "year"
-            ? " text-primary border-b-primary "
-            : "bg-white  border-b-white  text-secondary"
-        }   font-bold w-44 sm:text-base text-sm`}
+              ? " text-primary border-b-primary "
+              : "bg-white  border-b-white  text-secondary"
+          }   font-bold w-44 sm:text-base text-sm`}
         />
         <Button
           label={"Engine Size"}
           onClick={() => setFilter("engine")}
           className={` border-b-2 py-2.5 border-primary  ${
             allFilter === "engine"
-            ? " text-primary border-b-primary "
-            : "bg-white  border-b-white   text-secondary"
-        }   font-bold w-44 sm:text-base text-sm`}
+              ? " text-primary border-b-primary "
+              : "bg-white  border-b-white   text-secondary"
+          }   font-bold w-44 sm:text-base text-sm`}
         />
       </div>
 
@@ -172,7 +203,7 @@ const SearchForCar = () => {
         <>
           <div className=" grid md:grid-cols-6 grid-cols-2 mt-8 gap-10">
             <div>
-              <div onClick={() => AllBodyFun("SUV")} className=" text-center">
+              <div onClick={() => AllBodyFun("SUV")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car1.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   SUV
@@ -180,7 +211,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("Coupe")} className=" text-center">
+              <div onClick={() => AllBodyFun("Coupe")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car2.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   Coupe
@@ -190,7 +221,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("Luxury")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car3.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -201,7 +232,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("Electric/Hybrid")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car4.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -210,7 +241,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("MPV")} className=" text-center">
+              <div onClick={() => AllBodyFun("MPV")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car5.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   MPV
@@ -220,7 +251,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("Pickup")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car6.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -229,7 +260,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("Wagon")} className=" text-center">
+              <div onClick={() => AllBodyFun("Wagon")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car7.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   Wagon
@@ -237,7 +268,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("Sedan")} className=" text-center">
+              <div onClick={() => AllBodyFun("Sedan")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car8.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   Sedan
@@ -247,7 +278,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("Sports")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car9.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -258,7 +289,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("Classic")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car10.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -269,7 +300,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("  Muscle Car")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car11.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -280,7 +311,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("convertible")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car12.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -291,7 +322,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("compact")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car13.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -302,7 +333,7 @@ const SearchForCar = () => {
             <div>
               <div
                 onClick={() => AllBodyFun("Motorbike")}
-                className=" text-center"
+                className=" text-center cursor-pointer"
               >
                 <img src={require("../../assets/images/car14.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
@@ -311,7 +342,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("Buggy")} className=" text-center">
+              <div onClick={() => AllBodyFun("Buggy")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car15.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   Buggy
@@ -319,7 +350,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("Van")} className=" text-center">
+              <div onClick={() => AllBodyFun("Van")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car16.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   Van
@@ -327,7 +358,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("Bus")} className=" text-center">
+              <div onClick={() => AllBodyFun("Bus")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car17.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   Bus
@@ -335,7 +366,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("Truck")} className=" text-center">
+              <div onClick={() => AllBodyFun("Truck")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car18.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   Truck
@@ -343,7 +374,7 @@ const SearchForCar = () => {
               </div>
             </div>
             <div>
-              <div onClick={() => AllBodyFun("BOAT")} className=" text-center">
+              <div onClick={() => AllBodyFun("Boat")} className=" text-center cursor-pointer">
                 <img src={require("../../assets/images/car19.png")} alt="" />
                 <span className=" uppercase text-textColor font-semibold">
                   BOAT
@@ -355,71 +386,19 @@ const SearchForCar = () => {
       ) : allFilter === "year" ? (
         <>
           <div className=" flex items-center   flex-wrap justify-center mt-14 gap-4">
-            <Button
-              onClick={() => AllYearFun("2024")}
-              label={"2024"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-
-            <Button
-              onClick={() => AllYearFun("2023")}
-              label={"2023"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-
-            <Button
-              onClick={() => AllYearFun("2022")}
-              label={"2022"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllYearFun("2021")}
-              label={"2021"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllYearFun("2020")}
-              label={"2020"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllYearFun("2019")}
-              label={"2019"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllYearFun("2018")}
-              label={"2018"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllYearFun("2017")}
-              label={"2017"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllYearFun("2016")}
-              label={"2016"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
+            {years?.map((item, index) => {
+              return (
+                <>
+                  <Button
+                    onClick={() => AllYearFun(`${item}`)}
+                    label={`${item}`}
+                    className={
+                      "  border shadow-lg w-52 cursor-pointer rounded-md py-1.5  font-medium  text-secondary border-secondary"
+                    }
+                  />
+                </>
+              );
+            })}
           </div>
         </>
       ) : allFilter === "engine" ? (
@@ -491,7 +470,7 @@ const SearchForCar = () => {
               }
             />
             <Button
-              onClick={() => AllFilterFun("Above 5.0L")}
+              onClick={() => AllFilterFun("above 5.0L")}
               label={"Above 5.0L"}
               className={
                 "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
@@ -501,106 +480,41 @@ const SearchForCar = () => {
         </>
       ) : allFilter === "brands" ? (
         <>
-          <div className=" flex flex-wrap justify-center items-center mt-14 gap-3">
-            <div
-              onClick={() => AllBrandFun("Audi")}
-              className="  m-2  bg-white w-64  rounded"
-            >
-              <img
-                src={require("../../assets/images/b1.png")}
-                alt=""
-                className=" w-full  h-full object-cover"
-              />
-            </div>
-            <div
-              onClick={() => AllBrandFun("BMW")}
-              className="  scroll-item inline-block :w-64  p-2 bg-white rounded"
-            >
-              <img
-                src={require("../../assets/images/b2.png")}
-                alt=""
-                className=" w-full h-full object-cover"
-              />
-            </div>
-            <div
-              onClick={() => AllBrandFun("Mercedes Benz")}
-              className=" scroll-item inline-block p-2 w-64  bg-white rounded"
-            >
-              <img
-                src={require("../../assets/images/b3.png")}
-                alt=""
-                className=" w-full  h-full object-cover"
-              />
-            </div>
-            <div
-              onClick={() => AllBrandFun("SJ")}
-              className=" scroll-item inline-block p-2 w-64   bg-white rounded"
-            >
-              <img
-                src={require("../../assets/images/b4.png")}
-                alt=""
-                className=" w-full  h-full object-cover"
-              />
-            </div>
-            <div
-              onClick={() => AllBrandFun("SJ")}
-              className=" scroll-item inline-block p-2 w-64  bg-white rounded"
-            >
-              <img
-                src={require("../../assets/images/b4.png")}
-                alt=""
-                className=" w-full  h-full object-cover"
-              />
-            </div>
+          <div className=" flex flex-wrap justify-center items-center mt-14 gap-12">
+            {makes?.map((item, index) => {
+              return (
+                <>
+                  <div
+                    onClick={() => AllBrandFun(`${item?.name}`)}
+                    className="  m-2  bg-white w-44  cursor-pointer rounded"
+                  >
+                    <img
+                      src={item?.logoUrl}
+                      alt=""
+                      className=" w-full  h-full object-cover"
+                    />
+                  </div>
+                </>
+              );
+            })}
           </div>
         </>
       ) : (
         <>
           <div className=" flex items-center   flex-wrap justify-center mt-14 gap-4">
-            <Button
-              onClick={() => AllBurgetFun("10000")}
-              label={"Under QAR 10,000"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-
-            <Button
-              onClick={() => AllBurgetFun("15000")}
-              label={"Under QAR 15,000"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-
-            <Button
-              onClick={() => AllBurgetFun("20000")}
-              label={"Under QAR 20,000"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllBurgetFun("30000")}
-              label={"Under QAR 30,000"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllBurgetFun("50000")}
-              label={"Under QAR 50,000"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
-            <Button
-              onClick={() => AllBurgetFun("70000")}
-              label={"Under QAR 70,000"}
-              className={
-                "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
-              }
-            />
+            {distinct?.carPrice?.map((item, index) => {
+              return (
+                <>
+                  <Button
+                    onClick={() => AllBurgetFun(`${item}`)}
+                    label={`Under QAR ${item}`}
+                    className={
+                      "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
+                    }
+                  />
+                </>
+              );
+            })}
           </div>
         </>
       )}

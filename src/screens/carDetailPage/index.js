@@ -46,24 +46,24 @@ const CarDetailPage = ({
 
   useEffect(() => {
     axios
-      .get(`${Base_url}/users/get-single-car/${id}`)
+      .get(`${Base_url}/user/single-car/${id}`)
       .then((res) => {
         console.log(res);
-        setNewListings(res?.data?.message);
+        setNewListings(res?.data?.data);
         const pos = {
-          lat: res?.data?.messag?.latitude,
-          lng: res?.data?.messag?.longitude,
+          lat: res?.data?.data?.latitude,
+          lng: res?.data?.data?.longitude,
         };
         setSelectedLocation(pos);
       })
       .catch((error) => {});
 
-    axios
-      .post(`${Base_url}/dashboard/click-counter/${id}`)
-      .then((res) => {
-        console.log(res, "dashboard/click-counter");
-      })
-      .catch((error) => {});
+    // axios
+    //   .post(`${Base_url}/dashboard/click-counter/${id}`)
+    //   .then((res) => {
+    //     console.log(res, "dashboard/click-counter");
+    //   })
+    //   .catch((error) => {});
   }, [id]);
 
   const [curr, setCurr] = useState(0);

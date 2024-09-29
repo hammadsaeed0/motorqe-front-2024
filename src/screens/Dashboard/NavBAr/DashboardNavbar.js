@@ -9,8 +9,7 @@ const DashboardNavbar = () => {
     { label: "My Garage", path: "/dashboard/my-garage" },
     { label: "My Inbox", path: "#" },
     // { label: "My Inbox", path: "/dashboard/my-inbox" },
-    { label: "Favourite Cars", path: "#" },
-    // { label: "Favourite Cars", path: "/dashboard/favourite-cars" },
+    { label: "Favourite Cars", path: "/dashboard/favourite-cars" },
     { label: "Garage Bookings", path: "/dashboard/garage-bookings" },
     { label: "Account Details", path: "/dashboard/account-details" },
   ]);
@@ -23,6 +22,7 @@ const DashboardNavbar = () => {
   const Logout = () => {
     dispatch(logout("userToken"));
     toast.success('User logout successfully!')
+    localStorage.removeItem('Dealar')
       navigate('/')
   };
 

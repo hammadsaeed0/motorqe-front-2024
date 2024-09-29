@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FaAngleRight } from "react-icons/fa6";
 import Button from "../../components/Button";
-import { LiaLongArrowAltLeftSolid, LiaLongArrowAltRightSolid } from "react-icons/lia";
+import {
+  LiaLongArrowAltLeftSolid,
+  LiaLongArrowAltRightSolid,
+} from "react-icons/lia";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -12,16 +15,24 @@ import { useSelector } from "react-redux";
 const CarPhotos = () => {
   const location = useLocation();
   const receivedData = location.state;
-
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
   const navigate = useNavigate();
   const user = useSelector((state) => state.authReducer);
   const plan = useSelector((state) => state.planReducer);
-  const userPlans = localStorage.getItem('userPlan');
+  const userPlans = localStorage.getItem("userPlan");
   console.log(plan?.userPlan);
-  
+
   const [loading, setLoader] = useState(false);
-  const [selectedImages, setSelectedImages] = useState(Array(plan?.userPlan?.plan?.maxImages).fill(null)); // Default to 5 images
-  const [selectedImage, setSelectedImage] = useState(Array(plan?.userPlan?.plan?.maxImages).fill(null));
+  const [selectedImages, setSelectedImages] = useState(
+    Array(
+      userData?.profileStatus === "dealer" ? 5 : plan?.userPlan?.plan?.maxImages
+    ).fill(null)
+  ); // Default to 5 images
+  const [selectedImage, setSelectedImage] = useState(
+    Array(
+      userData?.profileStatus === "dealer" ? 5 : plan?.userPlan?.plan?.maxImages
+    ).fill(null)
+  );
 
   useEffect(() => {
     if (user?.userToken?.plan?.photoLimit) {
@@ -85,7 +96,7 @@ const CarPhotos = () => {
     } catch (error) {
       console.log(error);
 
-      toast.error('network error')
+      toast.error("network error");
       setLoader(false);
     }
   };
@@ -139,7 +150,9 @@ const CarPhotos = () => {
               <p className="text-textColor">4</p>
             </div>
             <Link to={"/contact_details"}>
-              <span className="text-textColor font-semibold">Contact Details</span>
+              <span className="text-textColor font-semibold">
+                Contact Details
+              </span>
             </Link>
           </li>
         </ul>
@@ -187,7 +200,8 @@ const CarPhotos = () => {
           ))}
         </div>
         <span className="text-textColor font-bold">
-          Note: Plans: Silver up to {plan?.userPlan?.plan?.maxImages} images, Gold up to 10 Images, Platinum up to 15 Images
+          Note: Plans: Silver up to {plan?.userPlan?.plan?.maxImages} images,
+          Gold up to 10 Images, Platinum up to 15 Images
         </span>
       </div>
       <div className="container flex justify-between items-center mx-auto mt-10 mb-20">

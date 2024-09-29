@@ -51,6 +51,7 @@ const ContactDetails = () => {
       enrollmentId:plan?.userPlan?.data?._id,
       title: receivedData.title,
       type_of_ad: receivedData.type_of_ad,
+      body_type:receivedData.body_type,
       make: receivedData.make,
       model: receivedData.model,
       contact_name: "hammad",

@@ -36,34 +36,38 @@ const Input = ({ Icon, ...props }) => {
 
 const MyAccount = () => {
   const [counter, setCounter] = useState([]);
-  const [button, setButton] = useState([]);
-  const [times, setTime] = useState([]);
   const [analytics, setAnalytics] = useState([]);
-
   const user = useSelector((state) => state.authReducer);
-
   console.log(user);
-
-
-
+  const [carsPending, setPending] = useState([]);
+  const [carsActive, setActive] = useState([]);
+  const [carsFeatures, setFeatures] = useState([]);
   const [garage, setGrage] = useState([]);
-  
   useEffect(() => {
+    const params = {
+      user: user?.userToken,
+    };
+    axios
+      .post(`${Base_url}/user/all-my-car`, params)
+      .then((res) => {
+        console.log(res);
 
-  
-  
-      const params = {
-        user: user?.userToken,
-      };
-      axios
-        .post(`${Base_url}/user/all-my-car`, params)
-        .then((res) => {
-          console.log(res);
-          setGrage(res.data.listings);
-        })
-        .catch((error) => {});
- 
+        const pendingCars = res.data.listings.filter(
+          (car) => car.status === "pending"
+        );
+        const activeCars = res.data.listings.filter(
+          (car) => car.status === "active"
+        );
+        const FeaturedCars = res.data.listings.filter(
+          (car) => car.type_of_ad === "Featured"
+        );
 
+        setGrage(res.data.listings);
+        setPending(pendingCars)
+        setActive(activeCars)
+        setFeatures(FeaturedCars)
+      })
+      .catch((error) => {});
 
     axios
       .get(`${Base_url}/dashboard/user-all-clicks/${user?.userToken?._id}`)
@@ -74,30 +78,16 @@ const MyAccount = () => {
       })
       .catch((error) => {});
 
+    const param = {
+      user: user?.userToken,
+    };
+
     axios
-      .get(`${Base_url}/dashboard/user-button-clicks/${user?.userToken?._id}`)
+      .post(`${Base_url}/user/my-analytic`, param)
       .then((res) => {
         console.log(res, "/user button click");
 
-        setButton(res?.data?.clickCounts);
-      })
-      .catch((error) => {});
-
-    axios
-      .get(`${Base_url}/dashboard/click-by-time/${user?.userToken?._id}`)
-      .then((res) => {
-        console.log(res, "/user button click");
-
-        setTime(res?.data);
-      })
-      .catch((error) => {});
-
-    axios
-      .get(`${Base_url}/dashboard/user-analytics/${user?.userToken?._id}`)
-      .then((res) => {
-        console.log(res, "/user button click");
-
-        setAnalytics(res?.data);
+        setAnalytics(res?.data?.data);
       })
       .catch((error) => {});
   }, []);
@@ -123,14 +113,14 @@ const MyAccount = () => {
         {/* ----------------- blue cards ----------------- */}
         <div class="w-[90%] h-[215px] top-499px left-112px gap-[35px] flex mb-2 mt-[99px]">
           <div
-            class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex"
+            class="w-[332px] h-[200px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
               <h1 className="font-inter font-bold text-4xl ">
-                {analytics?.totalListedCars}
+                {carsActive?.length}
               </h1>
-              <p className="text-18">
+              <p className="text-18 pt-4">
                 {" "}
                 {analytics?.totalListedCars} Published Listings
               </p>
@@ -141,15 +131,16 @@ const MyAccount = () => {
             ></img>
           </div>
 
-          <Link to={'/dashboard/my-garage'}
-            class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex"
+          <Link
+            to={"/dashboard/my-garage"}
+            class="w-[332px] h-[200px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className="font-inter font-bold text-4xl ">
-                {garage?.length}
+              <h1 className="font-inter font-bold text-5xl ">
+                {carsPending?.length}
               </h1>
-              <p className="text-18"> Pending Listings</p>
+              <p className="text-18 pt-4"> Pending Listings</p>
             </div>
             <img
               src={vector}
@@ -158,14 +149,14 @@ const MyAccount = () => {
           </Link>
 
           <div
-            class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex"
+            class="w-[332px] h-[200px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className="font-inter font-bold text-4xl ">
-                {analytics?.totalListedCars}
+              <h1 className="font-inter font-bold text-5xl ">
+                {carsFeatures?.length}
               </h1>
-              <p className="text-18">featured Listings</p>
+              <p className="text-18 pt-4">featured Listings</p>
             </div>
             <img
               src={announcement}
@@ -174,12 +165,12 @@ const MyAccount = () => {
           </div>
 
           <div
-            class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex"
+            class="w-[332px] h-[200px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className="font-inter font-bold text-4xl ">{counter}</h1>
-              <p className="text-18">Total Visits</p>
+              <h1 className="font-inter font-bold text-5xl ">{analytics?.totalClicks?analytics?.totalClicks:0}</h1>
+              <p className="text-18 pt-5">Total Visits</p>
             </div>
             <img
               src={group}
@@ -203,20 +194,20 @@ const MyAccount = () => {
               <div className="flex ml-6 justify-between mr-6">
                 <div className="text-[#0C0CB8] text-base flex-col gap-7">
                   <img src={insight} alt="" />
-                  <strong>{times?.clicks24h}</strong>
-                  <p>Last 24 hours</p>
+                  <strong>{analytics?.last24HoursViews}</strong>
+                  <p className=" text-sm">Last 24 hours</p>
                 </div>
 
                 <div className="text-[#0C0CB8]  flex-col gap-7">
                   <img src={insight} alt="" />
-                  <strong>{times?.clicks7d}</strong>
-                  <p>Last 7 hours</p>
+                  <strong>{analytics?.last7DaysViews}</strong>
+                  <p className=" text-sm">Last 7 hours</p>
                 </div>
 
                 <div className="text-[#0C0CB8]  flex-col gap-7">
                   <img src={insight} alt="" />
-                  <strong>{times?.clicks30d}</strong>
-                  <p>Last 30 hours</p>
+                  <strong>{analytics?.last30DaysViews}</strong>
+                  <p className=" text-sm">Last 30 hours</p>
                 </div>
               </div>
             </div>
@@ -231,29 +222,37 @@ const MyAccount = () => {
               <div className="ml-6 mr-6 justify-between flex-col">
                 <div className="text-[#0C0CB8] flex items-center gap-3 mt-1">
                   <img src={blackeye} alt="" />
-                  <p className="text-sm">Views (27 clicks)</p>
+                  <p className="text-sm">
+                    Views ( {analytics?.totalClicks} clicks)
+                  </p>
                 </div>
 
                 <div className="text-[#0C0CB8] flex items-center gap-3 mt-1">
                   <img src={whatsapp} alt="" />
                   <p className="text-sm">
-                    whatsapp ( {button?.WhatsApp} clicks)
+                    whatsapp ( {analytics?.totalWhatsappClicks} clicks)
                   </p>
                 </div>
 
                 <div className="text-[#0C0CB8] flex items-center gap-3 mt-1">
                   <img src={phone} alt="" />
-                  <p className="text-sm">Call ({button?.Call} clicks)</p>
+                  <p className="text-sm">
+                    Call ({analytics?.totalCallClicks} clicks)
+                  </p>
                 </div>
 
                 <div className="text-[#0C0CB8] flex items-center gap-3 mt-1">
                   <img src={message} alt="" />
-                  <p className="text-sm">Message ({button?.Message} clicks)</p>
+                  <p className="text-sm">
+                    Message ({analytics?.totalMessageClicks} clicks)
+                  </p>
                 </div>
 
                 <div className="text-[#0C0CB8] flex items-center gap-3 mt-3">
                   <img src={share} alt="" />
-                  <p className="text-sm">Share (635 clicks)</p>
+                  <p className="text-sm">
+                    Share ( {analytics?.totalShareClicks} clicks)
+                  </p>
                 </div>
               </div>
             </div>
@@ -267,12 +266,16 @@ const MyAccount = () => {
               <div className="ml-6 mr-6 justify-between flex-col">
                 <div className="text-[#0C0CB8] flex items-center gap-3 mt-3">
                   <img src={desktop} alt="" />
-                  <p className="text-sm">Views (27 clicks)</p>
+                  <p className="text-sm">
+                    Desktop ( {analytics?.totalViews} Views)
+                  </p>
                 </div>
 
                 <div className="text-[#0C0CB8] flex items-center gap-3 mt-3">
                   <img src={mobile} alt="" />
-                  <p className="text-sm">whatsapp (127 clicks)</p>
+                  <p className="text-sm">
+                    Mobile ( {analytics?.totalViews} Views)
+                  </p>
                 </div>
               </div>
             </div>

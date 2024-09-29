@@ -1,64 +1,82 @@
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { Base_url } from "../../utils/Base_url";
 
-import React, { useRef } from "react";
 const PopularShowRooms = ({ items }) => {
   const scrollContainerRef = useRef(null);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollLeft -= 200;
+      scrollContainerRef.current.scrollBy({
+        left: -200,
+        behavior: "smooth",  // Slow and smooth scrolling
+      });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollLeft += 200;
+      scrollContainerRef.current.scrollBy({
+        left: 200,
+        behavior: "smooth",  // Slow and smooth scrolling
+      });
     }
   };
 
+  const [makes, setMakes] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${Base_url}/admin/all-make`)
+      .then((res) => {
+        console.log(res.data);
+        setMakes(res.data.data);
+      })
+      .catch((error) => {});
+  }, []);
+
   return (
-    <div className="relative w-full container md:px-4 px-0 mx-auto">
+    <div className="relative w-full container md:px-4 px-0 pt-10 mx-auto">
       <div
         ref={scrollContainerRef}
-        className="scroll-container transition-transform ease-out duration-500  productOverflow  overflow-x-auto whitespace-nowrap"
+        className="scroll-container transition-transform ease-out duration-500 productOverflow overflow-x-auto whitespace-nowrap"
       >
-        <div className=" scroll-item inline-block m-2 md:w-72    w-48 bg-white rounded">
-          <img src={require("../../assets/images/b1.png")} alt="" />
-        </div>
-        <div className="  scroll-item inline-block m-2 md:w-72 w-48 bg-white rounded">
-          <img src={require("../../assets/images/b2.png")} alt="" />
-        </div>
-        <div className=" scroll-item inline-block m-2  md:w-72 w-48 bg-white rounded">
-          <img src={require("../../assets/images/b3.png")} alt="" />
-        </div>
-        <div className=" scroll-item inline-block m-2  md:w-72  w-48 bg-white rounded">
-          <img src={require("../../assets/images/b4.png")} alt="" />
-        </div>
-        <div className=" scroll-item inline-block m-2  md:w-72  w-48 bg-white rounded">
-          <img src={require("../../assets/images/b4.png")} alt="" />
-        </div>
+        {makes?.map((item, index) => {
+          return (
+            <div
+              key={index}
+              className="scroll-item inline-block m-2.5 w-32 h-32 bg-white rounded"
+            >
+              <img
+                src={item?.logoUrl}
+                className="w-full h-full object-contain"
+                alt=""
+              />
+            </div>
+          );
+        })}
       </div>
 
-      <div className=" md:block hidden">
+      {/* Arrows for scrolling */}
+      <div className="md:block hidden">
         <button
-          className="arrow arrow-left absolute -left-4  flex  pr-1   justify-center  items-center  top-20 rounded-full  bg-secondary w-16 h-16"
+          className="arrow arrow-left absolute -left-4 flex pr-1 justify-center items-center top-20 rounded-full bg-secondary w-16 h-16"
           onClick={scrollLeft}
         >
-      
           <img
             src={require("../../assets/images/leftarrow.png")}
-            className=" w-6"
-            alt=""
+            className="w-6"
+            alt="Left Arrow"
           />
         </button>
         <button
-          className="arrow arrow-right absolute -right-4  flex justify-center pl-1 items-center  top-20 rounded-full  bg-secondary w-16 h-16"
+          className="arrow arrow-right absolute -right-4 flex justify-center pl-1 items-center top-20 rounded-full bg-secondary w-16 h-16"
           onClick={scrollRight}
         >
-         
           <img
             src={require("../../assets/images/rightarrow.png")}
-            className=" w-6"
-            alt=""
+            className="w-6"
+            alt="Right Arrow"
           />
         </button>
       </div>

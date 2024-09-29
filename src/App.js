@@ -30,6 +30,7 @@ import GarageDetailsUpload from "./screens/GarageDashboard/Pages/garageDetailsUp
 import GarageBookingConfirmation from "./screens/GarageDashboard/Pages/garageBookingConfirmation";
 import GaragePageWhite from "./screens/GarageDashboard/Pages/GaragePageWhite";
 import ListingBookingConfirmation from "./screens/listingConfirmation";
+import UpgradePlan from "./screens/upgradePlan";
 function App() {
   const location = useLocation();
 
@@ -74,6 +75,7 @@ function App() {
             {/* seller Dashboard */}
 
             <Route path="/dashboard/my-account" element={<MyAccount />} />
+            <Route path="/dashboard/upgrade-plan/:id" element={<UpgradePlan />} />
             <Route path="/dashboard/my-garage" element={<MyGarage />} />
             <Route
               path="/dashboard/favourite-cars"

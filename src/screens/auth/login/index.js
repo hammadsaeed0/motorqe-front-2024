@@ -129,6 +129,7 @@ const Login = () => {
         if (res?.data?.success === true) {
           setLoader(false);
           dispatch(setUserToken(res?.data?.data?._id));
+          localStorage.setItem('Dealar', JSON.stringify(res?.data?.data));
           toast.success("User Login Successfully!");
           navigate("/");
         } else {

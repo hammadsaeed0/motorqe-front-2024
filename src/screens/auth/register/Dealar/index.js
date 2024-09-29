@@ -128,19 +128,19 @@ export const Dealar = () => {
       toast.error("Password and Confirm password must be same!");
     } else {
       const params = {
-        type: selectedOption,
+        // type: selectedOption,
         companyName: state.companyName,
         email: state.email,
-        username: state.firstName + state.lastName,
         firstName: state.firstName,
         lastName: state.lastName,
         phone: state.phone,
         tradeLicenseNumber: state.tradeLicenseNumber,
         password: state.password,
+        confirmPassword:state.confirm_password
       };
 
       axios
-        .post(`${Base_url}/registerUser`, params)
+        .post(`${Base_url}/user/register-dealer`, params)
         .then((res) => {
           console.log(res);
 

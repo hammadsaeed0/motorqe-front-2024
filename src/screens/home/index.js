@@ -119,13 +119,13 @@ const Home = () => {
   <Button
     label={"Featured Cars"}
     className={
-      "border-2 bg-secondary py-2 sm:text-base text-sm text-white border-primary rounded-lg font-semibold w-48"
+      "border-b-2  py-2 sm:text-base text-sm   text-primary border-primary font-semibold w-48"
     }
   />
   <Button
     label={"Recently Added Cars"}
     className={
-      "border-2 bg-white py-2  text-secondary sm:text-base text-sm border-primary rounded-lg font-bold"
+      "  py-2  text-secondary sm:text-base text-sm  font-bold"
     }
   />
 </div>
@@ -138,7 +138,7 @@ const Home = () => {
       <div className=" md:mt-28  mt-0 mb-9 px-10">
         <h2 className=" h2  text-center">Popular Showrooms & Dealers:</h2>
 
-        <hr className=" m-0 border-b-2 w-64 border-primary mt-2 mx-auto" />
+        <hr className=" m-0 border-b-2 w-64 border-primary mt-2 mb-4 mx-auto" />
         <PopularShowRooms />
 
         <div className=" mt-12">

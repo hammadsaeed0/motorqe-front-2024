@@ -31,10 +31,10 @@ const FeaturedCars = ({
 
   useEffect(() => {
     axios
-      .get(`${Base_url}/users/get-featured-car`)
+      .get(`${Base_url}/admin/all-cars`)
       .then((res) => {
         console.log(res);
-        setProperty(res?.data?.featuredUsers);
+        setProperty(res?.data?.data);
       })
       .catch((error) => {});
   }, []);
@@ -47,25 +47,24 @@ const FeaturedCars = ({
         style={{ transform: `translateX(-${curr * 100}%)` }}
       >
 
-        {/* {property?.map((item,index)=>{
-          return ( */}
+        {property?.map((item,index)=>{
+          return (
 
             <div className="flex-none   w-full h-full">
             <div className="mt-14 w-[90%]  mx-auto md:flex block gap-6">
               <div className="border-4   md:w-[48%]   bg-cards  sm:block md:hidden  xl:block w-[100%] border-primary  rounded-2xl overflow-hidden">
                 <div className="   md:h-[500px] h-64">
                   <img
-                    // src={item?.car_images[0]}
-                    src={require('../../assets/images/home.png')}
+                    src={item?.car_images[0]}
                     className=" w-full h-full object-cover object-center"
                     alt=""
                   />
                 </div>
                 <div className=" p-4">
                   <h5 className=" text-secondary font-bold uppercase">
-                    {/* {item?.title} */}
+                    {item?.title}
 
-                    car modal
+                   
                   </h5>
                   <div className="  mt-3 sm:flex block justify-between items-center">
                     <div className=" flex justify-between gap-2 items-center">
@@ -75,8 +74,8 @@ const FeaturedCars = ({
                         alt=""
                       />
                       <span className=" text-textColor font-bold sm:text-base text-sm">
-                        {/* {item?.year} */}
-                        2017
+                        {item?.year}
+                        
                       </span>
                     </div>
                     <div className="flex justify-between gap-2 items-center">
@@ -86,8 +85,8 @@ const FeaturedCars = ({
                         alt=""
                       />
                       <span className=" text-textColor font-bold sm:text-base text-sm">
-                        {/* {item?.cylinder} Cylinder */}
-                        4 Cylinder
+                        {item?.cylinder} Cylinder
+                        
                       </span>
                     </div>
                     <div className="flex justify-between gap-2 items-center">
@@ -97,39 +96,38 @@ const FeaturedCars = ({
                         alt=""
                       />
                       <span className=" text-textColor font-bold sm:text-base text-sm">
-                        {/* {item?.mileage} KM */}
-                        3 KM
-
+                        {item?.mileage} KM
+                        
                       </span>
                     </div>
                   </div>
   
                   <div className=" flex justify-between items-center mt-3">
                     <h5 className=" text-green text-sm font-bold ">
-                      {/* QR. {item?.price_QR} / Month */}
-                      QR. 3000 / Month
+                      QR. {item?.price_QR} / Month
+                    
                     </h5>
                     <h5 className=" text-secondary font-bold uppercase">
-                      qr. 4000
-                      {/* qr. {item?.price_QR} */}
+                      
+                      qr. {item?.price_QR}
                     </h5>
                   </div>
                 </div>
               </div>
               <div className="  grid  grid-cols-2 md:mt-0 mt-9  xl:w-[60%] w-[100%] gap-5">
-                <div className="border-4   md:block hidden  border-primary  rounded-2xl overflow-hidden">
+                <div className="border-4   md:block hidden  border-secondary  rounded-2xl overflow-hidden">
                   <div className="   h-44">
                     <img
-                      // src={item?.car_images[1]}
-                      src={require('../../assets/images/home.png')}
+                      src={item?.car_images[1]}
+                  
                       className=" w-full h-full object-cover object-center"
                       alt=""
                     />
                   </div>
                   <div className=" p-2">
                     <h5 className=" text-secondary  md:text-base text-xs font-bold uppercase">
-                    {/* {item?.title} */}
-                    car modal
+                    {item?.title}
+                    
                     </h5>
                     <div className="  md:mt-3 mt-0 md:flex block justify-between items-center">
                       <div className=" flex gap-2 justify-between items-center">
@@ -139,8 +137,8 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                          {/* {item?.year} */}
-                          2017
+                          {item?.year}
+                          
                         </span>
                       </div>
                       <div className="flex  justify-between gap-2 items-center">
@@ -150,8 +148,8 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                          {/* {item?.cylinder} Cylinder */}
-                          3 Cylinder
+                          {item?.cylinder} Cylinder
+                        
                         </span>
                       </div>
                       <div className="flex justify-between gap-2 items-center">
@@ -161,37 +159,37 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                        {/* {item?.mileage} KM */}
-                        100 KM
+                        {item?.mileage} KM
+                        
                         </span>
                       </div>
                     </div>
   
                     <div className=" md:flex block justify-between items-center mt-3">
                       <h5 className=" text-green text-sm font-bold ">
-                        {/* QR. 1{item?.price_QR} / Month{" "} */}
-                        QR. 13000 / Month
+                        QR. 1{item?.price_QR} / Month{" "}
+                        
                       </h5>
                       <h5 className=" text-secondary font-bold uppercase">
-                        {/* qr. {item?.price_QR}{" "} */}
-                        679999
+                        qr. {item?.price_QR}{" "}
+                        
                       </h5>
                     </div>
                   </div>
                 </div>
-                <div className="border-4  md:block hidden   border-primary  rounded-2xl overflow-hidden">
+                <div className="border-4  md:block hidden   border-secondary  rounded-2xl overflow-hidden">
                   <div className="   h-44">
                     <img
-                      // src={item?.car_images[2]}
-                      src={require('../../assets/images/home.png')}
+                      src={item?.car_images[2]}
+                    
                       className=" w-full h-full object-cover object-center"
                       alt=""
                     />
                   </div>
                   <div className=" p-2">
                     <h5 className=" text-secondary  md:text-base text-xs font-bold uppercase">
-                    {/* {item?.title} */}
-                    car modal
+                    {item?.title}
+                 
                     </h5>
                     <div className="  md:mt-3 mt-0 md:flex block justify-between items-center">
                       <div className=" flex gap-2 justify-between items-center">
@@ -201,8 +199,8 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                          {/* {item?.year} */}
-                          2017
+                          {item?.year}
+                          
                         </span>
                       </div>
                       <div className="flex  justify-between gap-2 items-center">
@@ -212,8 +210,7 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                          {/* {item?.cylinder} Cylinder */}
-                          3 Cylinder
+                          {item?.cylinder} Cylinder
                         </span>
                       </div>
                       <div className="flex justify-between gap-2 items-center">
@@ -223,37 +220,37 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                        {/* {item?.mileage} KM */}
-                        100 KM
+                        {item?.mileage} KM
+                        
                         </span>
                       </div>
                     </div>
   
                     <div className=" md:flex block justify-between items-center mt-3">
                       <h5 className=" text-green text-sm font-bold ">
-                        {/* QR. 1{item?.price_QR} / Month{" "} */}
-                        QR. 13000 / Month
+                        QR. 1{item?.price_QR} / Month{" "}
+                        
                       </h5>
                       <h5 className=" text-secondary font-bold uppercase">
-                        {/* qr. {item?.price_QR}{" "} */}
-                        679999
+                        qr. {item?.price_QR}{" "}
+                        
                       </h5>
                     </div>
                   </div>
                 </div>
-                <div className="border-4  md:block hidden  border-primary  rounded-2xl overflow-hidden">
+                <div className="border-4  md:block hidden  border-secondary  rounded-2xl overflow-hidden">
                   <div className="   h-44">
                     <img
-                      // src={item?.car_images[3]}
-                      src={require('../../assets/images/home.png')}
+                      src={item?.car_images[3]}
+                     
                       className=" w-full h-full object-cover object-center"
                       alt=""
                     />
                   </div>
                   <div className=" p-2">
                     <h5 className=" text-secondary  md:text-base text-xs font-bold uppercase">
-                    {/* {item?.title} */}
-                    car modal
+                    {item?.title}
+                    
                     </h5>
                     <div className="  md:mt-3 mt-0 md:flex block justify-between items-center">
                       <div className=" flex gap-2 justify-between items-center">
@@ -263,8 +260,8 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                          {/* {item?.year} */}
-                          2017
+                          {item?.year}
+                      
                         </span>
                       </div>
                       <div className="flex  justify-between gap-2 items-center">
@@ -274,8 +271,8 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                          {/* {item?.cylinder} Cylinder */}
-                          3 Cylinder
+                          {item?.cylinder} Cylinder
+                          
                         </span>
                       </div>
                       <div className="flex justify-between gap-2 items-center">
@@ -285,37 +282,37 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                        {/* {item?.mileage} KM */}
-                        100 KM
+                        {item?.mileage} KM
+                  
                         </span>
                       </div>
                     </div>
   
                     <div className=" md:flex block justify-between items-center mt-3">
                       <h5 className=" text-green text-sm font-bold ">
-                        {/* QR. 1{item?.price_QR} / Month{" "} */}
-                        QR. 13000 / Month
+                        QR. 1{item?.price_QR} / Month{" "}
+                        
                       </h5>
                       <h5 className=" text-secondary font-bold uppercase">
-                        {/* qr. {item?.price_QR}{" "} */}
-                        679999
+                        qr. {item?.price_QR}{" "}
+                    
                       </h5>
                     </div>
                   </div>
                 </div>
-                <div className="border-4  md:block hidden   border-primary  rounded-2xl overflow-hidden">
+                <div className="border-4  md:block hidden   border-secondary  rounded-2xl overflow-hidden">
                   <div className="   h-44">
                     <img
-                      // src={item?.car_images[4]}
-                      src={require('../../assets/images/home.png')}
+                      src={item?.car_images[4]}
+                   
                       className=" w-full h-full object-cover object-center"
                       alt=""
                     />
                   </div>
                   <div className=" p-2">
                     <h5 className=" text-secondary  md:text-base text-xs font-bold uppercase">
-                    {/* {item?.title} */}
-                    car modal
+                    {item?.title}
+                   
                     </h5>
                     <div className="  md:mt-3 mt-0 md:flex block justify-between items-center">
                       <div className=" flex gap-2 justify-between items-center">
@@ -325,8 +322,8 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                          {/* {item?.year} */}
-                          2018
+                          {item?.year}
+                          
                         </span>
                       </div>
                       <div className="flex  justify-between gap-2 items-center">
@@ -346,20 +343,20 @@ const FeaturedCars = ({
                           alt=""
                         />
                         <span className=" text-textColor md:text-sm text-xs font-bold">
-                         {/* {item?.mileage} KM */}
-                         346 KM
+                         {item?.mileage} KM
+                         
                         </span>
                       </div>
                     </div>
   
                     <div className=" md:flex block justify-between items-center mt-3">
                       <h5 className=" text-green text-sm font-bold ">
-                        {/* QR. {item?.price_QR} / Month{" "} */}
-                        QR. 100 / Month{" "}
+                        QR. {item?.price_QR} / Month{" "}
+                       
                       </h5>
                       <h5 className=" text-secondary font-bold uppercase">
-                        qr. 3000
-                        {/* qr. {item?.price_QR}{" "} */}
+                  
+                        qr. {item?.price_QR}{" "}
                       </h5>
                     </div>
                   </div>
@@ -367,8 +364,8 @@ const FeaturedCars = ({
               </div>
             </div>
           </div>
-        {/* //   )
-        // })} */}
+        )
+    })}
        
         
       </div>

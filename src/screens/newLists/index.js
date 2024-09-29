@@ -18,19 +18,21 @@ const NewLists = () => {
   const location = useLocation();
   const receivedData = location.state?.filter;
 
-  console.log(receivedData);
-
-  const options = ["select Make", "Gently Used"];
-  const Model = ["select Model", "Gently Used"];
-  const Year = ["select Year", "Gently Used"];
-  const VehicleSelect = ["select Vehicle", "Gently Used"];
-  const selectSeller = ["select Seller Type", "Gently Used"];
-  const handleSelect = (selectedOptions) => {
-    console.log("Selected options:", selectedOptions);
-    // You can perform any other actions with the selected options
-  };
+  console.log(receivedData?.data);
 
   const [newLists, setNewLists] = useState("grid");
+
+  const [distinct, setDistinct] = useState([]);
+
+  useEffect(() => {
+    axios
+    .get(`${Base_url}/admin/all-distinct-details`)
+    .then((res) => {
+      console.log(res.data);
+      setDistinct(res.data.data);
+    })
+    .catch((error) => {});
+  }, []);
 
   return (
     <>
@@ -40,40 +42,88 @@ const NewLists = () => {
           <div className="bg-[#ECECEC] py-9 rounded-2xl  border border-primary">
             <div className=" w-[80%] mx-auto text-center">
               <div className=" lg:flex block justify-center w-full gap-3">
-                <div className="  lg:w-60 w-full">
-                  <Option
-                    options={options}
-                    onSelect={handleSelect}
-                    label={"Make"}
-                  />
+              <div className="  md:w-60 w-full">
+                  <label className="block text-sm text-left  font-semibold  text-textColor">
+                    Make
+                  </label>
+                  <select
+                    // onChange={handleInputs}
+                    name="make"
+                    // value={state.make}
+                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                  >
+                    <option selected>Select Make</option>
+                    {distinct?.makes?.map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className=" lg:w-60 w-full">
-                  <Option
-                    options={Model}
-                    onSelect={handleSelect}
-                    label={"Model"}
-                  />
+                <div className="  md:w-60 w-full">
+                  <label className="block text-sm text-left  font-semibold  text-textColor">
+                    Model
+                  </label>
+                  <select
+                    name="model"
+                    // onChange={handleInputs}
+                    // value={state.model}
+                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                  >
+                    <option selected>Select Model</option>
+                    {distinct?.models?.map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="  lg:w-60 w-full">
-                  <Option
-                    options={Year}
-                    onSelect={handleSelect}
-                    label={"Year"}
-                  />
+                <div className="  md:w-60 w-full">
+                  <label className="block text-sm text-left  font-semibold  text-textColor">
+                    Year
+                  </label>
+                  <select
+                    name="Year"
+                    // onChange={handleInputs}
+                    // value={state.yearFrom}
+                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                  >
+                    <option>Select Year</option>
+                    {distinct?.years?.map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className=" lg:w-60 w-full">
-                  <Option
-                    options={VehicleSelect}
-                    onSelect={handleSelect}
-                    label={"Vehicle Condition"}
-                  />
+
+                <div className=" md:w-60 w-full">
+                  <label className="block text-sm text-left  font-semibold  text-textColor">
+                    Vehicle Condition
+                  </label>
+                  <select
+                    name="vehicleCondition"
+                    // onChange={handleInputs}
+                    // value={state.vehicleCondition}
+                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                  >
+                    <option>Select Condition</option>
+                    {/* {distinct?.vehicleConditions?.map((item, index) => ( */}
+                    <option value={"new"}>New</option>
+                    <option value={"old"}>Old</option>
+                    <option value={"Scraped"}>Scraped</option>
+                    {/* ))} */}
+                  </select>
                 </div>
-                <div className="  lg:w-60 w-full">
-                  <Option
-                    options={selectSeller}
-                    onSelect={handleSelect}
-                    label={"Seller Type"}
-                  />
+                <div className="  md:w-60 w-full">
+                  <label className="block text-sm text-left  font-semibold  text-textColor">
+                    Seller Type
+                  </label>
+                  <select className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]">
+                    <option>Select Seller</option>
+                    <option value={"Private Dealer"}>Private Dealer</option>
+                    <option value={"Dealer"}>Dealer</option>
+                  </select>
                 </div>
               </div>
 
@@ -128,30 +178,31 @@ const NewLists = () => {
             </div>
           </div>
         </div>
-{/* 
+
         {newLists === "grid" ? (
           <div className=" flex flex-wrap justify-center  my-12 gap-6">
-            {receivedData?.carListings?.map((item, index) => {
-              return (
-                <>
-                  <ListingCard item={item} />
-                </>
-              );
-            })}
+            {receivedData?.data?.length > 0 ? (
+              receivedData?.data?.map((item, index) => (
+                <ListingCard key={index} item={item} />
+              ))
+            ) : (
+             <div className=" flex justify-center items-center  h-36">
+               <p className=" font-semibold text-xl">No card found</p>
+             </div>
+            )}
           </div>
-        ) : ( */}
+        ) : (
           <div className=" my-12 flex flex-col gap-12">
-            {/* {receivedData?.carListings?.map((item, index) => { */}
-              {/* return ( */}
+            {receivedData?.data?.map((item, index) => {
+              return (
                 <Link
-                  // to={`/car_details_page/${item._id}`}
+                  to={`/car_details_page/${item._id}`}
                   className="border-4 md:flex block   border-primary  rounded-2xl overflow-hidden"
                 >
                   <div className=" md:w-[30%]">
-                    <div className=" h-full relative">
+                    <div className=" h-80 relative">
                       <img
-                        // src={item?.car_images[0]}
-                        src={require('../../assets/images/home.png')}
+                        src={item?.car_images[0]}
                         className=" w-full  h-full object-cover"
                         alt=""
                       />
@@ -165,7 +216,7 @@ const NewLists = () => {
                         />
                       </div>
 
-                      <div className=" absolute -bottom-12 flex justify-between w-full items-center px-2">
+                      <div className=" absolute bottom-0 flex justify-between w-full items-center px-2">
                         <div>
                           <img
                             src={require("../../assets/images/speed.png")}
@@ -181,10 +232,10 @@ const NewLists = () => {
                   <div className=" w-[70%] flex justify-between p-5">
                     <div>
                       <h5 className=" text-textColor text-xl font-bold uppercase">
-                        Chevrolet Camaro For Sale{" "}
+                        {item?.title}
                       </h5>
                       <h5 className=" pt-3 text-secondary text-lg font-bold uppercase">
-                        qr 15,000
+                        qr {item?.price_QR}
                       </h5>
                       <h5 className=" text-green text-lg font-bold uppercase">
                         QR 16,00/month
@@ -198,7 +249,7 @@ const NewLists = () => {
                             alt=""
                           />
                           <span className=" text-textColor font-bold">
-                            2021
+                            {item?.year}
                           </span>
                         </div>
                         <div className="flex gap-2 items-center">
@@ -208,7 +259,7 @@ const NewLists = () => {
                             alt=""
                           />
                           <span className=" text-textColor font-bold">
-                            4 Cylinder
+                            {item?.cylinder} Cylinder
                           </span>
                         </div>
                         <div className="flex gap-2 items-center">
@@ -301,10 +352,10 @@ const NewLists = () => {
                     </div>
                   </div>
                 </Link>
-            {/* //   );
-            // })} */}
+              );
+            })}
           </div>
-        {/* )} */}
+        )}
       </div>
       <Footer />
     </>

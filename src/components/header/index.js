@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { FaUser } from "react-icons/fa6";
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
-
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -59,7 +59,10 @@ const Header = () => {
           </li>
           {user?.userToken?._id ? (
             <li>
-              <Link className="uppercase text-sm" to={"/garage-dashboard/my-account"}>
+              <Link
+                className="uppercase text-sm"
+                to={"/garage-dashboard/my-account"}
+              >
                 Dashboard
               </Link>
             </li>
@@ -71,7 +74,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link className="uppercase text-sm" to={"/new_lists"}>
+            <Link className="uppercase text-sm" to={"#"}>
               imported cars
             </Link>
           </li>
@@ -86,29 +89,54 @@ const Header = () => {
               News
             </Link>
           </li>
-          
-          <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
-            <FaCar color="white" />
-            <Link
-              className="font-medium text-sm text-white capitalize"
-              to={"/choose_plane"}
-            >
-              Sell My Car
-            </Link>
-          </li>
-          {user?.userToken?
-          
-          <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
-          <FaUser color="white" />
-          <Link
-            className="font-medium text-sm text-white capitalize"
-            to={"/dashboard/my-garage"}
-          >
-            My account
-          </Link>
-        </li>:null
-        }
-          
+
+          {userData?.profileStatus === "dealer" ? (
+            <>
+              <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+                <FaCar color="white" />
+                <Link
+                  className="font-medium text-sm text-white capitalize"
+                  to={"/car_details"}
+                >
+                  Sell My Car
+                </Link>
+              </li>
+              {userData?._id ? (
+                <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+                  <FaUser color="white" />
+                  <Link
+                    className="font-medium text-sm text-white capitalize"
+                    to={"/dashboard/my-account"}
+                  >
+                    My account
+                  </Link>
+                </li>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+                <FaCar color="white" />
+                <Link
+                  className="font-medium text-sm text-white capitalize"
+                  to={"/choose_plane"}
+                >
+                  Sell My Car
+                </Link>
+              </li>
+              {userData?._id ? (
+                <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+                  <FaUser color="white" />
+                  <Link
+                    className="font-medium text-sm text-white capitalize"
+                    to={"/dashboard/my-account"}
+                  >
+                    My account
+                  </Link>
+                </li>
+              ) : null}
+            </>
+          )}
 
           <li className=" relative">
             <button
