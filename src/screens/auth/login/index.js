@@ -124,12 +124,16 @@ const Login = () => {
     axios
       .post(`${Base_url}/user/login`, params)
       .then((res) => {
-        console.log(res.data.data);
+        console.log(res?.data?.data?.user);
 
         if (res?.data?.success === true) {
           setLoader(false);
-          dispatch(setUserToken(res?.data?.data?._id));
-          localStorage.setItem('Dealar', JSON.stringify(res?.data?.data));
+          dispatch(setUserToken(res?.data?.data?.user?._id));
+          localStorage.setItem('Dealar', JSON.stringify(res?.data?.data?.user));
+
+          if(res?.data?.data?.user?.profileStatus==='serviceProvider'){
+            localStorage.setItem('serviceProvider', JSON.stringify(res?.data?.data?.garage?._id));
+          }
           toast.success("User Login Successfully!");
           navigate("/");
         } else {

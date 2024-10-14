@@ -39,6 +39,7 @@ const ChoosePlane = () => {
         if(res.data.success===true){
           toast.success("Plan added successfully");
           navigate("/car_details");
+          localStorage.setItem('planData', JSON.stringify(item));
           setLoader(false)
           console.log(res.data);
           

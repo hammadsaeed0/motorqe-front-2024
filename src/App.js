@@ -15,7 +15,6 @@ import CarDetailPage from "./screens/carDetailPage";
 import MyAccount from "./screens/Dashboard/Pages/MyAccount/MyAccount";
 import MyGarage from "./screens/Dashboard/Pages/MyGarage/MyGarage";
 import FavouritCars from "./screens/Dashboard/Pages/FavouritCars/FavouritCars";
-import GarageBooking from "./screens/Dashboard/Pages/GarageBooking/GarageBooking";
 import Inbox from "./screens/Dashboard/Pages/Chat/index";
 import News from "./screens/news";
 import { ToastContainer } from "react-toastify";
@@ -31,6 +30,14 @@ import GarageBookingConfirmation from "./screens/GarageDashboard/Pages/garageBoo
 import GaragePageWhite from "./screens/GarageDashboard/Pages/GaragePageWhite";
 import ListingBookingConfirmation from "./screens/listingConfirmation";
 import UpgradePlan from "./screens/upgradePlan";
+import MyGarageAccount from "./screens/GarageDashboard/Pages/MyAccount/MyAccount";
+import MyWorkshopServices from "./screens/GarageDashboard/Pages/myWorkshopServices";
+import GarageBooking from "./screens/GarageDashboard/Pages/GarageRequests";
+import SellerGarageBooking from "./screens/Dashboard/Pages/GarageBooking/GarageBooking";
+import SingleGarageDetails from "./screens/GarageDashboard/Pages/singleGarageDetails";
+import GarageDateTime from "./screens/GarageDashboard/Pages/garageBooking/GarageDateTime";
+import GarageConfirm from "./screens/GarageDashboard/Pages/garageBooking/BookingConfirm";
+import UpdateCarDetails from "./screens/Dashboard/Pages/UpdateCarDetails";
 function App() {
   const location = useLocation();
 
@@ -83,25 +90,36 @@ function App() {
             />
             <Route
               path="/dashboard/garage-bookings"
-              element={<GarageBooking />}
+              element={<SellerGarageBooking />}
             ></Route>
             <Route path="/dashboard/my-inbox" element={<Inbox />} />
           </Route>
           <Route path="/car_details" element={<CarDetails />} />
+          <Route path="/update_car_detail/:id" element={<UpdateCarDetails />} />
 
           {/* /garage-dashboard */}
-          <Route path="/garage-dashboard/my-account" element={<MyAccount />} />
+          <Route path="/garage/dashboard/my-account" element={<MyGarageAccount />} />
+          
           <Route
-            path="/garage-dashboard/dashboard/my-garage"
-            element={<MyGarage />}
+            path="/garage/dashboard/workshop-services"
+            element={<MyWorkshopServices />}
           />
+        
           <Route
-            path="/garage-dashboard/dashboard/favourite-cars"
-            element={<FavouritCars />}
-          />
+            path="/garage/dashboard/garage-bookings"
+            element={<GarageBooking/>}
+          ></Route>
           <Route
-            path="/garage-dashboard/garage-bookings"
-            element={<GarageBooking />}
+            path="/garage/garage-details/:id"
+            element={<SingleGarageDetails/>}
+          ></Route>
+          <Route
+            path="/garage/garage-date-time/:id"
+            element={<GarageDateTime/>}
+          ></Route>
+           <Route
+            path="/garage/garage-confirm/:id"
+            element={<GarageConfirm/>}
           ></Route>
           <Route
             path="/garage-dashboard/GarageDetails-upload"

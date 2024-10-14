@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { FaAngleRight, FaLocationDot } from "react-icons/fa6";
-import Input from "../../components/Input";
-import { Link, useNavigate } from "react-router-dom";
+import Input from "../../../../components/Input";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   LiaLongArrowAltLeftSolid,
   LiaLongArrowAltRightSolid,
 } from "react-icons/lia";
-import Button from "../../components/Button";
+import Button from "../../../../components/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Header from "../../components/header";
-import Footer from "../../components/footer";
 import {
   Autocomplete,
   GoogleMap,
@@ -18,10 +16,11 @@ import {
   MarkerF,
 } from "@react-google-maps/api";
 import { MdLocationPin } from "react-icons/md";
-import { REACT_APP_GOOGLE_MAPS_KEY } from "../../utils/Google_map_key";
-import { Base_url } from "../../utils/Base_url";
-import { useSelector } from "react-redux";
+import { REACT_APP_GOOGLE_MAPS_KEY } from "../../../../utils/Google_map_key";
 import moment from "moment";
+import { Base_url } from "../../../../utils/Base_url";
+import Header from "../../../../components/header";
+import Footer from "../../../../components/footer";
 
 const containerStyle = {
   width: "100%",
@@ -29,7 +28,8 @@ const containerStyle = {
   paddingTop: "80px",
 };
 
-const CarDetails = () => {
+const UpdateCarDetails = () => {
+  const { id } = useParams();
   const [currentLocation, setCurrentLocation] = useState({
     lat: 31.5204,
     lng: 74.3587,
@@ -43,38 +43,24 @@ const CarDetails = () => {
   const [address, setAddress] = useState("");
   const [lat, setLat] = useState(currentLocation.lat);
   const [lng, setLng] = useState(currentLocation.lng);
-  const palans = localStorage.getItem("userPlan");
-  const plan = useSelector((state) => state.planReducer);
-  console.log(plan);
 
-  const userData = JSON.parse(localStorage.getItem("planData"));
-  const userToken = JSON.parse(localStorage.getItem("Dealar"));
-  console.log(userToken?.profileStatus,'userToken');
-  
+  const [singleNewListing, setSingleNewListing] = useState({});
+
+  console.log(singleNewListing);
+
   useEffect(() => {
-    const getCurrentLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            setCurrentLocation(pos);
-            setLat(pos.lat);
-            setLng(pos.lng);
-            map?.panTo(pos);
-          },
-          () => {
-            console.error("The Geolocation service failed.");
-          }
-        );
-      } else {
-        console.error("Your browser doesn't support geolocation.");
-      }
-    };
-
-    getCurrentLocation();
+    axios
+      .get(`${Base_url}/user/single-car/${id}`)
+      .then((res) => {
+        console.log(res);
+        setSingleNewListing(res?.data?.data);
+        const pos = {
+          lat: res?.data?.data?.latitude,
+          lng: res?.data?.data?.longitude,
+        };
+        setCurrentLocation(pos);
+      })
+      .catch((error) => {});
   }, [map]);
 
   const onLoad = (autocomplete) => {
@@ -100,26 +86,7 @@ const CarDetails = () => {
     }
   };
 
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const [loading, setLoader] = useState(false);
-
-  console.log(selectedImage);
-
-  const [selectImages, setSelectedImages] = useState([]);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedImages(file);
-
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const [report, setReport] = useState(" ");
 
@@ -180,51 +147,202 @@ const CarDetails = () => {
 
   const navigate = useNavigate();
 
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [carImages, setCarImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(singleNewListing?.inspection_report || "");
+  useEffect(() => {
+    if (singleNewListing?.car_images) {
+      setCarImages(singleNewListing.car_images);
+    }
+    if (singleNewListing?.inspection_report) {
+      setSelectedImage(singleNewListing.inspection_report);
+    }
+  }, [singleNewListing]);
+
+  const handleCarImageChange = (index, e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const newImages = [...selectedImages];
+        newImages[index] = file; // Store the file
+        setSelectedImages(newImages);
+        const updatedCarImages = [...carImages];
+        updatedCarImages[index] = reader.result;
+        setCarImages(updatedCarImages);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveCarImage = (index) => {
+    const updatedCarImages = [...carImages];
+    updatedCarImages.splice(index, 1);
+    setCarImages(updatedCarImages);
+    
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+  };
+
+  const handleInspectionImageChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedImage(file);
+
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSelectedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadCarImages = async (selectedImages) => {
+    const uploadedImages = await Promise.all(
+      selectedImages.map(async (image) => {
+        if (image) {
+          const param = new FormData();
+          param.append("images", image);
+
+          const response = await axios.post(`https://file-upload-ashen.vercel.app/api/upload`, param);
+          return response.data.data[0]; // Return uploaded image URL
+        }
+        return null;
+      })
+    );
+    return uploadedImages.filter((img) => img); // Filter out null values
+  };
+
+  const uploadImage = async (image) => {
+    if (!image) return null; // Return null if no image to upload
+
+    const param = new FormData();
+    param.append("images", image);
+
+    const response = await axios.post(`https://file-upload-ashen.vercel.app/api/upload`, param);
+    return response.data.data[0]; // Return uploaded image URL
+  };
+
   const handlerSubmit = async (e) => {
     e.preventDefault();
+    setLoader(true)
+    try {
+    //   const uploadedCarImages = await uploadCarImages(selectedImages);
+    //   const uploadedInspectionImage = selectedImage
+    //     ? await uploadImage(selectedImage)
+    //     : null;
+      const params = {
+        ...(state.title && { title: state.title }),
+        ...(state.type_of_ad && { type_of_ad: state.type_of_ad }),
+        ...(state.body_type && { body_type: state.body_type }),
+        ...(state.make && { make: state.make }),
+        ...(state.model && { model: state.model }),
+        ...(state.year && { year: 2024 }),
+        ...(state.vehicle_condition && {
+          vehicle_condition: state.vehicle_condition,
+        }),
+        ...(state.mileage && { mileage: Number(state.mileage) }),
+        ...(state.vehicle_category && {
+          vehicle_category: state.vehicle_category,
+        }),
+        ...(state.specifications && { specifications: state.specifications }),
+        ...(state.cylinder && { cylinder: Number(state.cylinder) }),
+        ...(state.engine_size && { engine_size: state.engine_size }),
+        ...(state.wheel_drive && { wheel_drive: state.wheel_drive }),
+        ...(state.gear_box && { gear_box: state.gear_box }),
+        ...(state.exterior_colour && {
+          exterior_colour: state.exterior_colour,
+        }),
+        ...(state.interior_colour && {
+          interior_colour: state.interior_colour,
+        }),
+        ...(state.fuel_type && { fuel_type: state.fuel_type }),
+        ...(state.registration_date && {
+          registration_date: state.registration_date,
+        }),
+        ...(state.warranty !== undefined && {
+          warranty: state.warranty === "true",
+        }),
+        ...(state.warranty_date && { warranty_date: state.warranty_date }),
+        ...(state.inspected !== undefined && {
+          inspected: state.inspected === "true",
+        }), // Handle boolean
+        // ...(uploadedInspectionImage && {
+        //   inspection_report: uploadedInspectionImage,
+        // }),
+        ...(state.price_QR && { price_QR: Number(state.price_QR) }),
+        ...(state.price_range && { price_range: state.price_range }),
+        ...(state.negotiable !== undefined && {
+          negotiable: state.negotiable === "true",
+        }), // Handle boolean
+        ...(state.description && { description: state.description }),
+        ...(state.longitude && { longitude: state.longitude }),
+        ...(state.latitude && { latitude: state.latitude }),
+        ...(state.engine_oil && { engine_oil: state.engine_oil }),
+        ...(state.engine_oil_filter && {
+          engine_oil_filter: state.engine_oil_filter,
+        }),
+        ...(state.gearbox_oil && { gearbox_oil: state.gearbox_oil }),
+        ...(state.ac_filter && { ac_filter: state.ac_filter }),
+        ...(state.air_filter && { air_filter: state.air_filter }),
+        ...(state.fuel_filter && { fuel_filter: state.fuel_filter }),
+        ...(state.spark_plugs && { spark_plugs: state.spark_plugs }),
+        ...(state.front_brake_pads && {
+          front_brake_pads: state.front_brake_pads,
+        }),
+        ...(state.rear_brake_pads && {
+          rear_brake_pads: state.rear_brake_pads,
+        }),
+        ...(state.front_brake_discs && {
+          front_brake_discs: state.front_brake_discs,
+        }),
+        ...(state.rear_brake_discs && {
+          rear_brake_discs: state.rear_brake_discs,
+        }),
+        ...(state.battery && { battery: state.battery }),
+        ...(state.front_tire_size && {
+          front_tire_size: state.front_tire_size,
+        }),
+        ...(state.front_tire_price && {
+          front_tire_price: Number(state.front_tire_price),
+        }),
+        ...(state.rear_tire_size && { rear_tire_size: state.rear_tire_size }),
+        ...(state.rear_tire_price && {
+          rear_tire_price: Number(state.rear_tire_price),
+        }),
+        ...(state.name && { name: state.name }),
+        ...(state.mobile_no && { mobile_no: state.mobile_no }),
+        ...(state.whatsapp_no && { whatsapp_no: state.whatsapp_no }),
+        ...(state.email_address && { email_address: state.email_address }),
+        // ...(uploadedCarImages && { car_images: uploadedCarImages }),
+      };
 
-    if (!selectedImage) {
-      toast.error("Please choose your inspection report!");
-      setLoader(false);
-    } else {
-      setLoader(true);
 
-      let profilephoto = " ";
+      
 
-      try {
-        let param = new FormData();
-        param.append("images", selectImages);
+      const res = await axios.post(`${Base_url}/user/edit-car/${id}`, params);
 
-        profilephoto = await axios.post(
-          `https://file-upload-ashen.vercel.app/api/upload`,
-          param
-        );
-
-        console.log(profilephoto, "=====profile photo===");
-        setReport(profilephoto?.data?.data[0]);
-
-        localStorage.setItem("reacts", profilephoto?.data?.data[0]);
-
-        if (profilephoto.status === 200) {
-          setLoader(false);
-          navigate(`/car_photos`, { state: state });
-        }
-      } catch (error) {
-        console.log(error);
+      if (res.data.success) {
+        toast.success("Car listing updated successfully!");
+        navigate(`/dashboard/my-garage`);
+      } else {
+        toast.error(res?.data?.message);
       }
+    } catch (error) {
+      console.error("Form submission failed:", error);
+      toast.error(error.message);
+    } finally {
+      setLoader(false);
     }
   };
 
   const [allData, setAllData] = useState([]);
-
-  const user = useSelector((state) => state.authReducer);
   const [makes, setMakes] = useState([]);
   const [years, setYears] = useState([]);
-  console.log(user?.userToken?.plan?._id);
-
   useEffect(() => {
     axios
-      .get(`${Base_url}/admin/car-info/get-added-data/${user?.userToken?._id}`)
+      .get(`${Base_url}/admin/car-info/get-added-data/${id}`)
       .then((res) => {
         console.log(res.data);
         setAllData(res.data);
@@ -294,70 +412,17 @@ const CarDetails = () => {
   ];
 
   return (
-    <div>
-      <Header />
-      <div className=" py-8 text-center">
-        <h2 className=" h2  text-center">Sell Your Car</h2>
-        <p className=" pt-2 text-gray-400">
-          Sell your car in seconds with just a few clicks
-        </p>
+   <>
+    <Header/>
+      <div className=" flex    justify-center py-6 items-center">
+        <div>
+          <h2 className=" text-center font-bold text-2xl" >Update Car</h2>
+        </div>
       </div>
-      <div className=" py-8 md:px-12 px-6">
-        <ul className=" flex flex-wrap gap-8 justify-center items-center">
-          <li className=" flex items-center gap-2">
-            <div className=" w-8 h-8 bg-secondary items-center  rounded-full flex justify-center">
-              <p className=" text-white">1</p>
-            </div>
-            <div>
-              <span className=" text-secondary font-bold">Type Of Package</span>
-            </div>
-          </li>
-          <li>
-            <FaAngleRight className=" text-gray-500" />
-          </li>
-          <li className=" flex items-center gap-2">
-            <div className=" w-8 h-8 bg-primary items-center  rounded-full flex justify-center">
-              <p className=" text-white">2</p>
-            </div>
-            <div>
-              <span className=" text-primary font-bold">Car Details</span>
-            </div>
-          </li>
-          <li>
-            <FaAngleRight className=" text-gray-500" />
-          </li>
-          <li className=" flex items-center gap-2">
-            <span className=" w-8 h-8 bg-white border-textColor border items-center  rounded-full flex justify-center">
-              <p className=" text-textColor">3</p>
-            </span>
-            <div>
-              <span className=" text-textColor font-semibold">Photo</span>
-            </div>
-          </li>
-          <li>
-            <FaAngleRight className=" text-gray-500" />
-          </li>
-          <li className=" flex items-center gap-2">
-            <div className=" w-8 h-8 bg-white border-textColor border items-center  rounded-full flex justify-center">
-              <p className=" text-textColor">3</p>
-            </div>
-            <div>
-              <span className=" text-textColor font-semibold">
-                Contact Details
-              </span>
-            </div>
-          </li>
-        </ul>
-      </div>
-
       <form
         onSubmit={handlerSubmit}
-        className=" shadow-md rounded-xl mt-8 py-5 md:px-12 px-6 mx-auto  md:w-[80%] w-[90%]"
+        className=" shadow-md rounded-xl mt-8 py-5 md:px-12 px-6 mx-auto md:w-[80%] w-[90%]"
       >
-        <div className="">
-          <h2 className=" h4  text-center">Car Details</h2>
-        </div>
-
         <div className=" flex flex-col gap-6">
           <div>
             <Input
@@ -368,66 +433,33 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Enter Title"}
               label={"Title of Listing"}
-              required="required"
+              defaultValue={singleNewListing?.title}
             />
           </div>
-          {userToken?.profileStatus==='dealer'?
           <div>
-          <label className="block text-sm text-left  font-medium  text-textColor">
-            Type Of Ad
-          </label>
-          <select
-            onChange={handleInputs}
-            value={state.type_of_ad}
-            name={"type_of_ad"}
-            className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-            required
-          >
-            <option value={""} selected>
-              Select Type
-            </option>
-
-                <option value="Standard">Standard</option>
-                {/* <option value="Featured">Featured</option> */}
-            
-          </select>
-        </div>:<div>
             <label className="block text-sm text-left  font-medium  text-textColor">
               Type Of Ad
             </label>
             <select
               onChange={handleInputs}
-              value={state.type_of_ad}
-              name={"type_of_ad"}
+              value={state.type_of_ad || singleNewListing?.type_of_ad || ""}
+              name="type_of_ad"
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
-              <option value={""} selected>
-                Select Type
-              </option>
-
-              {userData?.name === "Gold" || userData?.name === "Platinum" ? (
-                <>
-                  <option value="Standard">Standard</option>
-                  <option value="Featured">Featured</option>
-                </>
-              ) : userData?.name === "Silver" ? (
-                <option value="Standard">Standard</option>
-              ) : null}
+              <option value="">Select Type</option>
+              <option value="Standard">Standard</option>
+              <option value="Featured">Featured</option>
             </select>
           </div>
-        }
-          
           <div>
             <label className="block text-sm text-left  font-medium  text-textColor">
               Body Type
             </label>
             <select
               onChange={handleInputs}
-              value={state.body_type}
+              value={state.body_type || singleNewListing?.body_type || ""}
               name={"body_type"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Type
@@ -460,10 +492,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.make}
+              value={state.make || singleNewListing?.make || ""}
               name={"make"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Make
@@ -483,10 +514,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.model}
+              value={state.model || singleNewListing?.model || ""}
               name={"model"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Model
@@ -505,17 +535,13 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.year}
+              value={state.year || singleNewListing?.year || ""}
               name={"year"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Year
               </option>
-
-              {/* <option value={2023}>2023</option>
-              <option value={2024}>2024</option> */}
 
               {years?.map((item, index) => (
                 <option key={index} value={item}>
@@ -530,7 +556,11 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.vehicle_condition}
+              value={
+                state.vehicle_condition ||
+                singleNewListing?.vehicle_condition ||
+                ""
+              }
               name={"vehicle_condition"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
               required
@@ -538,11 +568,7 @@ const CarDetails = () => {
               <option value={""} selected>
                 Select Vehicle Condition
               </option>
-              {/* {allData?.fieldArrays?.vehicle_condition?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
+
               <option value={"new"}>New</option>
               <option value={"old"}>Old</option>
             </select>
@@ -556,7 +582,8 @@ const CarDetails = () => {
               className={"  border w-full  p-2 bg-[#FEFBFB]"}
               placeholder={"Enter Mileage"}
               label={"Mileage"}
-              required={"required"}
+            
+              defaultValue={singleNewListing?.mileage}
             />
           </div>
           <div>
@@ -565,7 +592,11 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.vehicle_category}
+              value={
+                state.vehicle_category ||
+                singleNewListing?.vehicle_category ||
+                ""
+              }
               name={"vehicle_category"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
               required
@@ -573,9 +604,6 @@ const CarDetails = () => {
               <option value={""} selected>
                 Select Vehicle Category
               </option>
-
-              {/* <option value={"category1"}>category1</option>
-              <option value={"category2"}>category2</option> */}
 
               {vehicleCategories?.map((item, index) => (
                 <option key={index} value={item}>
@@ -590,10 +618,11 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.specifications}
+              value={
+                state.specifications || singleNewListing?.specifications || ""
+              }
               name={"specifications"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={" "} selected>
                 Select Specifications
@@ -604,12 +633,6 @@ const CarDetails = () => {
               <option value={"EBD"}>EBD</option>
               <option value={"Engine"}>Engine</option>
               <option value={"Torque"}>Torque</option>
-
-              {/* {allData?.fieldArrays?.specifications?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -618,10 +641,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.cylinder}
+              value={state.cylinder || singleNewListing?.cylinder || ""}
               name={"cylinder"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Cylinder
@@ -630,12 +652,6 @@ const CarDetails = () => {
               <option value={"2"}>2</option>
               <option value={"3"}>3</option>
               <option value={"4"}>4</option>
-
-              {/* {allData?.fieldArrays?.cylinder?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -644,10 +660,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.engine_size}
+              value={state.engine_size || singleNewListing?.engine_size || ""}
               name={"engine_size"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Engine Size
@@ -663,12 +678,6 @@ const CarDetails = () => {
               <option value={"4.1L-4.5L"}>4.1L-4.5L</option>
               <option value={"4.6L-5.0L"}>4.6L-5.0L</option>
               <option value={"Above 5.0L"}>Above 5.0L</option>
-
-              {/* {allData?.fieldArrays?.engine_size?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -677,10 +686,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.wheel_drive}
+              value={state.wheel_drive || singleNewListing?.wheel_drive || ""}
               name={"wheel_drive"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Wheel Drive
@@ -697,12 +705,6 @@ const CarDetails = () => {
               <option value={"Four-Wheel Drive (4WD/4x4)"}>
                 Four-Wheel Drive (4WD/4x4)
               </option>
-
-              {/* {allData?.fieldArrays?.wheel_drive?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -711,26 +713,20 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.gear_box}
+              value={state.gear_box || singleNewListing?.gear_box || ""}
               name={"gear_box"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Gear Box
               </option>
 
-              {/* {allData?.fieldArrays?.gear_box?.map((item, index) => ( */}
-              {/* <option key={index} value={item}>
-                  {item}
-                </option> */}
               <option value={"Manual gearbox"}>Manual gearbox</option>
               <option value={"Automatic gearbox"}>Automatic gearbox</option>
               <option value={"Torque Converter Gearbox"}>
                 Torque Converter Gearbox
               </option>
               <option value={"Offers torque"}>Offers torque</option>
-              {/* ))} */}
             </select>
           </div>
           <div>
@@ -739,10 +735,11 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.exterior_colour}
+              value={
+                state.exterior_colour || singleNewListing?.exterior_colour || ""
+              }
               name={"exterior_colour"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Exterior Colour
@@ -761,7 +758,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.interior_colour}
+              value={
+                state.interior_colour || singleNewListing?.interior_colour || ""
+              }
               name={"interior_colour"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
               required
@@ -783,22 +782,15 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.fuel_type}
+              value={state.fuel_type || singleNewListing?.fuel_type || ""}
               name={"fuel_type"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Fuel Type
               </option>
               <option value={"petroleum	"}>petroleum </option>
               <option value={"natural gas	"}>natural gas </option>
-
-              {/* {allData?.fieldArrays?.fuel_type?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -810,8 +802,6 @@ const CarDetails = () => {
               className={"  border w-full  p-2 bg-[#FEFBFB]"}
               placeholder={"Enter Registration Date"}
               label={"Registration Date"}
-              // Icon={<FaCalendarAlt className=" text-textColor" size={20} />}
-              required
             />
           </div>
           <div>
@@ -821,16 +811,10 @@ const CarDetails = () => {
             <select
               type={"text"}
               onChange={handleInputs}
-              value={state.warranty}
+              value={state.warranty || singleNewListing?.warranty || null}
               name={"warranty"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
-              <option value={""} selected>
-                {" "}
-                Select Warranty
-              </option>
-
               <option value={true}>Yes</option>
               <option value={false}>No</option>
             </select>
@@ -844,8 +828,6 @@ const CarDetails = () => {
               className={"  border w-full  p-2 bg-[#FEFBFB]"}
               placeholder={"Enter Warranty Date"}
               label={"Warranty Date"}
-              required="required"
-              // Icon={<FaCalendarAlt className=" text-textColor" size={20} />}
             />
           </div>
           <div>
@@ -854,10 +836,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.inspected}
+              value={state.inspected || singleNewListing?.inspected || null}
               name={"inspected"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Inspected
@@ -868,54 +849,35 @@ const CarDetails = () => {
           </div>
           <div>
             <p className=" text-textColor font-semibold">Inspection Report</p>
-            {selectedImage ? (
-              <label
-                htmlFor="fileInput"
-                className=" rounded-md  border overflow-hidden flex w-40  h-40 "
-              >
+            <label
+              htmlFor="fileInputInspection"
+              className={
+                selectedImage
+                  ? "rounded-md border overflow-hidden flex w-40 h-40"
+                  : "bg-[#FEFBFB] border rounded-md p-1 w-40 h-40 flex justify-center items-center"
+              }
+            >
+              {selectedImage ? (
                 <img
                   src={selectedImage}
-                  className="  object-cover w-full h-full"
-                  alt=""
+                  className="object-cover w-full h-full"
+                  alt="Inspection report"
                 />
-                <input
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  name="images"
-                  type="file"
-                  id="fileInput"
-                  className="hidden"
-                />
-              </label>
-            ) : (
-              <label
-                htmlFor="fileInput"
-                className="bg-[#FEFBFB] border rounded-md p-1 w-40 flex  justify-center items-center"
-              >
-                <div>
-                  <img
-                    src={require("../../assets/images/upload.png")}
-                    className=" mx-auto w-20"
-                    alt=""
-                  />
-                  <input
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    name="images"
-                    type="file"
-                    id="fileInput"
-                    className="hidden"
-                  />
-                  <span className=" text-secondary font-semibold ">
-                    Inspection report
-                  </span>
-                </div>
-              </label>
-            )}
-
-            <p className=" pt-4 text-textColor text-sm">
-              Maximum File Size 1Mb
-            </p>
+              ) : (
+                <span className="text-secondary font-semibold">
+                  Upload Inspection Report
+                </span>
+              )}
+              <input
+                accept="image/*"
+                onChange={handleInspectionImageChange}
+                name="inspection_report"
+                type="file"
+                id="fileInputInspection"
+                className="hidden"
+              />
+            </label>
+            <p className="pt-4 text-textColor text-sm">Maximum File Size 1Mb</p>
           </div>
           <div>
             <label className="block text-sm text-left  font-medium  text-textColor">
@@ -923,10 +885,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.price_QR}
+              value={state.price_QR || singleNewListing?.price_QR || ""}
               name={"price_QR"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Price (QR)
@@ -941,12 +902,6 @@ const CarDetails = () => {
               <option value={"80000"}>80000</option>
               <option value={"90000"}>90000</option>
               <option value={"100000"}>100000</option>
-
-              {/* {allData?.fieldArrays?.price_QR?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -955,10 +910,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.price_range}
+              value={state.price_range || singleNewListing?.price_range || ""}
               name={"price_range"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Price Range
@@ -972,13 +926,6 @@ const CarDetails = () => {
               <option value={"90000-100000"}>90000-100000</option>
               <option value={"100000-120000"}>100000-120000</option>
               <option value={"120000-130000"}>120000-130000</option>
-
-              {/* {allData?.fieldArrays?.price_range?.map((item, index) => (
-                <option key={index} value={item}>
-                <option value={'90000-100000'}>90000-100000</option>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -987,10 +934,9 @@ const CarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.negotiable}
+              value={state.negotiable || singleNewListing?.negotiable || null}
               name={"negotiable"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
-              required
             >
               <option value={""} selected>
                 Select Negotiable
@@ -1010,7 +956,7 @@ const CarDetails = () => {
               className={"  border w-full h-24   p-2 bg-[#FEFBFB]"}
               placeholder={"Enter Description"}
               label={"Description"}
-              required="required"
+              defaultValue={singleNewListing?.description}
             />
           </div>
           <div>
@@ -1061,7 +1007,10 @@ const CarDetails = () => {
           </div>
         </div>
 
-        <h2 className=" h4  text-center mt-10 pb-7"> Spare Parts</h2>
+        <h2 className=" h4  text-center mt-10 font-semibold text-xl pb-7">
+          {" "}
+          Spare Parts
+        </h2>
         <div className=" flex flex-wrap gap-6">
           <div className=" md:w-[48%] w-[100%]">
             <Input
@@ -1072,7 +1021,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Engine Oil"}
-              required="required"
+              defaultValue={singleNewListing?.engine_oil}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1084,7 +1033,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Engine Oil Filter"}
-              required="required"
+              defaultValue={singleNewListing?.engine_oil_filter}
             />
           </div>
           <div className="  md:w-[48%] w-[100%]">
@@ -1096,7 +1045,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Gearbox Oil"}
-              required="required"
+              defaultValue={singleNewListing?.gearbox_oil}
             />
           </div>
           <div className="  md:w-[48%] w-[100%]">
@@ -1108,7 +1057,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"A.C Filter"}
-              required="required"
+              defaultValue={singleNewListing?.ac_filter}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1120,7 +1069,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Air Filter"}
-              required="required"
+              defaultValue={singleNewListing?.air_filter}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1132,7 +1081,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Fuel Filter"}
-              required="required"
+              defaultValue={singleNewListing?.fuel_filter}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1144,7 +1093,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Spark Plugs"}
-              required="required"
+              defaultValue={singleNewListing?.spark_plugs}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1156,7 +1105,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Front Brake Pads"}
-              required="required"
+              defaultValue={singleNewListing?.front_brake_pads}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1168,7 +1117,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Rear Brake Pads"}
-              required="required"
+              defaultValue={singleNewListing?.rear_brake_pads}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1180,7 +1129,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Front Brake Discs"}
-              required="required"
+              defaultValue={singleNewListing?.front_brake_discs}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1192,7 +1141,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Rear Brake Discs"}
-              required="required"
+              defaultValue={singleNewListing?.rear_brake_discs}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1204,7 +1153,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Battery"}
-              required="required"
+              defaultValue={singleNewListing?.battery}
             />
           </div>
         </div>
@@ -1220,7 +1169,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Front Tire Size"}
-              required="required"
+              defaultValue={singleNewListing?.front_tire_size}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1232,7 +1181,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Front Tire Price"}
-              required="required"
+              defaultValue={singleNewListing?.front_tire_price}
             />
           </div>
           <div className="  md:w-[48%] w-[100%]">
@@ -1244,7 +1193,7 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Rear Tire Size"}
-              required="required"
+              defaultValue={singleNewListing?.rear_tire_size}
             />
           </div>
           <div className="   md:w-[48%] w-[100%]">
@@ -1256,10 +1205,117 @@ const CarDetails = () => {
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Price"}
               label={"Rear Tire Price"}
-              required="required"
+              defaultValue={singleNewListing?.rear_tire_price}
             />
           </div>
         </div>
+
+        <div className="py-6">
+          <h2 className="h4 text-center font-semibold text-xl pb-8">
+            Upload Car Images
+          </h2>
+          <div className="flex justify-center gap-10 flex-wrap">
+            {carImages.map((image, index) => (
+              <label
+                key={index}
+                htmlFor={`fileInput${index}`}
+                className={
+                  image
+                    ? "rounded-md border overflow-hidden flex w-32 h-24"
+                    : "bg-[#FEFBFB] border rounded-md p-1 w-32 h-24 flex justify-center items-center"
+                }
+              >
+                {image ? (
+                  <div className="relative">
+                    <img
+                      src={image}
+                      className="object-cover w-full h-full"
+                      alt={`Car image ${index}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCarImage(index)}
+                      className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                    >
+                      X
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="text-secondary font-semibold mt-2">
+                      Upload
+                    </span>
+                  </div>
+                )}
+                <input
+                  accept="image/*"
+                  onChange={(e) => handleCarImageChange(index, e)}
+                  name="images"
+                  type="file"
+                  id={`fileInput${index}`}
+                  className="hidden"
+                />
+              </label>
+            ))}
+          </div>
+        </div>
+        <div className="">
+          <h2 className=" h3  pt-6 font-semibold text-xl text-center">
+            Contact Details
+          </h2>
+        </div>
+
+        <div className=" flex flex-col gap-6">
+          <div>
+            <Input
+              type="text"
+              onChange={handleInputs}
+              value={state.name}
+              name={"name"}
+              className={"  border w-full p-2  bg-[#FEFBFB]"}
+              placeholder={"Enter Your Name"}
+              label={"Name"}
+              defaultValue={singleNewListing?.name}
+            />
+          </div>
+          <div>
+            <Input
+              type="number"
+              onChange={handleInputs}
+              value={state.mobile_no}
+              name={"mobile_no"}
+              className={"  border w-full p-2  bg-[#FEFBFB]"}
+              placeholder={"Mobile No."}
+              label={"Enter Mobile No"}
+              defaultValue={singleNewListing?.mobile_no}
+            />
+          </div>
+          <div>
+            <Input
+              type="number"
+              onChange={handleInputs}
+              value={state.whatsapp_no}
+              name={"whatsapp_no"}
+              className={"  border w-full p-2  bg-[#FEFBFB]"}
+              placeholder={"Whatsapp No."}
+              label={"Enter Whatsapp No"}
+              defaultValue={singleNewListing?.whatsapp_no}
+            />
+          </div>
+          <div>
+            <Input
+              type="email"
+              onChange={handleInputs}
+              value={state.email_address}
+              name={"email_address"}
+              className={"  border w-full p-2  bg-[#FEFBFB]"}
+              placeholder={"Email Address"}
+              label={"Enter Email Address"}
+              defaultValue={singleNewListing?.email_address}
+            />
+          </div>
+        </div>
+
         <div className=" container flex justify-between items-center mx-auto mt-10 mb-20">
           <div className="  flex items-center gap-3"></div>
 
@@ -1291,16 +1347,16 @@ const CarDetails = () => {
           ) : (
             <Button
               type={"submit"}
-              label={"Next"}
+              label={"Update"}
               rIcons={<LiaLongArrowAltRightSolid />}
               className={" bg-primary rounded-3xl text-white w-44 py-1.5"}
             />
           )}
         </div>
       </form>
-      <Footer />
-    </div>
+    <Footer/>
+   </>
   );
 };
 
-export default CarDetails;
+export default UpdateCarDetails;

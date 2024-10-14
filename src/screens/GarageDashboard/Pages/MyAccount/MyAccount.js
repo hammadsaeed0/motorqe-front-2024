@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import list  from "../../../../assets/images/list.png"
 import vector from '../../../../assets/images/Vector.png';
@@ -19,6 +19,8 @@ import LineChart from "./graph"
 import Header from '../../../../components/header';
 import Footer from '../../../../components/footer';
 import DashboardNavbar from '../../NavBAr/DashboardNavbar';
+import axios from 'axios';
+import { Base_url } from '../../../../utils/Base_url';
 const Input = ({ Icon, ...props }) => {
   return (
     <div className="relative flex items-center">
@@ -30,7 +32,40 @@ const Input = ({ Icon, ...props }) => {
   );
 };
 
-const MyAccount = () => {
+const MyGarageAccount = () => {
+
+  const userData = JSON.parse(localStorage.getItem("serviceProvider"));
+  
+const [booking,setBooking] = useState([]);
+const [analytic,setAnalytics] = useState({});
+
+console.log(analytic);
+
+
+  useEffect(() => {
+    axios
+      .get(`${Base_url}/user/garage-booking-count/${userData}`)
+      .then((res) => {
+        console.log(res, "/user button click");
+
+        setBooking(res?.data);
+      })
+      .catch((error) => {});
+
+      
+    axios
+      .get(`${Base_url}/user/garage-analytics/${userData}`)
+      .then((res) => {
+        console.log(res, "/user button click");
+
+        setAnalytics(res?.data);
+      })
+      .catch((error) => {});
+
+
+      
+  }, []);
+
   return (
    <>
     <Header/>
@@ -38,7 +73,7 @@ const MyAccount = () => {
     <div className="flex flex-col items-center  mb-4">
       <div className="mt-16 flex items-center justify-between w-[90%]">
         <h1 className="font-inter text-3xl font-semibold leading-10 tracking-normal text-left">
-          Welcome, Elite!
+          Welcome, GSF!
         </h1>
         <div className="relative">
           {/* Search Bar */}
@@ -50,35 +85,36 @@ const MyAccount = () => {
         </div>
       </div>
         {/* ----------------- blue cards ----------------- */}
-      <div class="w-[90%] h-[215px] top-499px left-112px gap-[35px] flex mb-2 mt-[99px]">
+         {/* ----------------- blue cards ----------------- */}
+         <div class="w-[90%] h-[215px] top-420px left-112px gap-[35px] flex mb-2 mt-[99px]">
         <div class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex" style={{ backgroundColor: "#0C53AB" }}>
           <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className='font-inter font-bold text-4xl '>104</h1>
-              <p className='text-18'>101 Published Listings</p> 
+              <h1 className='font-inter  font-semibold text-5xl '>{booking?.todayBookingCount}</h1>
+              <p className='text-18 pt-3'>Todays Bookings</p> 
           </div>
           <img src={list} className='w-[72px] h-[72px] top-5 mt-[54px] mr-2'></img>
         </div>
 
         <div class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex" style={{ backgroundColor: "#0C53AB" }}>
           <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className='font-inter font-bold text-4xl '>104</h1>
-              <p className='text-18'>101 Published Listings</p> 
+              <h1 className='font-inter  font-semibold text-5xl '>{booking?.pendingBookingCount}</h1>
+              <p className='text-18 pt-3'>Upcoming Bookings</p> 
           </div>
           <img src={vector} className='w-[72px] h-[72px] top-5 mt-[54px] mr-2'></img>
         </div>
 
         <div class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex" style={{ backgroundColor: "#0C53AB" }}>
           <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className='font-inter font-bold text-4xl '>104</h1>
-              <p className='text-18'>101 Published Listings</p> 
+              <h1 className='font-inter  font-semibold text-5xl '>{booking?.pendingBookingCount}</h1>
+              <p className='text-18 pt-3'>Pending Bookings</p> 
           </div>
           <img src={announcement} className='w-[72px] h-[72px] top-5 mt-[54px] mr-2'></img>
         </div>
 
         <div class="w-[332px] h-[215px] px-15 py-34 border-20 rounded-xl justify-between flex" style={{ backgroundColor: "#0C53AB" }}>
           <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className='font-inter font-bold text-4xl '>104</h1>
-              <p className='text-18'>101 Published Listings</p> 
+              <h1 className='font-inter font-semibold text-5xl '>{analytic?.data?.views}</h1>
+              <p className='text-18 pt-3'>Total Visits</p> 
           </div>
           <img src={group} className='w-[72px] h-[72px] top-5 mt-[54px] mr-2'></img>
         </div>       
@@ -96,25 +132,25 @@ const MyAccount = () => {
                 <strong className='text-[#0C0CB8]'>Views</strong>
               </div>
                 
-            <div className='flex ml-6 justify-between mr-6'>
-              <div className='text-[#0C0CB8] text-base flex-col gap-7' > 
-                <img src={insight} alt="" />
-                <strong>254</strong>
-                <p>Last 24 hours</p>
-              </div>
+              <div className="flex ml-6 justify-between mr-6">
+                <div className="text-[#0C0CB8] text-base flex-col gap-7">
+                  <img src={insight} alt="" />
+                  <strong>{analytic?.totalClicks?.last24Hours}</strong>
+                  <p className=" text-sm">Last 24 hours</p>
+                </div>
 
-              <div className='text-[#0C0CB8]  flex-col gap-7' > 
-                <img src={insight} alt="" />
-                <strong>254</strong>
-                <p>Last 24 hours</p>
-              </div>
+                <div className="text-[#0C0CB8]  flex-col gap-7">
+                  <img src={insight} alt="" />
+                  <strong>{analytic?.totalClicks?.last7Days}</strong>
+                  <p className=" text-sm">Last 7 hours</p>
+                </div>
 
-              <div className='text-[#0C0CB8]  flex-col gap-7' > 
-                <img src={insight} alt="" />
-                <strong>254</strong>
-                <p>Last 24 hours</p>
+                <div className="text-[#0C0CB8]  flex-col gap-7">
+                  <img src={insight} alt="" />
+                  <strong>{analytic?.totalClicks?.last30Days}</strong>
+                  <p className=" text-sm">Last 30 hours</p>
+                </div>
               </div>
-          </div>
            </div>
                            {/* ____Box--2____ */}
               <div class="w-[350px] h-[210px]  border-5 border border-solid border-[#F0E9E9] rounded-20  bg-[#F3F3F5] rounded-[20px]">
@@ -127,27 +163,27 @@ const MyAccount = () => {
               <div className='ml-6 mr-6 justify-between flex-col'>  
                   <div className='text-[#0C0CB8] flex items-center gap-3 mt-1'>
                       <img src={blackeye} alt="" />
-                      <p className='text-sm'>Views (27 clicks)</p>
+                      <p className='text-sm'>Views ({analytic?.data?.views} clicks)</p>
                   </div>
 
                   <div className='text-[#0C0CB8] flex items-center gap-3 mt-1'>
                       <img src={whatsapp} alt="" />
-                      <p className='text-sm'>whatsapp (127 clicks)</p>
+                      <p className='text-sm'>whatsapp ({analytic?.data?.whatsappClicks} clicks)</p>
                   </div>
 
                   <div className='text-[#0C0CB8] flex items-center gap-3 mt-1'>
                       <img src={phone} alt="" />
-                      <p className='text-sm'>Call (335 clicks)</p>
+                      <p className='text-sm'>Call ({analytic?.data?.callClicks} clicks)</p>
                   </div>
 
                   <div className='text-[#0C0CB8] flex items-center gap-3 mt-1'>
                       <img src={message} alt="" />
-                      <p className='text-sm'>Message (435 clicks)</p>
+                      <p className='text-sm'>Message ({analytic?.data?.messageClicks} clicks)</p>
                   </div>
 
                   <div className='text-[#0C0CB8] flex items-center gap-3 mt-3'>
                       <img src={share} alt="" />
-                      <p className='text-sm'>Share (635 clicks)</p>
+                      <p className='text-sm'>Share ({analytic?.data?.shareClicks} clicks)</p>
                   </div>
 
               </div>
@@ -185,4 +221,4 @@ const MyAccount = () => {
   );
 };
 
-export default MyAccount;
+export default MyGarageAccount;

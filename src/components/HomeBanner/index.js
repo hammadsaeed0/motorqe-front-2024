@@ -1,6 +1,27 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Base_url } from "../../utils/Base_url";
 
 const HomeBanner = () => {
+  const [banner, setBanner] = useState([]); // Initialize banner as an array
+
+  useEffect(() => {
+    axios
+      .get(`${Base_url}/user/header-image`)
+      .then((res) => {
+        console.log(res);
+
+        // Ensure res?.data?.data is an array, if it's an object, wrap it in an array
+        const bannerData = Array.isArray(res?.data?.data)
+          ? res?.data?.data
+          : [res?.data?.data];
+        setBanner(bannerData); // Set banner as an array
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     // <div className="bg-Hero  flex items-center justify-center   bg-cover bg-center   bg-no-repeat   w-[100%]  lg:h-[130vh] md:h-[100vh]  sm:h-[90vh]   h-[70vh]">
     //   <div className=" w-[85%]">
@@ -12,8 +33,18 @@ const HomeBanner = () => {
     //   </div>
     // </div>
 
+
+    
+
     <div className="relative">
-      <img src={require('../../assets/images/isolated_tablet_laptop_and_smartphone_composition 1.png')} alt="" />
+      {/* <img src={require('../../assets/images/isolated_tablet_laptop_and_smartphone_composition 1.png')} alt="" /> */}
+
+      {banner?.map((item,index)=>{
+        return (
+            <img src={item?.imageUrl} alt="" /> 
+
+        )
+      })}
 
       <div className=" -translate-y-[100px] md:-translate-y-40 -translate-x-12 transform  flex  justify-end">
          <div>

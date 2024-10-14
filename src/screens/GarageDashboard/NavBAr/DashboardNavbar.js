@@ -5,11 +5,9 @@ import { logout } from "../../../store/reducers/authReducer";
 import { toast } from "react-toastify";
 const DashboardNavbar = () => {
   const [menuItems] = useState([
-    { label: "My Account", path: "/dashboard/my-account" },
-    { label: "My Garage", path: "/dashboard/my-garage" },
-    { label: "My Inbox", path: "/dashboard/my-inbox" },
-    { label: "Favourite Cars", path: "/dashboard/favourite-cars" },
-    { label: "Garage Bookings", path: "/dashboard/garage-bookings" },
+    { label: "My Account", path: "/garage/dashboard/my-account" },
+    { label: "My Workshop Services", path: "/garage/dashboard/workshop-services" },
+    { label: "Bookings", path: "/garage/dashboard/garage-bookings" },
     { label: "Account Details", path: "/dashboard/account-details" },
   ]);
 

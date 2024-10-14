@@ -206,15 +206,17 @@ const NewLists = () => {
                         className=" w-full  h-full object-cover"
                         alt=""
                       />
-
-                      <div className=" absolute top-2 right-2">
+                       {item?.type_of_ad==='Featured'?
+                        <div className=" absolute top-2 right-2">
                         <Button
                           label={"featured"}
                           className={
                             " uppercase py-1 bg-lightBlue  text-sm  text-white font-semibold rounded-3xl"
                           }
                         />
-                      </div>
+                      </div>:null
+                       }
+                     
 
                       <div className=" absolute bottom-0 flex justify-between w-full items-center px-2">
                         <div>

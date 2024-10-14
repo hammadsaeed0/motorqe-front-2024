@@ -8,6 +8,7 @@ import {
   FaSortAmountUpAlt,
   FaWhatsapp,
 } from "react-icons/fa";
+import { TiStarFullOutline } from "react-icons/ti";
 import Button from "../../../../components/Button";
 import Tabs from "../../../../components/Tabs";
 import axios from "axios";
@@ -279,10 +280,10 @@ const GaragePageWhite = () => {
   useEffect(() => {
     // Fetching garage data
     axios
-      .get("http://34.216.84.212/api/users/get-all-garage")
+      .get(`${Base_url}/user/garage?status=active`)
       .then((res) => {
         console.log(res.data);
-        setGarage(res.data.garage);
+        setGarage(res.data.garages);
       })
       .catch((error) => {
         console.log(error);
@@ -294,8 +295,103 @@ const GaragePageWhite = () => {
   return (
     <div>
       <Header />
-      <DashboardNavbar />
       <div className=" container mx-auto">
+        <div className=" py-12">
+          <div className=" flex justify-between items-center gap-5 ">
+            <div className="bg-[#F0F5FA] h-44 border justify-center flex  p-2.5 rounded-lg w-[22%]">
+              <div>
+                <h1 className=" text-secondary font-bold text-center text-2xl">
+                  Your Car:
+                </h1>
+                <p className=" m-0 font-semibold text-[#575656] pt-3">
+                  2018 Mercedes C63s Amg Service: Maintenance
+                </p>
+              </div>
+            </div>
+            <div className="w-[75%] flex flex-col gap-5">
+              <div className=" py-9 px-7 rounded-2xl  w-full border-2 border-black">
+                <div className="   mx-auto text-center">
+                  <div className=" lg:flex block justify-center w-full gap-3">
+                    <div className="  md:w-60 w-full">
+                      <label className="block text-sm text-left  font-semibold  text-textColor">
+                        Make
+                      </label>
+                      <select
+                        // onChange={handleInputs}
+                        name="make"
+                        // value={state.make}
+                        className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                      >
+                        <option selected>Select Make</option>
+
+                        <option></option>
+                      </select>
+                    </div>
+                    <div className="  md:w-60 w-full">
+                      <label className="block text-sm text-left  font-semibold  text-textColor">
+                        Model
+                      </label>
+                      <select
+                        name="model"
+                        // onChange={handleInputs}
+                        // value={state.model}
+                        className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                      >
+                        <option selected>Select Model</option>
+
+                        <option></option>
+                      </select>
+                    </div>
+                    <div className="  md:w-60 w-full">
+                      <label className="block text-sm text-left  font-semibold  text-textColor">
+                        Year
+                      </label>
+                      <select
+                        name="Year"
+                        // onChange={handleInputs}
+                        // value={state.yearFrom}
+                        className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                      >
+                        <option>Select Year</option>
+
+                        <option>dafs</option>
+                      </select>
+                    </div>
+
+                    <div className="  md:w-60 w-full">
+                      <label className="block text-sm text-left  font-semibold  text-textColor">
+                        Service
+                      </label>
+                      <select className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]">
+                        <option>Select Service</option>
+                        <option value={"Private Dealer"}>Private Dealer</option>
+                        <option value={"Dealer"}>Dealer</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className=" pt-12">
+                    <Button
+                      label={"Search"}
+                      className={
+                        " bg-primary py-2 w-48 mx-auto text-white rounded-3xl"
+                      }
+                    />
+
+                    <div className=" flex gap-2 justify-center pt-2">
+                      <p className="text-secondary  border-b  border-secondary  font-medium">
+                        Filters
+                      </p>
+                      <p className=" text-secondary  border-b  border-secondary  font-medium">
+                        Clear Filters
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className=" my-8 px-4  md:flex block justify-between items-center">
           <div>
             <span className="  text-[#C1C1C1] text-lg font-medium">
@@ -612,7 +708,7 @@ const GaragePageWhite = () => {
           <div className=" w-[75%] flex flex-col gap-5">
             {garage?.map((item, index) => {
               return (
-                <div className="  bg-[#F0F5FA]  overflow-auto  border-primary border-2 rounded-2xl pt-3 w-full">
+                <div className="  bg-[#F0F5FA]   h-48 overflow-auto  border-primary border-4 rounded-3xl pt-3 w-full">
                   <div className=" w-full flex gap-5">
                     <div className=" w-[20%] px-3">
                       <img
@@ -624,6 +720,33 @@ const GaragePageWhite = () => {
                       <h4 className=" text-black font-semibold pt-5">
                         CAR SPECIALIST
                       </h4>
+
+                      <div className=" flex gap-2 flex-wrap  pt-2">
+                        <img
+                          src={require("../../../../assets/images/g1.png")}
+                          alt=""
+                        />
+                        <img
+                          src={require("../../../../assets/images/g2.png")}
+                          alt=""
+                        />
+                        <img
+                          src={require("../../../../assets/images/g3.png")}
+                          alt=""
+                        />
+                        <img
+                          src={require("../../../../assets/images/g4.png")}
+                          alt=""
+                        />
+                        <img
+                          src={require("../../../../assets/images/g5.png")}
+                          alt=""
+                        />
+                        <img
+                          src={require("../../../../assets/images/g6.png")}
+                          alt=""
+                        />
+                      </div>
                     </div>
 
                     <div className=" w-[80%]">
@@ -639,17 +762,47 @@ const GaragePageWhite = () => {
                         />
                       </div>
                       <div className=" flex px-3 justify-between">
-                        <div>
-                          <div className=" flex  py-1 gap-2">
-                            <img
-                              src={require("../../../../assets/images/heights-color 1.png")}
-                              alt=""
-                            />
-                            <p className=" text-textColor   font-medium">
-                              {" "}
-                              1.15 Kms away
-                            </p>
+                        <div className=" w-96">
+                          <div>
+                            <div className=" flex justify-between items-center   py-1 gap-2">
+                              <div className=" flex gap-2">
+                                <img
+                                  src={require("../../../../assets/images/booking/location-dot-solid.png")}
+                                  alt=""
+                                />
+                                <p className=" text-textColor   font-medium">
+                                  {" "}
+                                  1.15 Kms away
+                                </p>
+                              </div>
+                              <div>
+                                <ul className=" flex gap-1 items-center">
+                                  <li>
+                                    <TiStarFullOutline color="#F7A71E" />
+                                  </li>
+                                  <li>
+                                    <TiStarFullOutline color="#F7A71E" />
+                                  </li>
+                                  <li>
+                                    <TiStarFullOutline color="#F7A71E" />
+                                  </li>
+                                  <li>
+                                    <TiStarFullOutline color="#F7A71E" />
+                                  </li>
+                                  <li>
+                                    <TiStarFullOutline color="#F7A71E" />
+                                  </li>
+                                  <li>
+                                    <span className=" text-[#676464]">
+                                      23 Reviews
+                                    </span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            <div></div>
                           </div>
+
                           <div className=" flex py-1  gap-2">
                             <div>
                               <img
@@ -674,50 +827,28 @@ const GaragePageWhite = () => {
                               Collect & Deliver Bookable
                             </p>
                           </div>
-                          <div className=" flex py-1  gap-2">
-                            <div>
-                              <img
-                                src={require("../../../../assets/images/booking/check.png")}
-                                alt=""
-                              />
-                            </div>
-                            <p className=" text-textColor   font-medium">
-                              {" "}
-                              Services: Body Repair ,Paint,brakes ,Car Tires,Car
-                              Wash
-                            </p>
-                          </div>
                         </div>
 
                         <div className=" text-center">
                           <div className="mt-6 mb-3">
                             <span className=" font-bold text-2xl   text-textColor">
-                              QR 60
+                              QR {item?.price}
                             </span>
                           </div>
                           <Button
                             onClick={() =>
-                              navigate(
-                                `/garage_booking_confirmation/${item?._id}`,
-                                { item: item }
-                              )
+                              navigate(`/garage/garage-details/${item?._id}`, {
+                                item: item,
+                              })
                             }
                             label={"Book Now"}
                             className={
                               " text-white py-1.5  rounded-md bg-primary"
                             }
                           />
-                          <img
-                            src={require("../../../../assets/images/booking/share.png")}
-                            className=" mx-auto mt-5"
-                            alt=""
-                          />
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className=" w-full">
-                    <Tabs tabs={tabData} defaultTab={defaultTab} />
                   </div>
                 </div>
               );

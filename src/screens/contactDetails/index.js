@@ -18,7 +18,22 @@ const ContactDetails = () => {
   console.log(upload);
 
   const [loading, setLoader] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("planData"));
 
+  console.log("Parsed planData from localStorage:", userData?.featureAdsDays);
+const featureAdsDays = Number(userData?.featureAdsDays);
+console.log('Feature Ads Days:', featureAdsDays);
+const featureTimePeriod = receivedData?.type_of_ad === "Standard"
+  ? 0
+  : featureAdsDays > 0
+    ? featureAdsDays * 24 * 60 
+    : 0; 
+console.log(`Feature Time Period: ${featureTimePeriod}`);
+
+
+
+      console.log(featureTimePeriod);
+      
   const [state, setState] = useState({
     name: "",
     // contact_details: "",
@@ -39,28 +54,37 @@ const ContactDetails = () => {
   const user = useSelector((state) => state.authReducer);
   const plan = useSelector((state) => state.planReducer);
 
+  console.log(user);
   console.log(plan);
 
- 
+
+  const userToken = JSON.parse(localStorage.getItem("Dealar"));
+  console.log(userToken?.profileStatus,'userToken');
 
   const handlerSubmit = (e) => {
     setLoader(true);
     e.preventDefault();
+
+
+
+console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
+
     const params = {
       userId: user?.userToken,
-      enrollmentId:plan?.userPlan?.data?._id,
+      enrollmentId: plan?.userPlan?.data?._id,
+      featureTimePeriod:userToken?.profileStatus==='dealer'?1:featureTimePeriod,
       title: receivedData.title,
       type_of_ad: receivedData.type_of_ad,
-      body_type:receivedData.body_type,
+      body_type: receivedData.body_type,
       make: receivedData.make,
       model: receivedData.model,
       contact_name: "hammad",
-      year:2024,
+      year: 2024,
       vehicle_condition: receivedData.vehicle_condition,
-      mileage:Number( receivedData.mileage),
+      mileage: Number(receivedData.mileage),
       vehicle_category: receivedData.vehicle_category,
       specifications: receivedData.specifications,
-      cylinder:Number(receivedData.cylinder),
+      cylinder: Number(receivedData.cylinder),
       engine_size: receivedData.engine_size,
       wheel_drive: receivedData.wheel_drive,
       gear_box: receivedData.gear_box,
@@ -77,14 +101,14 @@ const ContactDetails = () => {
       negotiable: receivedData.negotiable,
       description: receivedData.description,
       vehicle_location: "Car Location",
-      longitude:receivedData.longitude,
-      latitude:receivedData.latitude,
-      engine_oil:receivedData.engine_oil,
-      engine_oil_filter:receivedData.engine_oil_filter,
-      gearbox_oil:receivedData.gearbox_oil,
-      ac_filter:receivedData.ac_filter,
-      air_filter:receivedData.air_filter,
-      fuel_filter:receivedData.fuel_filter,
+      longitude: receivedData.longitude,
+      latitude: receivedData.latitude,
+      engine_oil: receivedData.engine_oil,
+      engine_oil_filter: receivedData.engine_oil_filter,
+      gearbox_oil: receivedData.gearbox_oil,
+      ac_filter: receivedData.ac_filter,
+      air_filter: receivedData.air_filter,
+      fuel_filter: receivedData.fuel_filter,
       spark_plugs: receivedData.spark_plugs,
       front_brake_pads: receivedData.front_brake_pads,
       rear_brake_pads: receivedData.rear_brake_pads,

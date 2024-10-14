@@ -1,11 +1,5 @@
 import React from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { RiSortAsc } from "react-icons/ri";
-import list from "../../../../assets/images/list.png";
-import vector from "../../../../assets/images/Vector.png";
-import announcement from "../../../../assets/images/announcement.png";
-import group from "../../../../assets/images/group.png";
-import Pagination from "../../../../components/Pagination/pagination";
 import {
   calender,
   cancel,
@@ -130,7 +124,7 @@ const ProductData = [
   },
 ];
 
-const GarageBooking = () => {
+const SellerGarageBooking = () => {
   return (
     <>
       <Header />
@@ -268,4 +262,4 @@ const GarageBooking = () => {
   );
 };
 
-export default GarageBooking;
+export default SellerGarageBooking;

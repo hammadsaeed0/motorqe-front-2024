@@ -20,14 +20,13 @@ import Header from "../../../../components/header";
 import Footer from "../../../../components/footer";
 import { Base_url } from "../../../../utils/Base_url";
 import axios from "axios";
-import DashboardNavbar from "../../NavBAr/DashboardNavbar";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import ViewStats from "../Stats";
-// import CarDetails from '../../../../carDetails';
-
+import DashboardNavbar from "../../NavBAr/DashboardNavbar";
+import { toast } from "react-toastify";
 const Input = ({ Icon, ...props }) => {
   return (
     <div className="relative flex items-center">
@@ -63,7 +62,7 @@ const MyGarage = () => {
           (car) => car.status === "pending"
         );
         const activeCars = res.data.listings.filter(
-          (car) => car.status === "active"
+          (car) => car.status === "active" || car.status === "sold"
         );
         const FeaturedCars = res.data.listings.filter(
           (car) => car.type_of_ad === "Featured"
@@ -189,12 +188,65 @@ const MyGarage = () => {
     });
   };
 
+  const [carsStatusListing, setCarsStatusListing] = useState("active");
+  const [singleData, setSingleData] = useState(null);
 
-  const [singleData,setSingleData] = useState(null);
+  const RefreshFun = (id) => {
+    console.log(id);
+
+    axios
+      .post(`${Base_url}/user/refresh-car/${id}`)
+      .then((res) => {
+        console.log(res);
+
+        if (res.data.success === true) {
+          toast.success(res.data.message);
+          const params = {
+            user: user?.userToken,
+          };
+          axios
+            .post(`${Base_url}/user/all-my-car`, params)
+            .then((res) => {
+              console.log(res);
+
+              const pendingCars = res.data.listings.filter(
+                (car) => car.status === "pending"
+              );
+              const activeCars = res.data.listings.filter(
+                (car) => car.status === "active"
+              );
+              const FeaturedCars = res.data.listings.filter(
+                (car) => car.type_of_ad === "Featured"
+              );
+
+              setGrage(res.data.listings);
+              setPending(pendingCars);
+              setActive(activeCars);
+              setFeatures(FeaturedCars);
+            })
+            .catch((error) => {});
+        } else {
+          toast.error(res.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+
+        if (error?.response?.data?.success === false) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error(error?.response?.data?.message);
+        }
+      });
+  };
 
   return (
     <>
-      <ViewStats getData={singleData} isModalOpen={openModal} setIsModalOpen={setOpenModal} />
+      <ViewStats
+        getData={singleData}
+        isModalOpen={openModal}
+        setIsModalOpen={setOpenModal}
+      />
       <Header />
       <DashboardNavbar />
       <div className="flex flex-col items-center  mb-4">
@@ -215,6 +267,7 @@ const MyGarage = () => {
         {/* ----------------- blue cards ----------------- */}
         <div class="w-[90%] h-[215px] top-499px left-112px gap-[35px] flex mb-2 mt-[99px]">
           <div
+          onClick={() => setCarsStatusListing("active")}
             class="w-[332px] h-[200px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
@@ -233,8 +286,8 @@ const MyGarage = () => {
             ></img>
           </div>
 
-          <Link
-            to={"/dashboard/my-garage"}
+          <div
+            onClick={() => setCarsStatusListing("pending")}
             class="w-[332px] h-[200px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
@@ -248,9 +301,10 @@ const MyGarage = () => {
               src={vector}
               className="w-[72px] h-[72px] top-5 mt-[54px] mr-2"
             ></img>
-          </Link>
+          </div>
 
           <div
+          onClick={() => setCarsStatusListing("features")}
             class="w-[332px] h-[200px] px-15 py-34 border-20 rounded-xl justify-between flex"
             style={{ backgroundColor: "#0C53AB" }}
           >
@@ -321,151 +375,329 @@ const MyGarage = () => {
           </div>
           <div className="flex justify-center items-center  gap-8 flex-wrap">
             {/* Use map to create cards */}
-            {garage?.map((product, index) => (
-              <div
-                key={index}
-                className={`p-4 bg-[#F3F3F5] h-[460px] w-[350px] rounded-[20px] mt-2 ${
-                  product.featured === "Yes"
-                    ? " border-sky-800"
-                    : "border-blue-500"
-                }`}
-              >
-                {/* Display card content */}
-                <div className="flex-col w-[350px]">
-                  <img
-                    src={product.car_images[0]}
-                    className="h-[160px] rounded-xl w-[320px]"
-                  />
-                  <h2 className="text-xl font-bold p-2 text-center">
-                    {product?.title}
-                  </h2>
-                  <p className="text-center">Silver Plan</p>
-                </div>
-
-                {/* Display actions - Row 1 */}
-                <div className="flex justify-center gap-3 mt-1 w-[320px]">
-                  <Link
-                    to={`/dashboard/upgrade-plan/${product?._id}`}
-                    className="w-[100px] h-[50px] bg-[#0C53AB] cursor-pointer rounded-[5px] text-white text-center"
+            {carsStatusListing === "active" ? (
+              <>
+                {carsActive?.map((product, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 bg-[#F3F3F5] h-[460px] w-[350px] rounded-[20px] mt-2 ${
+                      product.featured === "Yes"
+                        ? " border-sky-800"
+                        : "border-blue-500"
+                    }`}
                   >
-                    <div className="w-full text-center mt-2">
-                      <img src={uparrow} className="mx-auto h-5" alt="Icon" />
-                      <p className="ml-2 text-sm">Upgrade Plan</p>
-                    </div>
-                  </Link>
-                  <div onClick={()=>{
-                     setOpenModal(true)
-                    setSingleData(product)}} className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] rounded-[5px] text-white text-center">
-                    <div className="w-full text-center mt-2 cursor-pointer">
-                      <img src={stats} className="mx-auto h-5" alt="Icon" />
-                      <p className="ml-2 text-sm">Stats</p>
-                    </div>
-                  </div>
-                  <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
-                    <div className="w-full text-center mt-2">
-                      <img src={refresh} className="mx-auto h-5" alt="Icon" />
-                      <p className="ml-2 text-sm">Refresh</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Display actions - Row 2 */}
-                <div className="flex gap-3 mt-4 justify-center w-[320px]">
-                  <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
-                    <div className="w-full text-center mt-2">
+                    {/* Display card content */}
+                    <div className="flex-col w-[350px]">
                       <img
-                        src={require("../../../../assets/images/edit.png")}
-                        className="mx-auto h-5"
-                        alt="Icon"
+                        src={product.car_images[0]}
+                        className="h-[160px] rounded-xl w-[320px]"
                       />
-                      <p className=" text-sm">Edit</p>
+                      <h2 className="text-xl font-bold p-2 text-center">
+                        {product?.title}
+                      </h2>
+                      <p className="text-center">
+                        {product?.planId?.name} Plan
+                      </p>
                     </div>
-                  </div>
-                  <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
-                    <div
-                      onClick={() => removeFunction(product?._id)}
-                      className="w-full text-center mt-2"
-                    >
-                      <img
-                        src={require("../../../../assets/images/remove.png")}
-                        className="mx-auto h-5"
-                        alt="Icon"
-                      />
-                      <p className=" text-sm">Remove</p>
-                    </div>
-                  </div>
-                  <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
-                    <div className="w-full text-center mt-2">
-                      <img src={feature} className="mx-auto h-5" alt="Icon" />
-                      <p className=" text-sm">Feature</p>
-                    </div>
-                  </div>
-                </div>
 
-                {/* Sold indicator */}
-
-                {loading === product._id ? (
-                  <button
-                    disabled
-                    type="button"
-                    class="w-[320px] h-[38px] bg-[#FB5722] rounded  gap-2 items-center mt-2 text-bold justify-center text-white font-bold flex align-center"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      role="status"
-                      class="inline w-4 h-4 me-3 text-white animate-spin"
-                      viewBox="0 0 100 101"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                        fill="#E5E7EB"
-                      />
-                      <path
-                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Loading...
-                  </button>
-                ) : (
-                  <>
-                    {product?.status === "sold" ? (
-                      <div className="w-[320px] h-[38px]  bg-[#0C53AB] rounded  gap-2 items-center mt-2 text-bold justify-center text-white font-bold flex align-center">
-                        {/* <img src={sold} className="h-[25px]" alt="Sold" /> */}
-                        <p className=" m-0">Sold</p>
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() => UpdateStatus(product?._id, "sold")}
-                        className="w-[320px] h-[38px] bg-[#FB5722] rounded  gap-2 items-center mt-2 text-bold justify-center text-white font-bold flex align-center"
+                    {/* Display actions - Row 1 */}
+                    <div className="flex justify-center gap-3 mt-1 w-[320px]">
+                      <Link
+                        to={`/dashboard/upgrade-plan/${product?._id}`}
+                        className="w-[100px] h-[50px] bg-[#0C53AB] cursor-pointer rounded-[5px] text-white text-center"
                       >
-                        <img src={sold} className="h-[25px]" alt="Sold" />
-                        <p className=" m-0"> Car Sold</p>
+                        <div className="w-full text-center mt-2">
+                          <img
+                            src={uparrow}
+                            className="mx-auto h-5"
+                            alt="Icon"
+                          />
+                          <p className="ml-2 text-sm">Upgrade Plan</p>
+                        </div>
+                      </Link>
+                      <div
+                        onClick={() => {
+                          setOpenModal(true);
+                          setSingleData(product);
+                        }}
+                        className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] rounded-[5px] text-white text-center"
+                      >
+                        <div className="w-full text-center mt-2 cursor-pointer">
+                          <img src={stats} className="mx-auto h-5" alt="Icon" />
+                          <p className="ml-2 text-sm">Stats</p>
+                        </div>
                       </div>
-                    )}
-                  </>
-                )}
+                      <div
+                        onClick={() => RefreshFun(product?._id)}
+                        className={`w-[100px] h-[50px] cursor-pointer  ${
+                          product?.hasRefreshed === true
+                            ? "bg-[#0BA645]"
+                            : "  bg-[rgb(12,83,171)]"
+                        } rounded-[5px] text-white text-center`}
+                      >
+                        <div className="w-full text-center mt-2">
+                          <img
+                            src={refresh}
+                            className="mx-auto h-5"
+                            alt="Icon"
+                          />
+                          <p className="ml-2 text-sm">Refresh</p>
+                        </div>
+                      </div>
+                    </div>
 
-                {/* Featured Ad information */}
-                {/* <div className='flex gap-x-3 flex-wrap font-bold text-[#666564] text-center'> */}
-                {/* {product?.featured && ( */}
-                <div>
-                  <div className="flex gap-3  pt-2">
-                    <p className=" text-sm font-semibold">
-                      Created: {moment().format("MMM Do YY")}
-                    </p>
-                    <p className=" text-sm font-semibold">
-                      Expires: {moment().format("MMM Do YY")}
+                    {/* Display actions - Row 2 */}
+                    <div className="flex gap-3 mt-4 justify-center w-[320px]">
+                      <Link
+                        to={`/update_car_detail/${product?._id}`}
+                        className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center"
+                      >
+                        <div className="w-full text-center mt-2">
+                          <img
+                            src={require("../../../../assets/images/edit.png")}
+                            className="mx-auto h-5"
+                            alt="Icon"
+                          />
+                          <p className=" text-sm">Edit</p>
+                        </div>
+                      </Link>
+                      <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                        <div
+                          onClick={() => removeFunction(product?._id)}
+                          className="w-full text-center mt-2"
+                        >
+                          <img
+                            src={require("../../../../assets/images/remove.png")}
+                            className="mx-auto h-5"
+                            alt="Icon"
+                          />
+                          <p className=" text-sm">Remove</p>
+                        </div>
+                      </div>
+                      <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                        <div className="w-full text-center mt-2">
+                          <img
+                            src={feature}
+                            className="mx-auto h-5"
+                            alt="Icon"
+                          />
+                          <p className=" text-sm">Feature</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Sold indicator */}
+
+                    {loading === product._id ? (
+                      <button
+                        disabled
+                        type="button"
+                        class="w-[320px] h-[38px] bg-[#FB5722] rounded  gap-2 items-center mt-2 text-bold justify-center text-white font-bold flex align-center"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          role="status"
+                          class="inline w-4 h-4 me-3 text-white animate-spin"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="#E5E7EB"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                        Loading...
+                      </button>
+                    ) : (
+                      <>
+                        {product?.status === "sold" ? (
+                          <div className="w-[320px] h-[38px]  bg-[#0C53AB] rounded  gap-2 items-center mt-2 text-bold justify-center text-white font-bold flex align-center">
+                            {/* <img src={sold} className="h-[25px]" alt="Sold" /> */}
+                            <p className=" m-0">Sold</p>
+                          </div>
+                        ) : (
+                          <div
+                            onClick={() => UpdateStatus(product?._id, "sold")}
+                            className="w-[320px] h-[38px] bg-[#FB5722] rounded  gap-2 items-center mt-2 text-bold justify-center text-white font-bold flex align-center"
+                          >
+                            <img src={sold} className="h-[25px]" alt="Sold" />
+                            <p className=" m-0"> Car Sold</p>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {/* Featured Ad information */}
+                    {/* <div className='flex gap-x-3 flex-wrap font-bold text-[#666564] text-center'> */}
+                    {/* {product?.featured && ( */}
+                    <div>
+                      <div className="flex gap-3  pt-2">
+                        <p className=" text-sm font-semibold">
+                          Created: {moment().format("MMM Do YY")}
+                        </p>
+                        <p className=" text-sm font-semibold">
+                          Expires: {moment().format("MMM Do YY")}
+                        </p>
+                      </div>
+                      {/* <div> Featured Ad Days Remaining: {product?.remainingdays}</div> */}
+                    </div>
+                    {/* )}{console.log(product?.featured)} */}
+                    {/* </div> */}
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {carsPending ? (
+                  carsPending?.map((product, index) => (
+                    <div
+                      key={index}
+                      className={`p-4 bg-[#F3F3F5] h-[460px] w-[350px] rounded-[20px] mt-2 ${
+                        product.featured === "Yes"
+                          ? " border-sky-800"
+                          : "border-blue-500"
+                      }`}
+                    >
+                      {/* Display card content */}
+                      <div className="flex-col w-[350px]">
+                        <img
+                          src={product.car_images[0]}
+                          className="h-[160px] rounded-xl w-[320px]"
+                        />
+                        <h2 className="text-xl font-bold p-2 text-center">
+                          {product?.title}
+                        </h2>
+                        <p className="text-center">
+                          {product?.planId?.name} Plan
+                        </p>
+                      </div>
+
+                      {/* Display actions - Row 1 */}
+                      <div className="flex justify-center gap-3 mt-1 w-[320px]">
+                        <Link
+                          to={`/dashboard/upgrade-plan/${product?._id}`}
+                          className="w-[100px] h-[50px] bg-[#0C53AB] cursor-pointer rounded-[5px] text-white text-center"
+                        >
+                          <div className="w-full text-center mt-2">
+                            <img
+                              src={uparrow}
+                              className="mx-auto h-5"
+                              alt="Icon"
+                            />
+                            <p className="ml-2 text-sm">Upgrade Plan</p>
+                          </div>
+                        </Link>
+                        <div
+                          onClick={() => {
+                            setOpenModal(true);
+                            setSingleData(product);
+                          }}
+                          className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] rounded-[5px] text-white text-center"
+                        >
+                          <div className="w-full text-center mt-2 cursor-pointer">
+                            <img
+                              src={stats}
+                              className="mx-auto h-5"
+                              alt="Icon"
+                            />
+                            <p className="ml-2 text-sm">Stats</p>
+                          </div>
+                        </div>
+                        <div
+                          onClick={() => RefreshFun(product?._id)}
+                          className={`w-[100px] h-[50px] cursor-pointer  ${
+                            product?.hasRefreshed === true
+                              ? "bg-[#0BA645]"
+                              : "  bg-[rgb(12,83,171)]"
+                          } rounded-[5px] text-white text-center`}
+                        >
+                          <div className="w-full text-center mt-2">
+                            <img
+                              src={refresh}
+                              className="mx-auto h-5"
+                              alt="Icon"
+                            />
+                            <p className="ml-2 text-sm">Refresh</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Display actions - Row 2 */}
+                      <div className="flex gap-3 mt-4 justify-center w-[320px]">
+                        <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                          <div className="w-full text-center mt-2">
+                            <img
+                              src={require("../../../../assets/images/edit.png")}
+                              className="mx-auto h-5"
+                              alt="Icon"
+                            />
+                            <p className=" text-sm">Edit</p>
+                          </div>
+                        </div>
+                        <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                          <div
+                            onClick={() => removeFunction(product?._id)}
+                            className="w-full text-center mt-2"
+                          >
+                            <img
+                              src={require("../../../../assets/images/remove.png")}
+                              className="mx-auto h-5"
+                              alt="Icon"
+                            />
+                            <p className=" text-sm">Remove</p>
+                          </div>
+                        </div>
+                        <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                          <div className="w-full text-center mt-2">
+                            <img
+                              src={feature}
+                              className="mx-auto h-5"
+                              alt="Icon"
+                            />
+                            <p className=" text-sm">Feature</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Sold indicator */}
+
+                      <div className="w-[320px] h-[38px] bg-[#FB5722] rounded  gap-2 items-center mt-2 text-bold justify-center text-white font-bold flex align-center">
+                        {/* <img src={sold} className="h-[25px]" alt="Sold" /> */}
+                        <p className=" m-0">Pending</p>
+                      </div>
+
+                      {/* Featured Ad information */}
+                      {/* <div className='flex gap-x-3 flex-wrap font-bold text-[#666564] text-center'> */}
+                      {/* {product?.featured && ( */}
+                      <div>
+                        <div className="flex gap-3  pt-2">
+                          <p className=" text-sm font-semibold">
+                            Created: {moment().format("MMM Do YY")}
+                          </p>
+                          <p className=" text-sm font-semibold">
+                            Expires: {moment().format("MMM Do YY")}
+                          </p>
+                        </div>
+                        {/* <div> Featured Ad Days Remaining: {product?.remainingdays}</div> */}
+                      </div>
+                      {/* )}{console.log(product?.featured)} */}
+                      {/* </div> */}
+                    </div>
+                  ))
+                ) : (
+                  <div className=" h-36 flex justify-center items-center">
+                    <p className=" text-black font-bold">
+                      No Pending Car Found
                     </p>
                   </div>
-                  {/* <div> Featured Ad Days Remaining: {product?.remainingdays}</div> */}
-                </div>
-                {/* )}{console.log(product?.featured)} */}
-                {/* </div> */}
-              </div>
-            ))}
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

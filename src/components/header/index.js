@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Input from "../Input";
-import { FaCar } from "react-icons/fa";
+import { FaCar, FaTools } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import { useSelector } from "react-redux";
@@ -91,52 +91,84 @@ const Header = () => {
           </li>
 
           {userData?.profileStatus === "dealer" ? (
-            <>
-              <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
-                <FaCar color="white" />
-                <Link
-                  className="font-medium text-sm text-white capitalize"
-                  to={"/car_details"}
-                >
-                  Sell My Car
-                </Link>
-              </li>
-              {userData?._id ? (
-                <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
-                  <FaUser color="white" />
-                  <Link
-                    className="font-medium text-sm text-white capitalize"
-                    to={"/dashboard/my-account"}
-                  >
-                    My account
-                  </Link>
-                </li>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
-                <FaCar color="white" />
-                <Link
-                  className="font-medium text-sm text-white capitalize"
-                  to={"/choose_plane"}
-                >
-                  Sell My Car
-                </Link>
-              </li>
-              {userData?._id ? (
-                <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
-                  <FaUser color="white" />
-                  <Link
-                    className="font-medium text-sm text-white capitalize"
-                    to={"/dashboard/my-account"}
-                  >
-                    My account
-                  </Link>
-                </li>
-              ) : null}
-            </>
-          )}
+  <>
+    <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+      <FaCar color="white" />
+      <Link
+        className="font-medium text-sm text-white capitalize"
+        to={"/car_details"}
+      >
+        Sell My Car
+      </Link>
+    </li>
+    {userData?._id && (
+      <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+        <FaUser color="white" />
+        <Link
+          className="font-medium text-sm text-white capitalize"
+          to={"/dashboard/my-account"}
+        >
+          My account
+        </Link>
+      </li>
+    )}
+  </>
+) : userData?.profileStatus === "privateSeller" ? (
+  <>
+    <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+      <FaCar color="white" />
+      <Link
+        className="font-medium text-sm text-white capitalize"
+        to={"/choose_plane"}
+      >
+        Sell My Car
+      </Link>
+    </li>
+    {userData?._id && (
+      <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+        <FaUser color="white" />
+        <Link
+          className="font-medium text-sm text-white capitalize"
+          to={"/dashboard/my-account"}
+        >
+          My account
+        </Link>
+      </li>
+    )}
+  </>
+) : userData?.profileStatus === "serviceProvider" ? (
+  <>
+    {/* <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+      <FaTools color="white" />
+      <Link
+        className="font-medium text-sm text-white capitalize"
+        to={"/service_details"}
+      >
+        Provide Service
+      </Link>
+    </li> */}
+    {userData?._id && (
+      <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+        <FaUser color="white" />
+        <Link
+          className="font-medium text-sm text-white capitalize"
+          to={"/garage/dashboard/my-account"}
+        >
+          My account
+        </Link>
+      </li>
+    )}
+  </>
+) : <li className="bg-orange-500 flex items-center gap-2  rounded-full py-2 px-4">
+<FaCar color="white" />
+<Link
+  className="font-medium text-sm text-white capitalize"
+  to={"/choose_plane"}
+>
+  Sell My Car
+</Link>
+</li>}
+
 
           <li className=" relative">
             <button

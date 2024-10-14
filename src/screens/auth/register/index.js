@@ -193,7 +193,7 @@ const Register = () => {
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
-    if (event.target.value === "privateSeller" || event.target.value === "garage") {
+    if (event.target.value === "privateSeller" || event.target.value === "serviceProvider") {
       navigate("/register");
     } else {
       navigate("/dealar");
@@ -250,7 +250,7 @@ const Register = () => {
                 type="radio"
                 className="accent-primary"
                 name="gender"
-                value="seller"
+                value="privateSeller"
                 checked={selectedOption === "privateSeller"}
                 onChange={handleOptionChange}
               />
@@ -271,12 +271,12 @@ const Register = () => {
               <input
                 type="radio"
                 className="accent-primary"
-                name="gender"
-                value="garage"
-                checked={selectedOption === "garage"}
+                name="other"
+                value="serviceProvider"
+                checked={selectedOption === "serviceProvider"}
                 onChange={handleOptionChange}
               />
-              <p className=" text-gray-400  font-semibold">Garage</p>
+              <p className=" text-gray-400  font-semibold">Service Provider</p>
             </div>
           </div>
 

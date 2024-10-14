@@ -66,7 +66,7 @@ const ListingCard = ({ item }) => {
            
 
             <div className=" absolute top-2 right-2">
-              {item?.featured === true ? (
+              {item?.type_of_ad === 'Featured' ? (
                 <Button
                   label={"featured"}
                   className={

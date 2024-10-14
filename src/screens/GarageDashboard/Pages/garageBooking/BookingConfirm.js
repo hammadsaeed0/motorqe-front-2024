@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Input from "../../../../components/Input";
-const GarageBookingConfirmation = () => {
+const GarageConfirm = () => {
   const { id } = useParams();
 
   const location = useLocation();
@@ -174,7 +174,7 @@ const GarageBookingConfirmation = () => {
                   " py-1.5 text-sm bg-primary font-bold mt-3 text-white  rounded-md"
                 }
               />
-              
+
               <Button
                 Icons={<IoClose size={20} />}
                 label={"Cancel"}
@@ -209,7 +209,8 @@ const GarageBookingConfirmation = () => {
               <span className="   font-normal">Sunday 16 July 2023</span>
             </h6>
             <h6 className="h6">
-              Time:<span className="  font-normal">(from 15:00)</span>
+              Time:
+              <span className="  font-normal">{newListings?.workingHours}</span>
             </h6>
             <h6 className=" h6 pt-5 pb-2 font-bold">
               Note: No Prepayment needed now! Pay Elite Motors Garage when the
@@ -232,14 +233,16 @@ const GarageBookingConfirmation = () => {
                   );
                 })}
               </ul>
-              <div className="bg-primary border  border-[#575656] flex   flex-col  pr-4 items-center py-1.5">
-                <p className="m-0 text-xl text-right text-white font-semibold">
-                  Total Price QR. {grandTotal}
-                </p>
+              <div className="bg-primary border  border-[#575656] flex    justify-end  pr-4 items-center py-1.5">
+                <div>
+                  <p className="m-0 text-xl text-right text-white font-semibold">
+                    Total Price QR. {grandTotal}
+                  </p>
 
-                <p className=" flex gap-2 m-0 text-lg text-white">
-                   <Input type={'checkbox'} /> I Agree To Terms & Conditions
-                </p>
+                  <p className=" flex gap-2 m-0 text-lg text-white">
+                    <Input type={"checkbox"} /> I Agree To Terms & Conditions
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -302,4 +305,4 @@ const GarageBookingConfirmation = () => {
   );
 };
 
-export default GarageBookingConfirmation;
+export default GarageConfirm;
