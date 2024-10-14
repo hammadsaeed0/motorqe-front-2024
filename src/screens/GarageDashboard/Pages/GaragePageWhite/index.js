@@ -14,7 +14,7 @@ import Tabs from "../../../../components/Tabs";
 import axios from "axios";
 import { Base_url } from "../../../../utils/Base_url";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Accordion,
   AccordionHeader,
@@ -46,6 +46,14 @@ function Icon({ id, open }) {
 }
 
 const GaragePageWhite = () => {
+
+
+  const location = useLocation();
+  const receivedData = location.state?.filter;
+
+  console.log(receivedData,'jjjjjjjjjjjjjjjjj');
+
+
   const [open, setOpen] = React.useState(0);
 
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
@@ -706,7 +714,7 @@ const GaragePageWhite = () => {
             </Accordion>
           </div>
           <div className=" w-[75%] flex flex-col gap-5">
-            {garage?.map((item, index) => {
+            {receivedData?.map((item, index) => {
               return (
                 <div className="  bg-[#F0F5FA]   h-48 overflow-auto  border-primary border-4 rounded-3xl pt-3 w-full">
                   <div className=" w-full flex gap-5">
