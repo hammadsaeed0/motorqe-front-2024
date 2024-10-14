@@ -21,19 +21,19 @@ const ContactDetails = () => {
   const userData = JSON.parse(localStorage.getItem("planData"));
 
   console.log("Parsed planData from localStorage:", userData?.featureAdsDays);
-const featureAdsDays = Number(userData?.featureAdsDays);
-console.log('Feature Ads Days:', featureAdsDays);
-const featureTimePeriod = receivedData?.type_of_ad === "Standard"
-  ? 0
-  : featureAdsDays > 0
-    ? featureAdsDays * 24 * 60 
-    : 0; 
-console.log(`Feature Time Period: ${featureTimePeriod}`);
+  const featureAdsDays = Number(userData?.featureAdsDays);
+  console.log('Feature Ads Days:', featureAdsDays);
+  const featureTimePeriod = receivedData?.type_of_ad === "Standard"
+    ? 1
+    : featureAdsDays > 0
+      ? featureAdsDays * 24 * 60
+      : 1;
+  console.log(`Feature Time Period: ${featureTimePeriod}`);
 
 
 
-      console.log(featureTimePeriod);
-      
+  console.log(featureTimePeriod);
+
   const [state, setState] = useState({
     name: "",
     // contact_details: "",
@@ -59,7 +59,7 @@ console.log(`Feature Time Period: ${featureTimePeriod}`);
 
 
   const userToken = JSON.parse(localStorage.getItem("Dealar"));
-  console.log(userToken?.profileStatus,'userToken');
+  console.log(userToken?.profileStatus, 'userToken');
 
   const handlerSubmit = (e) => {
     setLoader(true);
@@ -67,12 +67,12 @@ console.log(`Feature Time Period: ${featureTimePeriod}`);
 
 
 
-console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
+    console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
 
     const params = {
       userId: user?.userToken,
       enrollmentId: plan?.userPlan?.data?._id,
-      featureTimePeriod:userToken?.profileStatus==='dealer'?1:featureTimePeriod,
+      featureTimePeriod: userToken?.profileStatus === 'dealer' ? 1 : featureTimePeriod,
       title: receivedData.title,
       type_of_ad: receivedData.type_of_ad,
       body_type: receivedData.body_type,
