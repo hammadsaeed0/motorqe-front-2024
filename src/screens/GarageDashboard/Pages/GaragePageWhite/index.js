@@ -720,7 +720,7 @@ const GaragePageWhite = () => {
                   <div className=" w-full flex gap-5">
                     <div className=" w-[20%] px-3">
                       <img
-                        src={require("../../../../assets/images/booking.png")}
+                        src={item?.logo}
                         className=" w-32"
                         alt=""
                       />
