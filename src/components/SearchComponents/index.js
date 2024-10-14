@@ -77,7 +77,28 @@ const SearchComponents = () => {
   };
 
   const AllFilterFunSecond = () => {
-    navigate("/garage-dashboard/garagePageWhite");
+
+    setLoader(true);
+    const url = `${Base_url}/user/garage`;
+    const params = {
+      make: state.make,
+    };
+
+    axios
+      .get(url, { params })
+      .then((response) => {
+        console.log("Response data:", response.data);
+        setFilteredResults(response.data);
+
+        navigate("/garage-dashboard/garagePageWhite", { state: { filter: response.data.garages} });
+        
+        setLoader(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+
+  
   };
 
   const colors = [
@@ -950,12 +971,30 @@ const SearchComponents = () => {
                     value={state.make}
                     className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
                   >
-                    <option>Select Make</option>
-                    {allData?.fieldArrays?.make?.map((item, index) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    ))}
+                  
+                    <option value={""} selected>
+                Select Make
+              </option>
+             
+                <option value={'honda'}>
+                Honda
+                </option>
+
+                <option value={'hyundai'}>
+                Hyundai
+                </option>
+                <option value={'audi'}>
+                Audi
+                </option>
+                <option value={'ac'}>
+                AC
+                </option>
+                <option value={'BMW'}>
+                BMW
+                </option>
+                <option value={'daewoo'}>
+                Daewoo
+                </option>
                   </select>
                 </div>
                 <div className="  md:w-60 w-full">
