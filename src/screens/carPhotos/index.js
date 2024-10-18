@@ -80,7 +80,7 @@ const CarPhotos = () => {
       });
 
       profilephoto = await axios.post(
-        `https://file-upload-ashen.vercel.app/api/upload`,
+        `http://35.88.137.61/api/api/upload`,
         param
       );
 
@@ -121,18 +121,18 @@ const CarPhotos = () => {
             </div>
           </li>
           <li>
-            <FaAngleRight className="text-gray-500" />
+            <FaAngleRight className="text-secondary" />
           </li>
           <li className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white border-textColor border items-center rounded-full flex justify-center">
-              <p className="text-textColor">2</p>
+            <div className="w-8 h-8  bg-secondary border-secondary border items-center rounded-full flex justify-center">
+              <p className="text-white">2</p>
             </div>
             <Link to={"/car_details"}>
-              <span className="font-bold text-textColor">Car Details</span>
+              <span className="font-bold text-secondary">Car Details</span>
             </Link>
           </li>
           <li>
-            <FaAngleRight className="text-gray-500" />
+            <FaAngleRight className="text-secondary" />
           </li>
           <li className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary items-center rounded-full flex justify-center">

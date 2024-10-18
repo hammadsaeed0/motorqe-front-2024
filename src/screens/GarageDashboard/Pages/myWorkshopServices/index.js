@@ -17,48 +17,52 @@ const MyWorkshopServices = () => {
   const userId = JSON.parse(localStorage.getItem("userToken"));
 
   const [services, setServices] = useState([
-    { serviceName: "", price: "", category: "" }, 
+    { serviceName: "", price: "", category: "" },
   ]);
 
+  const storedData = localStorage.getItem("serviceProvider");
+  let userData;
 
+  if (storedData !== null) {
+    try {
+      userData = JSON.parse(storedData);
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      userData = {}; // Handle parsing error (e.g., set to empty object)
+    }
+  } else {
+    userData = {}; // Handle case where item does not exist
+  }
 
-  const userData = JSON.parse(localStorage.getItem("serviceProvider"));
-  
-  const [booking,setBooking] = useState([]);
-  const [analytic,setAnalytics] = useState([]);
-  
+  const [booking, setBooking] = useState([]);
+  const [analytic, setAnalytics] = useState([]);
+
   console.log(analytic);
-  
-  
-    useEffect(() => {
-      axios
-        .get(`${Base_url}/user/garage-booking-count/${userData}`)
-        .then((res) => {
-          console.log(res, "/user button click");
-  
-          setBooking(res?.data);
-        })
-        .catch((error) => {});
-  
-        
-      axios
-        .get(`${Base_url}/user/garage-analytics/${userData}`)
-        .then((res) => {
-          console.log(res, "/user button click");
-  
-          setAnalytics(res?.data);
-        })
-        .catch((error) => {});
-  
-  
-        
-    }, []);
 
+  useEffect(() => {
+    axios
+      .get(`${Base_url}/user/garage-booking-count/${userData}`)
+      .then((res) => {
+        console.log(res, "/user button click");
+
+        setBooking(res?.data);
+      })
+      .catch((error) => {});
+
+    axios
+      .get(`${Base_url}/user/garage-analytics/${userData}`)
+      .then((res) => {
+        console.log(res, "/user button click");
+
+        setAnalytics(res?.data);
+      })
+      .catch((error) => {});
+  }, []);
 
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
     const newServices = [...services];
-    newServices[index][name] = value; 
+    newServices[index][name] = value;
     setServices(newServices);
   };
 
@@ -99,13 +103,14 @@ const MyWorkshopServices = () => {
             requestOptions
           );
           const result = await response.json();
-         console.log(result);
-         
+          console.log(result);
+
           if (!result?.success) {
             throw new Error(result?.message || "Service submission failed.");
           }
         }
         toast.success("All services added successfully!");
+        localStorage.setItem("workshopCreated", "1");
       } catch (error) {
         console.error("Error submitting services:", error);
         toast.error("An error occurred while adding services.");
@@ -132,7 +137,9 @@ const MyWorkshopServices = () => {
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className="font-inter  font-semibold text-5xl ">{booking?.todayBookingCount}</h1>
+              <h1 className="font-inter  font-semibold text-5xl ">
+                {booking?.todayBookingCount ? booking?.todayBookingCount : 0}
+              </h1>
               <p className="text-18 pt-3">Todays Bookings</p>
             </div>
             <img
@@ -146,7 +153,11 @@ const MyWorkshopServices = () => {
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className="font-inter  font-semibold text-5xl ">{booking?.pendingBookingCount}</h1>
+              <h1 className="font-inter  font-semibold text-5xl ">
+                {booking?.pendingBookingCount
+                  ? booking?.pendingBookingCount
+                  : 0}
+              </h1>
               <p className="text-18 pt-3">Upcoming Bookings</p>
             </div>
             <img
@@ -160,7 +171,11 @@ const MyWorkshopServices = () => {
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className="font-inter  font-semibold text-5xl ">{booking?.pendingBookingCount}</h1>
+              <h1 className="font-inter  font-semibold text-5xl ">
+                {booking?.pendingBookingCount
+                  ? booking?.pendingBookingCount
+                  : 0}
+              </h1>
               <p className="text-18 pt-3">Pending Bookings</p>
             </div>
             <img
@@ -174,7 +189,9 @@ const MyWorkshopServices = () => {
             style={{ backgroundColor: "#0C53AB" }}
           >
             <div className=" text-white mx-[15px] mt-[54px] relative">
-              <h1 className="font-inter font-semibold text-5xl ">104</h1>
+              <h1 className="font-inter font-semibold text-5xl ">
+                {analytic?.data?.views ? analytic?.data?.views : 0}
+              </h1>
               <p className="text-18 pt-3">Total Visits</p>
             </div>
             <img

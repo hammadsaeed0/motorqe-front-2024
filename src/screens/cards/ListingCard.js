@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Button from "../../components/Button";
 import { CiHeart } from "react-icons/ci";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { IoCall } from "react-icons/io5";
 import { FaHeart, FaWhatsapp } from "react-icons/fa";
 import { Base_url } from "../../utils/Base_url";
@@ -10,7 +10,7 @@ import axios from "axios";
 
 const ListingCard = ({ item }) => {
   const user = useSelector((state) => state.authReducer);
-
+const navigate = useNavigate();
   console.log(user?.userToken);
 
   const [isLiked, setIsLiked] = useState(
@@ -49,9 +49,42 @@ const ListingCard = ({ item }) => {
       });
   };
 
+
+  const checkFunChat =  (id)=> {
+
+    if(user?.userToken){
+
+
+
+      const param = {
+        userId1:user?.userToken,
+        userId2:id
+      }
+      
+      axios.post(`${Base_url}/user/create-chat`,param).then((res)=>{
+
+        console.log(res);
+
+
+        navigate('/dashboard/my-inbox');
+        
+
+      }).catch((error)=>{
+
+      })
+      
+    }
+
+
+    
+   
+
+
+  }
+
   return (
     <>
-      <div className="border-4   w-[400px] border-primary  rounded-2xl overflow-hidden">
+      <div className={` shadow-lg  w-[400px]  ${item?.type_of_ad === 'Featured'?'border-primary border-4 ':'border-[#B7DBFF] border'} rounded-2xl overflow-hidden`}>
         <div className="">
           <div className="relative   h-60">
             <Link to={`/car_details_page/${item._id}`}>
@@ -117,11 +150,24 @@ const ListingCard = ({ item }) => {
                 {item?.title}
               </h5>
               <div className="  float-right">
-                <img
-                  src={require("../../assets/images/brands.png")}
-                  className=" text-right  w-12"
-                  alt=""
-                />
+
+                {item?.user?.profileStatus==='privateSeller'?
+                 <img
+                 src={item?.user?.image}
+                 className=" text-right  w-12 h-12 rounded-full"
+                 alt=""
+               />:
+               <>
+               
+               </>
+              //  <img
+              //    src={require('../../assets/images/logo.png')}
+              //    className=" text-right  w-12 h-12"
+              //    alt=""
+              //  />
+
+              }
+               
               </div>
             </div>
 
@@ -191,7 +237,11 @@ const ListingCard = ({ item }) => {
               }
             />
             <Button
-              onClick={() => clickButtons("message")}
+              onClick={() => {clickButtons("message")
+                
+                checkFunChat(item?.user?._id)
+
+              }}
               Icons={
                 <img src={require("../../assets/images/chat.png")} alt="" />
               }

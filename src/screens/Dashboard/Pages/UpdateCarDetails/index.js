@@ -149,7 +149,8 @@ const UpdateCarDetails = () => {
 
   const [selectedImages, setSelectedImages] = useState([]);
   const [carImages, setCarImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(singleNewListing?.inspection_report || "");
+  const [selectedImage, setSelectedImage] = useState(null);
+  
   useEffect(() => {
     if (singleNewListing?.car_images) {
       setCarImages(singleNewListing.car_images);
@@ -158,7 +159,7 @@ const UpdateCarDetails = () => {
       setSelectedImage(singleNewListing.inspection_report);
     }
   }, [singleNewListing]);
-
+  
   const handleCarImageChange = (index, e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -168,70 +169,70 @@ const UpdateCarDetails = () => {
         newImages[index] = file; // Store the file
         setSelectedImages(newImages);
         const updatedCarImages = [...carImages];
-        updatedCarImages[index] = reader.result;
+        updatedCarImages[index] = reader.result; // Preview the image
         setCarImages(updatedCarImages);
       };
       reader.readAsDataURL(file);
     }
   };
-
+  
   const handleRemoveCarImage = (index) => {
     const updatedCarImages = [...carImages];
     updatedCarImages.splice(index, 1);
     setCarImages(updatedCarImages);
-    
+  
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
   };
-
+  
   const handleInspectionImageChange = (e) => {
     const file = e.target.files[0];
     setSelectedImage(file);
-
+  
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = () => {
-        setSelectedImage(reader.result);
+        setSelectedImage(reader.result); // Update preview
       };
       reader.readAsDataURL(file);
     }
   };
-
-  const uploadCarImages = async (selectedImages) => {
+  
+  const uploadCarImages = async (images) => {
     const uploadedImages = await Promise.all(
-      selectedImages.map(async (image) => {
+      images.map(async (image) => {
         if (image) {
           const param = new FormData();
           param.append("images", image);
-
-          const response = await axios.post(`https://file-upload-ashen.vercel.app/api/upload`, param);
-          return response.data.data[0]; // Return uploaded image URL
+  
+          const response = await axios.post(`http://35.88.137.61/api/api/upload`, param);
+          console.log(response); // Return uploaded image URL
+          return response.data.data[0];
+          
         }
         return null;
       })
     );
     return uploadedImages.filter((img) => img); // Filter out null values
   };
-
+  
   const uploadImage = async (image) => {
     if (!image) return null; // Return null if no image to upload
-
+  
     const param = new FormData();
     param.append("images", image);
-
-    const response = await axios.post(`https://file-upload-ashen.vercel.app/api/upload`, param);
+  
+    const response = await axios.post(`http://35.88.137.61/api/api/upload`, param);
     return response.data.data[0]; // Return uploaded image URL
   };
 
+  
   const handlerSubmit = async (e) => {
     e.preventDefault();
-    setLoader(true)
+    setLoader(true);
+  
     try {
-    //   const uploadedCarImages = await uploadCarImages(selectedImages);
-    //   const uploadedInspectionImage = selectedImage
-    //     ? await uploadImage(selectedImage)
-    //     : null;
       const params = {
         ...(state.title && { title: state.title }),
         ...(state.type_of_ad && { type_of_ad: state.type_of_ad }),
@@ -239,90 +240,67 @@ const UpdateCarDetails = () => {
         ...(state.make && { make: state.make }),
         ...(state.model && { model: state.model }),
         ...(state.year && { year: 2024 }),
-        ...(state.vehicle_condition && {
-          vehicle_condition: state.vehicle_condition,
-        }),
+        ...(state.vehicle_condition && { vehicle_condition: state.vehicle_condition }),
         ...(state.mileage && { mileage: Number(state.mileage) }),
-        ...(state.vehicle_category && {
-          vehicle_category: state.vehicle_category,
-        }),
+        ...(state.vehicle_category && { vehicle_category: state.vehicle_category }),
         ...(state.specifications && { specifications: state.specifications }),
         ...(state.cylinder && { cylinder: Number(state.cylinder) }),
         ...(state.engine_size && { engine_size: state.engine_size }),
         ...(state.wheel_drive && { wheel_drive: state.wheel_drive }),
         ...(state.gear_box && { gear_box: state.gear_box }),
-        ...(state.exterior_colour && {
-          exterior_colour: state.exterior_colour,
-        }),
-        ...(state.interior_colour && {
-          interior_colour: state.interior_colour,
-        }),
+        ...(state.exterior_colour && { exterior_colour: state.exterior_colour }),
+        ...(state.interior_colour && { interior_colour: state.interior_colour }),
         ...(state.fuel_type && { fuel_type: state.fuel_type }),
-        ...(state.registration_date && {
-          registration_date: state.registration_date,
-        }),
-        ...(state.warranty !== undefined && {
-          warranty: state.warranty === "true",
-        }),
+        ...(state.registration_date && { registration_date: state.registration_date }),
+        ...(state.warranty !== undefined && { warranty: state.warranty === "true" }),
         ...(state.warranty_date && { warranty_date: state.warranty_date }),
-        ...(state.inspected !== undefined && {
-          inspected: state.inspected === "true",
-        }), // Handle boolean
-        // ...(uploadedInspectionImage && {
-        //   inspection_report: uploadedInspectionImage,
-        // }),
+        ...(state.inspected !== undefined && { inspected: state.inspected === "true" }),
         ...(state.price_QR && { price_QR: Number(state.price_QR) }),
         ...(state.price_range && { price_range: state.price_range }),
-        ...(state.negotiable !== undefined && {
-          negotiable: state.negotiable === "true",
-        }), // Handle boolean
+        ...(state.negotiable !== undefined && { negotiable: state.negotiable === "true" }),
         ...(state.description && { description: state.description }),
         ...(state.longitude && { longitude: state.longitude }),
         ...(state.latitude && { latitude: state.latitude }),
         ...(state.engine_oil && { engine_oil: state.engine_oil }),
-        ...(state.engine_oil_filter && {
-          engine_oil_filter: state.engine_oil_filter,
-        }),
+        ...(state.engine_oil_filter && { engine_oil_filter: state.engine_oil_filter }),
         ...(state.gearbox_oil && { gearbox_oil: state.gearbox_oil }),
         ...(state.ac_filter && { ac_filter: state.ac_filter }),
         ...(state.air_filter && { air_filter: state.air_filter }),
         ...(state.fuel_filter && { fuel_filter: state.fuel_filter }),
         ...(state.spark_plugs && { spark_plugs: state.spark_plugs }),
-        ...(state.front_brake_pads && {
-          front_brake_pads: state.front_brake_pads,
-        }),
-        ...(state.rear_brake_pads && {
-          rear_brake_pads: state.rear_brake_pads,
-        }),
-        ...(state.front_brake_discs && {
-          front_brake_discs: state.front_brake_discs,
-        }),
-        ...(state.rear_brake_discs && {
-          rear_brake_discs: state.rear_brake_discs,
-        }),
+        ...(state.front_brake_pads && { front_brake_pads: state.front_brake_pads }),
+        ...(state.rear_brake_pads && { rear_brake_pads: state.rear_brake_pads }),
+        ...(state.front_brake_discs && { front_brake_discs: state.front_brake_discs }),
+        ...(state.rear_brake_discs && { rear_brake_discs: state.rear_brake_discs }),
         ...(state.battery && { battery: state.battery }),
-        ...(state.front_tire_size && {
-          front_tire_size: state.front_tire_size,
-        }),
-        ...(state.front_tire_price && {
-          front_tire_price: Number(state.front_tire_price),
-        }),
+        ...(state.front_tire_size && { front_tire_size: state.front_tire_size }),
+        ...(state.front_tire_price && { front_tire_price: Number(state.front_tire_price) }),
         ...(state.rear_tire_size && { rear_tire_size: state.rear_tire_size }),
-        ...(state.rear_tire_price && {
-          rear_tire_price: Number(state.rear_tire_price),
-        }),
+        ...(state.rear_tire_price && { rear_tire_price: Number(state.rear_tire_price) }),
         ...(state.name && { name: state.name }),
         ...(state.mobile_no && { mobile_no: state.mobile_no }),
         ...(state.whatsapp_no && { whatsapp_no: state.whatsapp_no }),
         ...(state.email_address && { email_address: state.email_address }),
-        // ...(uploadedCarImages && { car_images: uploadedCarImages }),
       };
-
-
-      
-
+  
+      // Only add car_images if they were uploaded
+      if (selectedImages && selectedImages.length > 0) {
+        const uploadedCarImages = await uploadCarImages(selectedImages);
+        if (uploadedCarImages.length > 0) {
+          params.car_images = uploadedCarImages; 
+        }
+      }
+  
+      // Only add inspection_report if it was uploaded
+      if (selectedImage && selectedImage instanceof File) {
+        const uploadedInspectionImage = await uploadImage(selectedImage);
+        if (uploadedInspectionImage) {
+          params.inspection_report = uploadedInspectionImage;
+        }
+      }
+  
       const res = await axios.post(`${Base_url}/user/edit-car/${id}`, params);
-
+  
       if (res.data.success) {
         toast.success("Car listing updated successfully!");
         navigate(`/dashboard/my-garage`);
@@ -428,12 +406,12 @@ const UpdateCarDetails = () => {
             <Input
               type="text"
               onChange={handleInputs}
-              value={state.title}
+              value={state.title || singleNewListing?.title || ""}
               name={"title"}
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Enter Title"}
               label={"Title of Listing"}
-              defaultValue={singleNewListing?.title}
+              // defaultValue={singleNewListing?.title}
             />
           </div>
           <div>
@@ -1270,7 +1248,7 @@ const UpdateCarDetails = () => {
             <Input
               type="text"
               onChange={handleInputs}
-              value={state.name}
+              value={state.name || singleNewListing?.name || " "}
               name={"name"}
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Enter Your Name"}
@@ -1282,36 +1260,36 @@ const UpdateCarDetails = () => {
             <Input
               type="number"
               onChange={handleInputs}
-              value={state.mobile_no}
+              value={state.mobile_no || singleNewListing?.mobile_no || ""}
               name={"mobile_no"}
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Mobile No."}
               label={"Enter Mobile No"}
-              defaultValue={singleNewListing?.mobile_no}
+              // defaultValue={singleNewListing?.mobile_no}
             />
           </div>
           <div>
             <Input
               type="number"
               onChange={handleInputs}
-              value={state.whatsapp_no}
+              value={state.whatsapp_no || singleNewListing?.whatsapp_no || ""}
               name={"whatsapp_no"}
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Whatsapp No."}
               label={"Enter Whatsapp No"}
-              defaultValue={singleNewListing?.whatsapp_no}
+              // defaultValue={singleNewListing?.whatsapp_no}
             />
           </div>
           <div>
             <Input
               type="email"
               onChange={handleInputs}
-              value={state.email_address}
+              value={state.email_address  || singleNewListing?.email_address || " " }
               name={"email_address"}
               className={"  border w-full p-2  bg-[#FEFBFB]"}
               placeholder={"Email Address"}
               label={"Enter Email Address"}
-              defaultValue={singleNewListing?.email_address}
+              // defaultValue={singleNewListing?.email_address}
             />
           </div>
         </div>

@@ -21,19 +21,19 @@ const ContactDetails = () => {
   const userData = JSON.parse(localStorage.getItem("planData"));
 
   console.log("Parsed planData from localStorage:", userData?.featureAdsDays);
-  const featureAdsDays = Number(userData?.featureAdsDays);
-  console.log('Feature Ads Days:', featureAdsDays);
-  const featureTimePeriod = receivedData?.type_of_ad === "Standard"
-    ? 1
-    : featureAdsDays > 0
-      ? featureAdsDays * 24 * 60
-      : 1;
-  console.log(`Feature Time Period: ${featureTimePeriod}`);
+const featureAdsDays = Number(userData?.featureAdsDays);
+console.log('Feature Ads Days:', featureAdsDays);
+const featureTimePeriod = receivedData?.type_of_ad === "Standard"
+  ? 1
+  : featureAdsDays > 0
+    ? featureAdsDays * 24 * 60 
+    : 1; 
+console.log(`Feature Time Period: ${featureTimePeriod}`);
 
 
 
-  console.log(featureTimePeriod);
-
+      console.log(featureTimePeriod);
+      
   const [state, setState] = useState({
     name: "",
     // contact_details: "",
@@ -59,7 +59,7 @@ const ContactDetails = () => {
 
 
   const userToken = JSON.parse(localStorage.getItem("Dealar"));
-  console.log(userToken?.profileStatus, 'userToken');
+  console.log(userToken?.profileStatus,'userToken');
 
   const handlerSubmit = (e) => {
     setLoader(true);
@@ -67,12 +67,12 @@ const ContactDetails = () => {
 
 
 
-    console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
+console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
 
     const params = {
       userId: user?.userToken,
       enrollmentId: plan?.userPlan?.data?._id,
-      featureTimePeriod: userToken?.profileStatus === 'dealer' ? 1 : featureTimePeriod,
+      featureTimePeriod:userToken?.profileStatus==='dealer'?1:featureTimePeriod,
       title: receivedData.title,
       type_of_ad: receivedData.type_of_ad,
       body_type: receivedData.body_type,
@@ -170,31 +170,31 @@ const ContactDetails = () => {
               </div>
             </li>
             <li>
-              <FaAngleRight className=" text-gray-500" />
+              <FaAngleRight className="  text-secondary" />
             </li>
             <li className=" flex items-center gap-2">
-              <div className=" w-8 h-8 bg-white border-textColor border items-center  rounded-full flex justify-center">
-                <p className=" text-textColor">2</p>
+              <div className=" w-8 h-8  bg-secondary border-secondary border items-center  rounded-full flex justify-center">
+                <p className="  text-white">2</p>
               </div>
               <Link>
-                <span className=" text-textColor font-semibold ">
+                <span className="  text-secondary font-semibold ">
                   Car Details
                 </span>
               </Link>
             </li>
             <li>
-              <FaAngleRight className=" text-gray-500" />
+              <FaAngleRight className="  text-secondary" />
             </li>
             <li className=" flex items-center gap-2">
-              <div className=" w-8 h-8 bg-white border-textColor border items-center  rounded-full flex justify-center">
-                <p className=" text-textColor">3</p>
+              <div className=" w-8 h-8 bg-secondary border-secondary border items-center  rounded-full flex justify-center">
+                <p className=" text-white">3</p>
               </div>
               <Link to={"/car_photos"}>
-                <span className=" text-textColor font-semibold">Photo</span>
+                <span className=" text-secondary font-semibold">Photo</span>
               </Link>
             </li>
             <li>
-              <FaAngleRight className=" text-gray-500" />
+              <FaAngleRight className=" text-secondary" />
             </li>
             <li className=" flex items-center gap-2">
               <div className="w-8 h-8 bg-primary items-center  rounded-full flex justify-center">

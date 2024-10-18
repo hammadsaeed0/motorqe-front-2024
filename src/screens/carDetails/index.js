@@ -196,7 +196,7 @@ const CarDetails = () => {
         param.append("images", selectImages);
 
         profilephoto = await axios.post(
-          `https://file-upload-ashen.vercel.app/api/upload`,
+          `http://35.88.137.61/api/api/upload`,
           param
         );
 
@@ -292,6 +292,10 @@ const CarDetails = () => {
     "Heavy-Duty Trucks",
     "RVs",
   ];
+
+
+
+  
 
   return (
     <div>

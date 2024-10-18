@@ -132,7 +132,12 @@ const Login = () => {
           localStorage.setItem('Dealar', JSON.stringify(res?.data?.data?.user));
 
           if(res?.data?.data?.user?.profileStatus==='serviceProvider'){
-            localStorage.setItem('serviceProvider', JSON.stringify(res?.data?.data?.garage?._id));
+            if(res?.data?.data?.garage?._id===null){
+
+            }else{
+              localStorage.setItem('serviceProvider', JSON.stringify(res?.data?.data?.garage?._id));
+            }
+            
           }
           toast.success("User Login Successfully!");
           navigate("/");

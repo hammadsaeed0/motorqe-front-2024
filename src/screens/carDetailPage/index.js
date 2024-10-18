@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { TfiAngleLeft, TfiAngleRight } from "react-icons/tfi";
 import { FaLocationDot, FaRegCircleCheck } from "react-icons/fa6";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { MdLocationPin, MdOutlineWatchLater } from "react-icons/md";
 import Input from "../../components/Input";
 import { Base_url } from "../../utils/Base_url";
@@ -43,6 +43,9 @@ const CarDetailPage = ({
   const user = useSelector((state) => state.authReducer);
 
   console.log(user);
+
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -121,6 +124,56 @@ const CarDetailPage = ({
         console.error("Error fetching data:", error);
       });
   }, []);
+
+
+
+  const clickButtons = async (messages) => {
+    const params = {
+      id:newListings?._id,
+      action: messages,
+    };
+    const response = await axios
+      .post(`${Base_url}/user/count-click`, params)
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
+
+
+
+  const checkFunChat =  (id)=> {
+
+    if(user?.userToken){
+
+
+
+      const param = {
+        userId1:user?.userToken,
+        userId2:id
+      }
+      
+      axios.post(`${Base_url}/user/create-chat`,param).then((res)=>{
+
+        console.log(res);
+
+
+        navigate('/dashboard/my-inbox');
+        
+
+      }).catch((error)=>{
+
+      })
+      
+    }
+
+
+    
+   
+
+
+  }
+  
 
   return (
     <>
@@ -203,6 +256,7 @@ const CarDetailPage = ({
 
             <div className=" md:py-12 py-4 flex-wrap flex justify-center items-center md:gap-10 gap-6">
               <Button
+              onClick={() => clickButtons("share")}
                 Icons={<FaShareAlt size={20} />}
                 label={"Share"}
                 className={
@@ -515,6 +569,7 @@ const CarDetailPage = ({
             </ul>
             <div className=" mt-6">
               <Button
+                 onClick={() => clickButtons("call")}
                 Icons={<IoCall size={25} />}
                 label={"Call 123-456-7890"}
                 className={
@@ -522,6 +577,7 @@ const CarDetailPage = ({
                 }
               />
               <Button
+              onClick={() => clickButtons("whatsapp")}
                 label={"Whatsapp"}
                 Icons={<FaWhatsapp size={25} />}
                 className={
@@ -529,6 +585,10 @@ const CarDetailPage = ({
                 }
               />
               <Button
+              onClick={() => {clickButtons("message")
+
+                checkFunChat(newListings?.user?._id)
+              }}
                 Icons={<FaRegEnvelope />}
                 label={"Send Message"}
                 className={
@@ -537,17 +597,33 @@ const CarDetailPage = ({
               />
             </div>
             <h5 className=" h4 pt-6">Posted by:</h5>
+         
 
-            <img
-              src={require("../../assets/images/image 50.png")}
-              className=" mt-3 py-4 mx-auto"
-              alt=""
-            />
+{newListings?.user?.profileStatus==='privateSeller'?
+                 <img
+                 src={newListings?.user?.image}
+                  className="w-24 h-24  rounded-full mx-auto"
+                 alt=""
+               />:
+              
+               <img
+                 src={require('../../assets/images/logo.png')}
+                  className="  mx-auto"
+                 alt=""
+               />
 
-            <div>
-              <h6 className=" text-center text-secondary font-semibold">
-                See All Cars Listed from ELITE MOTORS
-              </h6>
+              }
+
+            <div className=" pt-3">
+            {newListings?.user?.profileStatus==='privateSeller'?
+            <h6 className=" text-center text-secondary font-semibold">
+            See All Cars Listed from {newListings?.user?.username}
+          </h6>:
+          <h6 className=" text-center text-secondary font-semibold">
+          See All Cars Listed from ELITE MOTORS
+        </h6>
+          }
+              
               <div className=" gap-4 sm:flex block  justify-center items-center py-5">
                 <Button
                   Icons={<FaLocationDot />}

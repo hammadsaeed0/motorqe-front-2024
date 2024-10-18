@@ -8,10 +8,10 @@ const DashboardNavbar = () => {
     { label: "My Account", path: "/dashboard/my-account" },
     { label: "My Garage", path: "/dashboard/my-garage" },
     { label: "My Inbox", path: "#" },
-    // { label: "My Inbox", path: "/dashboard/my-inbox" },
+    { label: "My Inbox", path: "/dashboard/my-inbox" },
     { label: "Favourite Cars", path: "/dashboard/favourite-cars" },
     { label: "Garage Bookings", path: "/dashboard/garage-bookings" },
-    { label: "Account Details", path: "/dashboard/account-details" },
+    { label: "Account Details", path: "#" },
   ]);
 
 

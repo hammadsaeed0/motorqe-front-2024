@@ -13,7 +13,19 @@ const GarageRequests = () => {
   const [garageRequest, setGarageRequest] = useState([]);
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const user = useSelector((state) => state.authReducer);
-  const userData = JSON.parse(localStorage.getItem("serviceProvider"));
+  const storedData = localStorage.getItem("serviceProvider");
+let userData;
+
+if (storedData !== null) {
+    try {
+        userData = JSON.parse(storedData);
+    } catch (error) {
+        console.error("Error parsing JSON:", error);
+        userData = {}; // Handle parsing error (e.g., set to empty object)
+    }
+} else {
+    userData = {}; // Handle case where item does not exist
+}
 
   console.log(user);
 
@@ -40,12 +52,12 @@ const GarageRequests = () => {
         if (res?.success === true) {
           toast.success(res?.message);
           axios
-            .get(`${Base_url}/user/my-booking/6702d13d1aac755a9f50aa91`)
-            .then((res) => {
-              console.log(res);
-              setGarageRequest(res?.data?.bookings);
-            })
-            .catch((error) => {});
+          .get(`${Base_url}/user/my-booking/${userData}`)
+          .then((res) => {
+            console.log(res, "garage");
+            setGarageRequest(res?.data?.bookings);
+          })
+          .catch((error) => {});
         } else {
           toast.error(res?.message);
         }

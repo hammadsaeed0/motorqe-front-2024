@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Base_url } from "../../utils/Base_url";
 import axios from "axios";
+import Button from "../Button";
 
 const FeaturedCars = ({
   children: slides,
@@ -53,12 +54,29 @@ const FeaturedCars = ({
             <div className="flex-none   w-full h-full">
             <div className="mt-14 w-[90%]  mx-auto md:flex block gap-6">
               <div className="border-4   md:w-[48%]   bg-cards  sm:block md:hidden  xl:block w-[100%] border-primary  rounded-2xl overflow-hidden">
-                <div className="   md:h-[500px] h-64">
+                <div className="   relative md:h-[500px] h-64">
                   <img
                     src={item?.car_images[0]}
                     className=" w-full h-full object-cover object-center"
                     alt=""
                   />
+
+
+<div className=" absolute top-4 right-4">
+
+{item?.type_of_ad === 'Featured' ? (
+                <Button
+                  label={"featured"}
+                  className={
+                    " uppercase py-1 bg-lightBlue  text-sm  text-white font-semibold rounded-3xl"
+                  }
+                />
+              ) : null}
+</div>
+
+
+
+
                 </div>
                 <div className=" p-4">
                   <h5 className=" text-secondary font-bold uppercase">

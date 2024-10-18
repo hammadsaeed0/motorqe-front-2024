@@ -197,7 +197,7 @@ const NewLists = () => {
               return (
                 <Link
                   to={`/car_details_page/${item._id}`}
-                  className="border-4 md:flex block   border-primary  rounded-2xl overflow-hidden"
+                  className={` shadow-lg md:flex block    ${item?.type_of_ad === 'Featured'?'border-primary border-4 ':'border-[#B7DBFF] border'}   rounded-2xl overflow-hidden`}
                 >
                   <div className=" md:w-[30%]">
                     <div className=" h-80 relative">
@@ -216,7 +216,11 @@ const NewLists = () => {
                         />
                       </div>:null
                        }
-                     
+                      {item?.status==='sold'?
+                  <div className=" absolute top-0 w-full h-full flex justify-center items-center   bg-[rgba(255,255,255,0.5)]">
+                    <img src={require('../../assets/images/sold_img.png')} alt="" />
+                  </div>:null
+                }
 
                       <div className=" absolute bottom-0 flex justify-between w-full items-center px-2">
                         <div>

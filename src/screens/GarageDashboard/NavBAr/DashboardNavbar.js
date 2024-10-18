@@ -8,7 +8,7 @@ const DashboardNavbar = () => {
     { label: "My Account", path: "/garage/dashboard/my-account" },
     { label: "My Workshop Services", path: "/garage/dashboard/workshop-services" },
     { label: "Bookings", path: "/garage/dashboard/garage-bookings" },
-    { label: "Account Details", path: "/dashboard/account-details" },
+    { label: "Account Details", path: "#" },
   ]);
 
 
@@ -18,6 +18,9 @@ const DashboardNavbar = () => {
   const dispatch = useDispatch();
   const Logout = () => {
     dispatch(logout("userToken"));
+    localStorage.removeItem('Dealar');
+    localStorage.removeItem('serviceProvider');
+    localStorage.removeItem("workshopCreated");
     toast.success('User logout successfully!')
       navigate('/')
   };
