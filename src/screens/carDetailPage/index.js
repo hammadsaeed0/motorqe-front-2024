@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../../components/Button";
 import { IoCall } from "react-icons/io5";
 import {
@@ -24,6 +24,8 @@ import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 import { REACT_APP_GOOGLE_MAPS_KEY } from "../../utils/Google_map_key";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { Pannellum } from "pannellum-react";
 const CarDetailPage = ({
   children: slides,
   autoSlide = false,
@@ -43,7 +45,6 @@ const CarDetailPage = ({
   const user = useSelector((state) => state.authReducer);
 
   console.log(user);
-
 
   const navigate = useNavigate();
 
@@ -70,6 +71,8 @@ const CarDetailPage = ({
   }, [id]);
 
   const [curr, setCurr] = useState(0);
+  console.log(curr);
+
   const prev = () =>
     setCurr((curr) =>
       curr === 0 ? newListings?.car_images?.length - 1 : curr - 1
@@ -125,11 +128,11 @@ const CarDetailPage = ({
       });
   }, []);
 
-
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
 
   const clickButtons = async (messages) => {
     const params = {
-      id:newListings?._id,
+      id: newListings?._id,
       action: messages,
     };
     const response = await axios
@@ -139,41 +142,37 @@ const CarDetailPage = ({
       });
   };
 
-
-
-
-  const checkFunChat =  (id)=> {
-
-    if(user?.userToken){
-
-
-
+  const checkFunChat = (id) => {
+    if (!userData) {
       const param = {
-        userId1:user?.userToken,
-        userId2:id
-      }
-      
-      axios.post(`${Base_url}/user/create-chat`,param).then((res)=>{
+        userId1: user?.userToken,
+        userId2: id,
+      };
 
-        console.log(res);
+      axios
+        .post(`${Base_url}/user/create-chat`, param)
+        .then((res) => {
+          console.log(res);
 
-
-        navigate('/dashboard/my-inbox');
-        
-
-      }).catch((error)=>{
-
-      })
-      
+          if (res?.data?.success === true) {
+            navigate("/dashboard/my-inbox");
+          } else {
+            toast.error(res?.data?.message);
+          }
+        })
+        .catch((error) => {});
+    } else {
+      navigate("/register");
     }
+  };
 
+  const [yaw, setYaw] = React.useState(0);
+  const [pitch, setPitch] = React.useState(0);
+  const panImage = useRef(null);
 
-    
-   
-
-
-  }
   
+
+  const [activeTab, setActiveTab] = useState("Interior");
 
   return (
     <>
@@ -181,82 +180,162 @@ const CarDetailPage = ({
       <div className=" container md:py-12 py-0 mx-auto md:px-12 px-0">
         <div className=" lg:flex block   justify-between ">
           <div className=" lg:w-[65%] w-[100%]">
-            <div className="overflow-hidden relative border   rounded-2xl md:w-[90%] w-[100%]">
-              <div className=" py-3 px-12  md:block hidden">
-                <ul className=" flex   justify-between items-center">
-                  <li>
-                    <span className=" text-primary text-xl font-bold border-b-4 border-primary">
-                      360 Tour
-                    </span>
-                  </li>
-                  <li>
-                    <span className=" text-secondary  text-xl font-bold">
-                      Exterior
-                    </span>
-                  </li>
-                  <li>
-                    <span className="  text-secondary text-xl font-bold ">
-                      {" "}
-                      Interior
-                    </span>
-                  </li>
-                </ul>
+            <div className="overflow-hidden relative border rounded-2xl md:w-[90%] w-[100%]">
+              <div className="py-3 px-12 md:block hidden">
+              <ul className="flex justify-between relative z-20 items-center">
+  {newListings?.threeSixtyImage?.length > 0 && (
+    <li>
+      <span
+        onClick={() => setActiveTab("360Tour")}
+        className={`text-secondary text-xl font-bold cursor-pointer ${
+          activeTab === "360Tour" ? "border-b-4 border-primary" : ""
+        }`}
+      >
+        360 Tour
+      </span>
+    </li>
+  )}
+  
+  {newListings?.car_images?.length > 0 && (
+    <li>
+      <span
+        onClick={() => setActiveTab("Interior")}
+        className={`text-secondary text-xl font-bold cursor-pointer ${
+          activeTab === "Interior" ? "border-b-4 border-primary" : ""
+        }`}
+      >
+        Interior
+      </span>
+    </li>
+  )}
+
+  {newListings?.car_images?.length > 0 && (
+    <li>
+      <span
+        onClick={() => setActiveTab("Exterior")}
+        className={`text-secondary text-xl font-bold cursor-pointer ${
+          activeTab === "Exterior" ? "border-b-4 border-primary" : ""
+        }`}
+      >
+        Exterior
+      </span>
+    </li>
+  )}
+</ul>
+
               </div>
+
               <div
-                className="flex  sm:h-[75vh] h-[50vh] transition-transform ease-out duration-500"
+                className="flex sm:h-[75vh] h-[50vh] transition-transform ease-out duration-500"
                 style={{ transform: `translateX(-${curr * 100}%)` }}
               >
-                {newListings?.car_images?.map((s) => (
-                  <>
-                    <div className="flex-none   w-full h-full">
+                {activeTab === "Exterior" &&
+                  newListings?.car_images?.map((s, index) => (
+                    <div className="flex-none w-full h-full" key={index}>
                       <img
                         src={s}
                         alt=""
-                        className=" w-full cursor-pointer h-full  rounded-md  object-cover"
+                        className="w-full cursor-pointer h-full rounded-md object-cover"
                       />
                     </div>
-                  </>
-                ))}
+                  ))}
+
+                {activeTab === "Interior" &&
+                  newListings?.car_images?.map((s, index) => (
+                    <div className="flex-none w-full h-full" key={index}>
+                      <img
+                        src={s}
+                        alt=""
+                        className="w-full cursor-pointer h-full rounded-md object-cover"
+                      />
+                    </div>
+                  ))}
+
+                {activeTab === "360Tour" &&
+                  newListings?.threeSixtyImage?.map((item, index) => (
+                    <div
+                      className="flex-none rounded-md  relative z-40 overflow-hidden w-full h-full"
+                      key={index}
+                    >
+                      <Pannellum
+                        width="100%"
+                        height="500px"
+                        image={item}
+                        pitch={10}
+                        yaw={180}
+                        hfov={110}
+                        autoLoad
+                        showZoomCtrl={false}
+                      >
+                        <Pannellum.Hotspot
+                          type="custom"
+                          pitch={12.41}
+                          yaw={117.76}
+                          handleClick={(evt, name) => console.log(name)}
+                          name="image info"
+                        />
+                      </Pannellum>
+                    </div>
+                  ))}
               </div>
-              <div className="absolute inset-0 flex px-3 items-center justify-between">
+
+              <div className="">
                 <button
                   onClick={prev}
-                  className=" w-12 h-12 rounded-full shadow   flex  justify-center items-center bg-white/80 text-gray-800 hover:bg-white"
+                  className="w-12 h-12 rounded-full absolute top-[50%] left-3 shadow flex justify-center items-center bg-white/80 text-gray-800 hover:bg-white"
                 >
-                  <TfiAngleLeft size={20} className="" />
+                  <TfiAngleLeft size={20} />
                 </button>
                 <button
                   onClick={next}
-                  className=" w-12 h-12  rounded-full   flex justify-center items-center shadow bg-white/80 text-gray-800 hover:bg-white"
+                  className="w-12 h-12 rounded-full absolute top-[50%] right-3  flex justify-center items-center shadow bg-white/80 text-gray-800 hover:bg-white"
                 >
                   <TfiAngleRight size={20} />
                 </button>
               </div>
-            </div>
-            <div className=" mt-2  md:block hidden">
-              <div className="flex items-center justify-center gap-2">
-                {newListings?.car_images?.map((_, i) => (
-                  <div
-                    key={i}
-                    onClick={() => goToSlide(i)}
-                    className={`
-              transition-all w-20 h-16 rounded-md overflow-hidden bg-white 
-              ${curr === i ? " w-14 h-14" : "bg-opacity-50"}
-            `}
-                  >
-                    <img
-                      src={_}
-                      alt=""
-                      className=" w-full h-full   object-center  "
-                    />
-                  </div>
-                ))}
+
+              <div className="my-2 md:block hidden">
+                <div className="flex items-center justify-center gap-2">
+                  {activeTab === "360Tour" &&
+                    newListings?.threeSixtyImage?.map((item, i) => (
+                      <div
+                        key={i}
+                        onClick={() => goToSlide(i)}
+                        className={`transition-all cursor-pointer w-20 h-16 rounded-md overflow-hidden bg-white ${
+                          curr === i ? "w-14 h-14" : "bg-opacity-50"
+                        }`}
+                      >
+                        <img
+                          src={item}
+                          alt=""
+                          className="w-full h-full object-center"
+                        />
+                      </div>
+                    ))}
+
+                  {activeTab === "Interior" &&
+                    newListings?.car_images?.map((image, i) => (
+                      <div
+                        key={i}
+                        onClick={() => goToSlide(i)}
+                        className={`transition-all cursor-pointer w-20 h-16 rounded-md overflow-hidden bg-white ${
+                          curr === i ? "w-14 h-14" : "bg-opacity-50"
+                        }`}
+                      >
+                        <img
+                          src={image}
+                          alt=""
+                          className="w-full h-full object-center"
+                        />
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>
 
             <div className=" md:py-12 py-4 flex-wrap flex justify-center items-center md:gap-10 gap-6">
               <Button
-              onClick={() => clickButtons("share")}
+                onClick={() => clickButtons("share")}
                 Icons={<FaShareAlt size={20} />}
                 label={"Share"}
                 className={
@@ -569,7 +648,7 @@ const CarDetailPage = ({
             </ul>
             <div className=" mt-6">
               <Button
-                 onClick={() => clickButtons("call")}
+                onClick={() => clickButtons("call")}
                 Icons={<IoCall size={25} />}
                 label={"Call 123-456-7890"}
                 className={
@@ -577,7 +656,7 @@ const CarDetailPage = ({
                 }
               />
               <Button
-              onClick={() => clickButtons("whatsapp")}
+                onClick={() => clickButtons("whatsapp")}
                 label={"Whatsapp"}
                 Icons={<FaWhatsapp size={25} />}
                 className={
@@ -585,10 +664,11 @@ const CarDetailPage = ({
                 }
               />
               <Button
-              onClick={() => {clickButtons("message")
+                onClick={() => {
+                  clickButtons("message");
 
-                checkFunChat(newListings?.user?._id)
-              }}
+                  checkFunChat(newListings?.user?._id);
+                }}
                 Icons={<FaRegEnvelope />}
                 label={"Send Message"}
                 className={
@@ -597,33 +677,32 @@ const CarDetailPage = ({
               />
             </div>
             <h5 className=" h4 pt-6">Posted by:</h5>
-         
 
-{newListings?.user?.profileStatus==='privateSeller'?
-                 <img
-                 src={newListings?.user?.image}
-                  className="w-24 h-24  rounded-full mx-auto"
-                 alt=""
-               />:
-              
-               <img
-                 src={require('../../assets/images/logo.png')}
-                  className="  mx-auto"
-                 alt=""
-               />
-
-              }
+            {newListings?.user?.profileStatus === "privateSeller" ? (
+              <img
+                src={newListings?.user?.image}
+                className="w-24 h-24  rounded-full mx-auto"
+                alt=""
+              />
+            ) : (
+              <img
+                src={require("../../assets/images/logo.png")}
+                className="  mx-auto"
+                alt=""
+              />
+            )}
 
             <div className=" pt-3">
-            {newListings?.user?.profileStatus==='privateSeller'?
-            <h6 className=" text-center text-secondary font-semibold">
-            See All Cars Listed from {newListings?.user?.username}
-          </h6>:
-          <h6 className=" text-center text-secondary font-semibold">
-          See All Cars Listed from ELITE MOTORS
-        </h6>
-          }
-              
+              {newListings?.user?.profileStatus === "privateSeller" ? (
+                <h6 className=" text-center text-secondary font-semibold">
+                  See All Cars Listed from {newListings?.user?.username}
+                </h6>
+              ) : (
+                <h6 className=" text-center text-secondary font-semibold">
+                  See All Cars Listed from ELITE MOTORS
+                </h6>
+              )}
+
               <div className=" gap-4 sm:flex block  justify-center items-center py-5">
                 <Button
                   Icons={<FaLocationDot />}

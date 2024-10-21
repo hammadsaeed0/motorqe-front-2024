@@ -7,10 +7,11 @@ import { IoCall } from "react-icons/io5";
 import { FaHeart, FaWhatsapp } from "react-icons/fa";
 import { Base_url } from "../../utils/Base_url";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ListingCard = ({ item }) => {
   const user = useSelector((state) => state.authReducer);
-const navigate = useNavigate();
+  const navigate = useNavigate();
   console.log(user?.userToken);
 
   const [isLiked, setIsLiked] = useState(
@@ -48,43 +49,41 @@ const navigate = useNavigate();
         console.log(res);
       });
   };
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
 
-
-  const checkFunChat =  (id)=> {
-
-    if(user?.userToken){
-
-
-
+  const checkFunChat = (id) => {
+    if (!userData) {
+      navigate("/register");
+    } else {
       const param = {
-        userId1:user?.userToken,
-        userId2:id
-      }
-      
-      axios.post(`${Base_url}/user/create-chat`,param).then((res)=>{
+        userId1: user?.userToken,
+        userId2: id,
+      };
 
-        console.log(res);
+      axios
+        .post(`${Base_url}/user/create-chat`, param)
+        .then((res) => {
+          console.log(res);
 
-
-        navigate('/dashboard/my-inbox');
-        
-
-      }).catch((error)=>{
-
-      })
-      
+          if (res?.data?.success === true) {
+            navigate("/dashboard/my-inbox");
+          } else {
+            toast.error(res?.data?.message);
+          }
+        })
+        .catch((error) => {});
     }
-
-
-    
-   
-
-
-  }
+  };
 
   return (
     <>
-      <div className={` shadow-lg  w-[400px]  ${item?.type_of_ad === 'Featured'?'border-primary border-4 ':'border-[#B7DBFF] border'} rounded-2xl overflow-hidden`}>
+      <div
+        className={` shadow-lg  w-[400px]  ${
+          item?.type_of_ad === "Featured"
+            ? "border-primary border-4 "
+            : "border-[#B7DBFF] border"
+        } rounded-2xl overflow-hidden`}
+      >
         <div className="">
           <div className="relative   h-60">
             <Link to={`/car_details_page/${item._id}`}>
@@ -95,11 +94,8 @@ const navigate = useNavigate();
               />
             </Link>
 
-
-           
-
             <div className=" absolute top-2 right-2">
-              {item?.type_of_ad === 'Featured' ? (
+              {item?.type_of_ad === "Featured" ? (
                 <Button
                   label={"featured"}
                   className={
@@ -132,15 +128,12 @@ const navigate = useNavigate();
                 )}
               </div>
             </div>
-                 
 
-                 {item?.status==='sold'?
-                  <div className=" absolute top-0 w-full h-full flex justify-center items-center   bg-[rgba(255,255,255,0.5)]">
-                    <img src={require('../../assets/images/sold_img.png')} alt="" />
-                  </div>:null
-                }
-
-           
+            {item?.status === "sold" ? (
+              <div className=" absolute top-0 w-full h-full flex justify-center items-center   bg-[rgba(255,255,255,0.5)]">
+                <img src={require("../../assets/images/sold_img.png")} alt="" />
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="  justify-between p-4">
@@ -150,24 +143,22 @@ const navigate = useNavigate();
                 {item?.title}
               </h5>
               <div className="  float-right">
-
-                {item?.user?.profileStatus==='privateSeller'?
-                 <img
-                 src={item?.user?.image}
-                 className=" text-right  w-12 h-12 rounded-full"
-                 alt=""
-               />:
-               <>
-               
-               </>
-              //  <img
-              //    src={require('../../assets/images/logo.png')}
-              //    className=" text-right  w-12 h-12"
-              //    alt=""
-              //  />
-
-              }
-               
+                {
+                  item?.user?.profileStatus === "privateSeller" ? (
+                    <img
+                      src={item?.user?.image}
+                      className=" text-right  w-12 h-12 rounded-full"
+                      alt=""
+                    />
+                  ) : (
+                    <></>
+                  )
+                  //  <img
+                  //    src={require('../../assets/images/logo.png')}
+                  //    className=" text-right  w-12 h-12"
+                  //    alt=""
+                  //  />
+                }
               </div>
             </div>
 
@@ -237,10 +228,10 @@ const navigate = useNavigate();
               }
             />
             <Button
-              onClick={() => {clickButtons("message")
-                
-                checkFunChat(item?.user?._id)
+              onClick={() => {
+                clickButtons("message");
 
+                checkFunChat(item?.user?._id);
               }}
               Icons={
                 <img src={require("../../assets/images/chat.png")} alt="" />

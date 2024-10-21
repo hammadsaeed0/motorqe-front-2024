@@ -20,26 +20,24 @@ import axios from "axios";
 import { Base_url } from "../../../../utils/Base_url";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { BsFillSendFill } from "react-icons/bs";
+import { IoSend } from "react-icons/io5";
 
 const Inbox = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
 
   const user = useSelector((state) => state.authReducer);
   const [allRooms, setAllRooms] = useState([]);
   const [singleChat, setSingleChat] = useState({});
-  console.log(singleChat);
-  
   const [message, setMessage] = useState("");
-  const messagesEndRef = useRef(null); // Ref for auto-scrolling
-
+  
   useEffect(() => {
     axios
       .get(`${Base_url}/user/my-chat/${user?.userToken}`)
       .then((res) => {
         setAllRooms(res?.data?.chats);
-        console.log(res);
-        
       })
       .catch((error) => {
         console.log(error);
@@ -55,7 +53,10 @@ const Inbox = () => {
     axios
       .post(`${Base_url}/user/single-chat`, params)
       .then((res) => {
+        console.log(res);
+
         setSingleChat(res?.data);
+        setSelectedUserId(id); // Set the selected user ID
       })
       .catch((error) => {
         console.log(error);
@@ -63,7 +64,7 @@ const Inbox = () => {
   };
 
   const SendMessage = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     const params = {
       chatId: singleChat?.chat?._id,
@@ -72,34 +73,53 @@ const Inbox = () => {
     };
 
     axios
-      .post(`https://new-motorqe-backend.vercel.app/v1/user/send-message`, params)
+      .post(
+        `https://new-motorqe-backend.vercel.app/v1/user/send-message`,
+        params
+      )
       .then((res) => {
         const newMessage = {
           text: message,
           createdAt: new Date(),
           senderId: user?.userToken,
         };
+
+        console.log(res);
+
         setSingleChat((prevChat) => ({
           ...prevChat,
           messages: [...prevChat.messages, newMessage],
         }));
         setMessage("");
-        scrollToBottom(); // Scroll to bottom after sending message
+       
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+   // Ref for the chat container
+   const chatContainerRef = useRef(null);
 
-  useEffect(() => {
-    // if (singleChat.messages) {
-      // scrollToBottom(); // Scroll to bottom when messages change
-    // }
-  }, []);
+   // Function to scroll to the bottom of the chat container
+   const scrollToBottom = () => {
+     chatContainerRef.current?.scrollTo({
+       top: chatContainerRef.current.scrollHeight,
+       behavior: "smooth",
+     });
+   };
+ 
+   // Auto-scroll to bottom when component mounts or messages change
+   useEffect(() => {
+     if (singleChat?.messages?.length > 0) {
+       scrollToBottom();
+     }
+   }, [singleChat.messages]);
+ 
+
+  const otherParticipant = singleChat?.chat?.participants?.find(
+    (participant) => participant._id !== user?.userToken
+  );
 
   return (
     <>
@@ -107,135 +127,143 @@ const Inbox = () => {
       <DashboardNavbar />
       <div className="flex flex-col items-center mb-4">
         <div className="mt-16 flex items-center justify-between w-[90%]">
-          <h1 className="font-inter text-3xl font-semibold pb-5 text-left">Inbox:</h1>
+          <h1 className="font-inter text-3xl font-semibold pb-5 text-left">
+            Inbox:
+          </h1>
         </div>
         <div className="w-[90%]">
-          <div className="ring ring-[#FB5722] rounded-[15px] mt-4">
-            <div className="flex justify-between h-[75px] w-full bg-gray-50 rounded-tl-[15px] rounded-tr-[15px] ring-1 ring-[#FB5722]">
-              {/* Chat Header */}
-              <div className="ring-1 ring-[#FB5722] bg-[#F3F3F5] w-[35%] flex  items-center rounded-tl-[15px]">
-                <div>
-                  <div className="h-[30px] flex pl-2">
-                    <img src={inbox} alt="inbox" className="h-5" />
-                    <p className="font-bold text-[#FB5722] items-center">Inbox</p>
-                  </div>
-                  <div className="border-b border-[#FB5722] w-[55px] relative pt-1 ml-1"></div>
-                </div>
-                {/* <div className="flex">
-                  <img src={sent} alt="sent" className="h-5" />
-                  <p className="text-20 font-semibold tracking-wider text-left text-[#0C0CB8]">Sent</p>
-                </div> */}
-                {/* <div className="flex">
-                  <img src={unread} alt="unread" className="h-5" />
-                  <p className="text-20 font-semibold tracking-wider text-left text-[#0C0CB8]">Unread</p>
-                </div> */}
-              </div>
-              {/* Right Side */}
-              <div className="ring-1 ring-[#FB5722] bg-[#F3F3F5] w-[65%] flex   justify-between items-center rounded-tr-[15px]">
-                <div className="flex">
-                  <div className="p-2">
-                    {singleChat?.chat?.participants?.[0]?.image?
-                    <img src={singleChat?.chat?.participants?.[0]?.image} className="h-14 w-14 rounded-full" alt="Sender" />:<img src={require('../../../../assets/images/logo.png')} className="h-14 w-14 rounded-full" alt="Sender" />
-                  }
-                    
-                  </div>
-                  <div className="   pt-2">
-                    <strong className="text-20 font-semibold leading-24  py-2 tracking-wider text-left">
-                      {singleChat?.chat?.participants?.[0]?.username}
-                    </strong>
-                    {/* <p className="text-[#686464] font-semibold leading-24 tracking-wider text-left">QR 130,000</p> */}
-                    <p className="font-inter text-[#686464] text-sm font-normal leading-6 tracking-wider text-left">{singleChat?.chat?.participants?.[0]?.email}</p>
-                  </div>
-                </div>
-                <div className="flex gap-1 mr-4">
-                  <div className="p-2">
-                    <img src={bluewhatsap} className="h-6" alt="WhatsApp" />
-                  </div>
-                  <div className="p-2">
-                    <img src={phone} className="h-6" alt="Phone" />
-                  </div>
-                  {/* <div className="p-2">
-                    <button onClick={toggleDropdown} className="relative">
-                      <img src={threedots} className="h-6" alt="Options" />
-                      {isDropdownOpen && (
-                        <Dropdown
-                          isOpen={isDropdownOpen}
-                          onClose={() => setDropdownOpen(false)}
-                        />
-                      )}
-                    </button>
-                  </div> */}
-                </div>
-              </div>
-            </div>
+          <div className="ring ring-[#FB5722]  overflow-hidden rounded-[15px] mt-4">
             <div className="flex w-full min-h-[70vh] overflow-x-auto">
               {/* Chat Body Left Side */}
-              <div className="ring-1 ring-[#FB5722] w-[35%] flex rounded-bl-[15px]">
-                <div className="w-full">
-                  {allRooms?.map((item, index) => (
-                    <div
-                      key={index}
-                      onClick={() => GetSingleChat(item?.participants?.[0]?._id)}
-                      className="flex w-full p-2 border-b border-[#FB5722] bg-[#F3F3F5]"
-                    >
-                      <div className="flex gap-4 w-full items-center">
-                        <div>
-                          {item?.participants?.[0]?.image ? (
-                            <img
-                              src={item?.participants?.[0]?.image}
-                              className="w-16 h-16 rounded-[50%]"
-                              alt="Participant"
-                            />
-                          ) : (
-                            <img
-                              src={require("../../../../assets/images/logo.png")}
-                              className="w-16 h-16 rounded-[50%]"
-                              alt="Default"
-                            />
-                          )}
+              <div className="ring-1 ring-[#FB5722]  w-[35%] flex rounded-bl-[15px]">
+                <div className=" w-full">
+                  <div className=" bg-[#F3F3F5] h-[73px]">
+                    <h1 className=" p-4  m-0  text-primary font-semibold text-xl">
+                      Chats
+                    </h1>
+                  </div>
+                  <div className="w-full">
+                    {allRooms?.map((item, index) => {
+                      const otherParticipant = item.participants.find(
+                        (participant) => participant._id !== user?.userToken
+                      );
+
+                      if (!otherParticipant) return null;
+
+                      return (
+                        <div
+                          key={index}
+                          onClick={() => GetSingleChat(otherParticipant._id)}
+                          className={`flex w-full p-2.5 hover:bg-primary hover:text-white border-b cursor-pointer border-[#FB5722] bg-[#F3F3F5] ${
+                            selectedUserId === otherParticipant._id
+                              ? "bg-[#FB5722] text-white"
+                              : ""
+                          }`}
+                        >
+                          <div className="flex gap-4 w-full items-center">
+                            <div>
+                              {otherParticipant.image ? (
+                                <img
+                                  src={otherParticipant.image}
+                                  className="w-14 h-14 rounded-[50%]"
+                                  alt="Participant"
+                                />
+                              ) : (
+                                <img
+                                  src={require("../../../../assets/images/logo.png")}
+                                  className="w-16 h-16 rounded-[50%]"
+                                  alt="Default"
+                                />
+                              )}
+                            </div>
+                            <div>
+                              <strong className="font-inter text-lg font-semibold leading-6 tracking-wider text-left">
+                                {otherParticipant.username}
+                              </strong>
+                              <p className="font-inter text-base font-normal leading-6 tracking-wide text-left">
+                                {item.lastMessage?.text || "No messages yet"}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="w-28">
+                            <p className="font-inter text-sm font-normal leading-5 tracking-wide mr-2">
+                              {item.lastMessage
+                                ? moment(item.lastMessage.createdAt).format(
+                                    "DD-MM-YYYY"
+                                  )
+                                : moment(item.createdAt).format("DD-MM-YYYY")}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <strong className="font-inter text-lg font-semibold leading-6 tracking-wider text-left">
-                            {item?.participants?.[0]?.username}
-                          </strong>
-                          <p className="font-inter text-base font-normal leading-6 tracking-wide text-left text-[#777777]">
-                            {item?.lastMessage?.text}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="w-28">
-                        <p className="font-inter text-sm font-normal leading-5 tracking-wide mr-2">
-                          {moment(item?.lastMessage?.createdAt).format("DD-MM-YYYY")}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
               {/* Chat Body Right Side */}
-              <div className="flex flex-col w-[65%] pt-2 rounded-br-[15px] min-h-[70vh]">
-                <div className="h-80 overflow-x-auto px-12">
+
+              <div className="flex flex-col w-[65%]  rounded-br-[15px] min-h-[70vh]">
+                <div className="ring-1 ring-[#FB5722] bg-[#F3F3F5]  w-full flex justify-between items-center rounded-tr-[15px]">
+                  <div className="flex">
+                    <div className="p-2">
+                      {otherParticipant?.image ? (
+                        <img
+                          src={otherParticipant.image}
+                          className="h-14 w-14 rounded-full"
+                          alt="Sender"
+                        />
+                      ) : (
+                        <img
+                          src={require("../../../../assets/images/logo.png")}
+                          className="h-14 w-14 rounded-full"
+                          alt="Sender"
+                        />
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <strong className="text-20 font-semibold leading-24 py-2 tracking-wider text-left">
+                        {otherParticipant?.username}{" "}
+                        {/* Updated to access the correct property */}
+                      </strong>
+                      <p className="font-inter text-[#686464] text-sm font-normal leading-6 tracking-wider text-left">
+                        {otherParticipant?.email}{" "}
+                        {/* Updated to access the correct property */}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 mr-4">
+                    <div className="p-2">
+                      <img src={bluewhatsap} className="h-6" alt="WhatsApp" />
+                    </div>
+                    <div className="p-2">
+                      <img src={phone} className="h-6" alt="Phone" />
+                    </div>
+                  </div>
+                </div>
+                <div className="h-80 my-2 overflow-y-auto px-12"   ref={chatContainerRef}  >
                   {singleChat?.messages?.length > 0 ? (
                     singleChat.messages.map((item, index) => (
                       <div
-                      ref={messagesEndRef}
+                     
                         key={index}
-                        className={`flex gap-3 items-center ${item.sender === user?.userToken ? 'justify-end' : 'justify-start'} pt-4`}
+                        className={`flex gap-3 items-center ${
+                          item.sender === user?.userToken
+                            ? "justify-end"
+                            : "justify-start"
+                        } pt-4`}
                       >
-                        {/* {item.sender !== user?.userToken && (
-                          <img src={receiverimg} className="rounded-[50%] w-14" alt="Receiver" />
-                        )} */}
                         <div
-                          className={`p-2 h-10 max-w-[350px] ${item.sender === user?.userToken ? 'bg-[#F3F3F5]' : 'bg-[#F3F3F5]'} items-center flex font-inter text-base tracking-wide text-[#545151]`}
+                          className={`p-2 h-10  rounded-sm max-w-[350px] ${
+                            item.sender === user?.userToken
+                              ? "bg-[#F3F3F5]"
+                              : " bg-primary text-white "
+                          } items-center flex font-inter text-base tracking-wide text-[#545151]`}
                         >
-                          <p className="items-center flex font-inter text-base tracking-wide text-[#545151]">
+                          <p className={`items-center flex font-inter text-base tracking-wide ${item.sender === user?.userToken?'text-[#545151] ':' text-white'} `}>
                             {item.text}
                           </p>
                         </div>
-                        {/* {item.sender === user?.userToken && (
-                          <img src={senderimg} className="rounded-[50%] w-14" alt="Sender" />
-                        )} */}
                       </div>
                     ))
                   ) : (
@@ -243,14 +271,15 @@ const Inbox = () => {
                       <p className="text-gray-500">No messages found.</p>
                     </div>
                   )}
-                  {/* <div ref={messagesEndRef} /> This will help us scroll to the bottom */}
+
+{/* <div ref={messagesEndRef}></div> */}
                 </div>
 
                 {/* Send Message Field */}
-                <div className="flex-grow flex bg-white flex-col justify-end w-full h-[100px] rounded-[10px]">
+                <div className="flex-grow flex  mt-2 flex-col justify-end w-full h-[100px] rounded-[10px]">
                   <form
                     onSubmit={SendMessage}
-                    className="flex ring-1 ring-[#FB5722] rounded-[15px] p-2 mb-5 w-[95%] ml-[2.5%] h-[100px] bg"
+                    className="flex ring-1 ring-[#FB5722] rounded-[15px] p-2 mb-5 w-[95%] ml-[2.5%] h-[100px]"
                   >
                     <textarea
                       value={message}
@@ -265,9 +294,21 @@ const Inbox = () => {
                         }
                       }}
                     ></textarea>
-                    <div className="flex gap-3">
-                      <img src={smily} className="h-5" alt="Smile" />
-                      <img src={thumb} className="h-5" alt="Thumb" />
+
+                    {/* Action buttons for sending message */}
+                    <div className="flex flex-col justify-between">
+                      <div className="flex gap-3">
+                        <img src={smily} className="h-5" alt="Smile" />
+                        <img src={thumb} className="h-5" alt="Thumb" />
+                      </div>
+
+                      {/* Send button */}
+                      <div
+                        onClick={() => SendMessage()} // Calls SendMessage when clicked
+                        className="cursor-pointer pt-6 pl-6"
+                      >
+                        <IoSend className="text-primary" size={30} />
+                      </div>
                     </div>
                   </form>
                 </div>

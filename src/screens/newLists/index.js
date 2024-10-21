@@ -7,13 +7,14 @@ import { TfiLayoutGrid2Alt } from "react-icons/tfi";
 import { FaSortAmountUpAlt } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
 import Option from "../../components/Option";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Base_url } from "../../utils/Base_url";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { useSelector } from "react-redux";
 import ListingCard from "../cards/ListingCard";
+import { toast } from "react-toastify";
 const NewLists = () => {
   const location = useLocation();
   const receivedData = location.state?.filter;
@@ -33,6 +34,46 @@ const NewLists = () => {
     })
     .catch((error) => {});
   }, []);
+  const navigate = useNavigate();
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
+  const user = useSelector((state) => state.authReducer);
+  const checkFunChat = (id) => {
+    if (!userData) {
+      navigate("/register");
+    } else {
+      const param = {
+        userId1: user?.userToken,
+        userId2: id,
+      };
+
+      axios
+        .post(`${Base_url}/user/create-chat`, param)
+        .then((res) => {
+          console.log(res);
+
+          if (res?.data?.success === true) {
+            navigate("/dashboard/my-inbox");
+          } else {
+            toast.error(res?.data?.message);
+          }
+        })
+        .catch((error) => {});
+    }
+  };
+
+
+
+  const clickButtons = async (messages) => {
+    const params = {
+      id: user?.userToken,
+      action: messages,
+    };
+    const response = await axios
+      .post(`${Base_url}/user/count-click`, params)
+      .then((res) => {
+        console.log(res);
+      });
+  };
 
   return (
     <>
@@ -195,11 +236,11 @@ const NewLists = () => {
           <div className=" my-12 flex flex-col gap-12">
             {receivedData?.data?.map((item, index) => {
               return (
-                <Link
-                  to={`/car_details_page/${item._id}`}
+                <div
                   className={` shadow-lg md:flex block    ${item?.type_of_ad === 'Featured'?'border-primary border-4 ':'border-[#B7DBFF] border'}   rounded-2xl overflow-hidden`}
                 >
-                  <div className=" md:w-[30%]">
+                  <Link
+                  to={`/car_details_page/${item._id}`} className=" md:w-[30%]">
                     <div className=" h-80 relative">
                       <img
                         src={item?.car_images[0]}
@@ -234,7 +275,7 @@ const NewLists = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                   <div className=" w-[70%] flex justify-between p-5">
                     <div>
                       <h5 className=" text-textColor text-xl font-bold uppercase">
@@ -323,6 +364,10 @@ const NewLists = () => {
                         }
                       />
                       <Button
+                        
+                        onClick={()=>{
+                          checkFunChat(item?.user?._id);
+                        }}
                         Icons={
                           <img
                             src={require("../../assets/images/chat.png")}
@@ -357,7 +402,7 @@ const NewLists = () => {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
