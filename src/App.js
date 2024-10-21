@@ -80,8 +80,9 @@ function App() {
           <Route path="/ListingBookingConfirmation" element={<ListingBookingConfirmation />} />
          
           <Route path="/new_lists" element={<NewLists />} />
-          <Route element={<PrivateRoute />}>
           <Route path="/car_details_page/:id" element={<CarDetailPage />} />
+          <Route element={<PrivateRoute />}>
+          
             <Route path="/car_photos" element={<CarPhotos />} />
             <Route path="/contact_details" element={<ContactDetails />} />
             <Route path="/car_inspection" element={<CarInspection />} />

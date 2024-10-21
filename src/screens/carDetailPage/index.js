@@ -34,6 +34,10 @@ const CarDetailPage = ({
   qty,
   setQty,
 }) => {
+
+
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
+
   const sliders = [
     require("../../assets/images/image 7.png"),
     require("../../assets/images/home.png"),
@@ -128,7 +132,7 @@ const CarDetailPage = ({
       });
   }, []);
 
-  const userData = JSON.parse(localStorage.getItem("Dealar"));
+ 
 
   const clickButtons = async (messages) => {
     const params = {
@@ -144,6 +148,8 @@ const CarDetailPage = ({
 
   const checkFunChat = (id) => {
     if (!userData) {
+      navigate("/register");
+    } else {
       const param = {
         userId1: user?.userToken,
         userId2: id,
@@ -161,8 +167,6 @@ const CarDetailPage = ({
           }
         })
         .catch((error) => {});
-    } else {
-      navigate("/register");
     }
   };
 

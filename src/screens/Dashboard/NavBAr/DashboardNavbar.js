@@ -7,7 +7,7 @@ const DashboardNavbar = () => {
   const [menuItems] = useState([
     { label: "My Account", path: "/dashboard/my-account" },
     { label: "My Garage", path: "/dashboard/my-garage" },
-    { label: "My Inbox", path: "#" },
+    // { label: "My Inbox", path: "#" },
     { label: "My Inbox", path: "/dashboard/my-inbox" },
     { label: "Favourite Cars", path: "/dashboard/favourite-cars" },
     { label: "Garage Bookings", path: "/dashboard/garage-bookings" },
