@@ -8,6 +8,7 @@ import { FaHeart, FaWhatsapp } from "react-icons/fa";
 import { Base_url } from "../../utils/Base_url";
 import axios from "axios";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const ListingCard = ({ item }) => {
   const user = useSelector((state) => state.authReducer);
@@ -106,9 +107,12 @@ const ListingCard = ({ item }) => {
             </div>
 
             <div className=" absolute bottom-0 flex justify-between w-full items-center px-2">
-              <div>
-                <img src={require("../../assets/images/speed.png")} alt="" />
-              </div>
+              {item?.threeSixtyImage?.length === 0 ? null : (
+                <div>
+                  <img src={require("../../assets/images/speed.png")} alt="" />
+                </div>
+              )}
+
               <div className=" w-8 h-8 flex justify-center items-center rounded-full bg-white">
                 {isLiked ? (
                   <FaHeart
@@ -207,13 +211,23 @@ const ListingCard = ({ item }) => {
               <div>
                 <h2 className="   text-secondary font-bold">Compare</h2>
               </div>
-              <div className=" flex gap-1 my-2">
-                <img src={require("../../assets/images/security.png")} alt="" />
 
-                <img src={require("../../assets/images/Frame.png")} alt="" />
+              <div className=" flex gap-1 my-2">
+                {item?.warranty === true ? (
+                  <img
+                    src={require("../../assets/images/security.png")}
+                    alt=""
+                  />
+                ) : null}
+
+                {item?.inspected === true ? (
+                  <img src={require("../../assets/images/Frame.png")} alt="" />
+                ) : null}
               </div>
               <div>
-                <h5 className=" font-bold text-textColor">2 Hours Ago</h5>
+                <h5 className=" font-bold text-textColor">
+                  {moment(item?.updatedAt).startOf("hour").fromNow()}
+                </h5>
               </div>
             </div>
           </div>

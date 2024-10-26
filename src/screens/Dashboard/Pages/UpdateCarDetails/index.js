@@ -110,12 +110,12 @@ const UpdateCarDetails = () => {
     interior_colour: "",
     fuel_type: "",
     registration_date: "",
-    warranty: "",
+    warranty:null,
     warranty_date: "",
-    inspected: "",
+    inspected:null,
     price_QR: "",
     price_range: "",
-    negotiable: "",
+    negotiable:null,
     description: "",
     vehicle_location: address,
     longitude: currentLocation.lng,
@@ -234,6 +234,7 @@ const UpdateCarDetails = () => {
   
     try {
       const params = {
+        status:'pending',
         ...(state.title && { title: state.title }),
         ...(state.type_of_ad && { type_of_ad: state.type_of_ad }),
         ...(state.body_type && { body_type: state.body_type }),
@@ -252,12 +253,12 @@ const UpdateCarDetails = () => {
         ...(state.interior_colour && { interior_colour: state.interior_colour }),
         ...(state.fuel_type && { fuel_type: state.fuel_type }),
         ...(state.registration_date && { registration_date: state.registration_date }),
-        ...(state.warranty !== undefined && { warranty: state.warranty === "true" }),
+        ...(state.warranty !== null && { warranty: state.warranty?state.warranty:singleNewListing?.warranty}),
         ...(state.warranty_date && { warranty_date: state.warranty_date }),
-        ...(state.inspected !== undefined && { inspected: state.inspected === "true" }),
+        ...(state.inspected !== null && { inspected: state.inspected?state.inspected:singleNewListing?.inspected }),
         ...(state.price_QR && { price_QR: Number(state.price_QR) }),
         ...(state.price_range && { price_range: state.price_range }),
-        ...(state.negotiable !== undefined && { negotiable: state.negotiable === "true" }),
+        ...(state.negotiable !== undefined && { negotiable: state.negotiable }),
         ...(state.description && { description: state.description }),
         ...(state.longitude && { longitude: state.longitude }),
         ...(state.latitude && { latitude: state.latitude }),
@@ -789,7 +790,7 @@ const UpdateCarDetails = () => {
             <select
               type={"text"}
               onChange={handleInputs}
-              value={state.warranty || singleNewListing?.warranty || null}
+              value={state.warranty || singleNewListing?.warranty}
               name={"warranty"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
             >
@@ -814,13 +815,13 @@ const UpdateCarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.inspected || singleNewListing?.inspected || null}
+              value={state.inspected || singleNewListing?.inspected}
               name={"inspected"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
             >
-              <option value={""} selected>
+              {/* <option value={""} selected>
                 Select Inspected
-              </option>
+              </option> */}
               <option value={true}>Yes</option>
               <option value={false}>No</option>
             </select>
@@ -912,7 +913,7 @@ const UpdateCarDetails = () => {
             </label>
             <select
               onChange={handleInputs}
-              value={state.negotiable || singleNewListing?.negotiable || null}
+              value={state.negotiable || singleNewListing?.negotiable}
               name={"negotiable"}
               className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-md w-full"
             >

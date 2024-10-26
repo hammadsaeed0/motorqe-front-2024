@@ -4,6 +4,7 @@ import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { Base_url } from "../../utils/Base_url";
 import { Pannellum } from "pannellum-react";
+import { Link } from "react-router-dom";
 const News = () => {
   const [news, setNews] = useState([]); // Store news data
   const [page, setPage] = useState(1); // Page number for pagination
@@ -57,10 +58,10 @@ const News = () => {
         <div className="flex-wrap flex gap-8 justify-center">
           {/* Map over the news array to render only the visible news items */}
           {news.slice(0, visibleNews).map((newsItem) => (
-            <div key={newsItem.id} className="w-80 shadow-lg">
+            <Link  key={newsItem.id} to={`/new-details/${newsItem?._id}`} className="w-80 shadow-lg">
               <div className="relative w-80 h-44">
                 <img
-                  src={newsItem.image}
+                  src={newsItem?.images[0]}
                   className="w-full h-full object-cover"
                   alt={newsItem.title}
                 />
@@ -75,7 +76,7 @@ const News = () => {
                 <h1 className="font-bold text-lg">{newsItem.title}</h1>
                 <p className="text-textColor pt-4">{newsItem.content}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

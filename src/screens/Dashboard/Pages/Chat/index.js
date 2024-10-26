@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { BsFillSendFill } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const Inbox = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -32,7 +33,7 @@ const Inbox = () => {
   const [allRooms, setAllRooms] = useState([]);
   const [singleChat, setSingleChat] = useState({});
   const [message, setMessage] = useState("");
-  
+
   useEffect(() => {
     axios
       .get(`${Base_url}/user/my-chat/${user?.userToken}`)
@@ -91,35 +92,100 @@ const Inbox = () => {
           messages: [...prevChat.messages, newMessage],
         }));
         setMessage("");
-       
+
       })
       .catch((error) => {
         console.log(error);
+
+        if (error?.response?.data?.success === false) {
+          toast.error(error?.response?.data?.message)
+        }
       });
   };
 
-   // Ref for the chat container
-   const chatContainerRef = useRef(null);
+  // Ref for the chat container
+  const chatContainerRef = useRef(null);
 
-   // Function to scroll to the bottom of the chat container
-   const scrollToBottom = () => {
-     chatContainerRef.current?.scrollTo({
-       top: chatContainerRef.current.scrollHeight,
-       behavior: "smooth",
-     });
-   };
- 
-   // Auto-scroll to bottom when component mounts or messages change
-   useEffect(() => {
-     if (singleChat?.messages?.length > 0) {
-       scrollToBottom();
-     }
-   }, [singleChat.messages]);
- 
+  // Function to scroll to the bottom of the chat container
+  const scrollToBottom = () => {
+    chatContainerRef.current?.scrollTo({
+      top: chatContainerRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
+  // Auto-scroll to bottom when component mounts or messages change
+  useEffect(() => {
+    if (singleChat?.messages?.length > 0) {
+      scrollToBottom();
+    }
+  }, [singleChat.messages]);
+
 
   const otherParticipant = singleChat?.chat?.participants?.find(
     (participant) => participant._id !== user?.userToken
   );
+
+
+
+  const DeleteConversation = () => {
+    const params = {
+      chatId: singleChat?.chat?._id,
+      userId: user?.userToken
+    }
+    axios
+      .post(`${Base_url}/user/delete-chat`, params)
+      .then((res) => {
+        console.log(res);
+
+        window.location.reload();
+        axios
+          .get(`${Base_url}/user/my-chat/${user?.userToken}`)
+          .then((res) => {
+            setAllRooms(res?.data?.chats);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  const otherParticipants = singleChat?.participants?.find(
+    (participant) => participant._id !== user?.userToken
+  );
+  console.log(otherParticipant);
+
+  const BlockConversation = () => {
+    const params = {
+      blockUserId: otherParticipants?._id,
+      userId: user?.userToken
+    }
+    axios
+      .post(`${Base_url}/user/block-user`, params)
+      .then((res) => {
+        console.log(res);
+        axios
+          .get(`${Base_url}/user/my-chat/${user?.userToken}`)
+          .then((res) => {
+            setAllRooms(res?.data?.chats);
+
+
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      })
+      .catch((error) => {
+        console.log(error);
+
+        toast.error(error?.response?.data?.message)
+      });
+  }
 
   return (
     <>
@@ -154,11 +220,10 @@ const Inbox = () => {
                         <div
                           key={index}
                           onClick={() => GetSingleChat(otherParticipant._id)}
-                          className={`flex w-full p-2.5 hover:bg-primary hover:text-white border-b cursor-pointer border-[#FB5722] bg-[#F3F3F5] ${
-                            selectedUserId === otherParticipant._id
-                              ? "bg-[#FB5722] text-white"
-                              : ""
-                          }`}
+                          className={`flex w-full p-2.5 hover:bg-primary hover:text-white border-b cursor-pointer border-[#FB5722] bg-[#F3F3F5] ${selectedUserId === otherParticipant._id
+                            ? "bg-[#FB5722] text-white"
+                            : ""
+                            }`}
                         >
                           <div className="flex gap-4 w-full items-center">
                             <div>
@@ -189,8 +254,8 @@ const Inbox = () => {
                             <p className="font-inter text-sm font-normal leading-5 tracking-wide mr-2">
                               {item.lastMessage
                                 ? moment(item.lastMessage.createdAt).format(
-                                    "DD-MM-YYYY"
-                                  )
+                                  "DD-MM-YYYY"
+                                )
                                 : moment(item.createdAt).format("DD-MM-YYYY")}
                             </p>
                           </div>
@@ -204,63 +269,68 @@ const Inbox = () => {
               {/* Chat Body Right Side */}
 
               <div className="flex flex-col w-[65%]  rounded-br-[15px] min-h-[70vh]">
-                <div className="ring-1 ring-[#FB5722] bg-[#F3F3F5]  w-full flex justify-between items-center rounded-tr-[15px]">
-                  <div className="flex">
+                <div className="ring-1 p-3 ring-[#FB5722] bg-[#F3F3F5]  w-full flex justify-between items-center rounded-tr-[15px]">
+                  <div className="flex items-center">
                     <div className="p-2">
                       {otherParticipant?.image ? (
                         <img
                           src={otherParticipant.image}
-                          className="h-14 w-14 rounded-full"
+                          className="h-12 w-12 rounded-full"
                           alt="Sender"
                         />
                       ) : (
                         <img
                           src={require("../../../../assets/images/logo.png")}
-                          className="h-14 w-14 rounded-full"
+                          className="h-12 w-12 rounded-full"
                           alt="Sender"
                         />
                       )}
                     </div>
-                    <div className="pt-2">
-                      <strong className="text-20 font-semibold leading-24 py-2 tracking-wider text-left">
+                    <div className="">
+                      <strong className="text-20 font-semibold leading-24  tracking-wider text-left">
                         {otherParticipant?.username}{" "}
                         {/* Updated to access the correct property */}
                       </strong>
-                      <p className="font-inter text-[#686464] text-sm font-normal leading-6 tracking-wider text-left">
+                      {/* <p className="font-inter text-[#686464] text-sm font-normal leading-6 tracking-wider text-left">
                         {otherParticipant?.email}{" "}
-                        {/* Updated to access the correct property */}
-                      </p>
+                        
+                      </p> */}
                     </div>
                   </div>
-                  <div className="flex gap-1 mr-4">
-                    <div className="p-2">
+                  <div className="flex items-center  gap-3">
+                    <div className="">
                       <img src={bluewhatsap} className="h-6" alt="WhatsApp" />
                     </div>
-                    <div className="p-2">
+                    <div className="">
                       <img src={phone} className="h-6" alt="Phone" />
                     </div>
+                    <div className=' pt-1'>
+                      <button onClick={toggleDropdown} className="relative">
+                        <img src={threedots} onClick={toggleDropdown} className=' w-8'></img>
+                        {isDropdownOpen && (
+                          <Dropdown onReportFun={() => BlockConversation()} onClick={() => DeleteConversation()} isOpen={isDropdownOpen} onClose={() => setDropdownOpen(false)} />
+                        )}
+                      </button> </div>
                   </div>
                 </div>
-                <div className="h-80 my-2 overflow-y-auto px-12"   ref={chatContainerRef}  >
+                <div className="h-80 my-2 overflow-y-auto px-12" ref={chatContainerRef}  >
                   {singleChat?.messages?.length > 0 ? (
                     singleChat.messages.map((item, index) => (
                       <div
-                     
+
                         key={index}
-                        className={`flex gap-3 items-center ${
-                          item.sender === user?.userToken
-                            ? "justify-end"
-                            : "justify-start"
-                        } pt-4`}
+                        className={`flex gap-3 items-center ${item.sender === user?.userToken
+                          ? "justify-end"
+                          : "justify-start"
+                          } pt-4`}
                       >
                         <div
-                          className={`p-2 h-10  rounded-sm max-w-[350px] ${
-                            item.sender === user?.userToken
-                              ? "bg-[#F3F3F5]"
-                              : " bg-primary text-white "
-                          } items-center flex font-inter text-base tracking-wide text-[#545151]`}
+                          className={`p-2 h-10  rounded-sm max-w-[350px] ${item.sender === user?.userToken
+                            ? "bg-[#F3F3F5]"
+                            : " bg-primary text-white "
+                            } items-center flex font-inter text-base tracking-wide text-[#545151]`}
                         >
-                          <p className={`items-center flex font-inter text-base tracking-wide ${item.sender === user?.userToken?'text-[#545151] ':' text-white'} `}>
+                          <p className={`items-center flex font-inter text-base tracking-wide ${item.sender === user?.userToken ? 'text-[#545151] ' : ' text-white'} `}>
                             {item.text}
                           </p>
                         </div>
@@ -272,7 +342,7 @@ const Inbox = () => {
                     </div>
                   )}
 
-{/* <div ref={messagesEndRef}></div> */}
+                  {/* <div ref={messagesEndRef}></div> */}
                 </div>
 
                 {/* Send Message Field */}

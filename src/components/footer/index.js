@@ -80,10 +80,10 @@ const Footer = () => {
                     <li>
                         <Link  className='uppercase text-white  font-medium' to='/news'>news</Link>
                     </li> 
-                    
+{/*                     
                     <li>
                         <Link  className='uppercase text-white  font-medium' to='/compare-car'>compare car</Link>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
             <div  className=''>

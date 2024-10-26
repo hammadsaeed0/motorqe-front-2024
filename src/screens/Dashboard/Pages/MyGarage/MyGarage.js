@@ -425,7 +425,7 @@ const MyGarage = () => {
                         <div className="flex justify-center gap-3 mt-1 w-[320px]">
                           <Link
                             to={`/dashboard/upgrade-plan/${product?._id}`}
-                            className="w-[100px] h-[50px] bg-[#0C53AB] cursor-pointer rounded-[5px] text-white text-center"
+                            className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary cursor-pointer rounded-[5px] text-white text-center"
                           >
                             <div className="w-full text-center mt-2">
                               <img
@@ -441,7 +441,7 @@ const MyGarage = () => {
                               setOpenModal(true);
                               setSingleData(product);
                             }}
-                            className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] rounded-[5px] text-white text-center"
+                            className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center"
                           >
                             <div className="w-full text-center mt-2 cursor-pointer">
                               <img src={stats} className="mx-auto h-5" alt="Icon" />
@@ -450,7 +450,7 @@ const MyGarage = () => {
                           </div>
                           <div
                             onClick={() => RefreshFun(product?._id)}
-                            className={`w-[100px] h-[50px] cursor-pointer  ${
+                            className={`w-[100px] h-[50px]   hover:bg-primary cursor-pointer  ${
                               product?.hasRefreshed === true
                                 ? "bg-[#0BA645]"
                                 : "  bg-[rgb(12,83,171)]"
@@ -471,7 +471,7 @@ const MyGarage = () => {
                         <div className="flex gap-3 mt-4 justify-center w-[320px]">
                           <Link
                             to={`/update_car_detail/${product?._id}`}
-                            className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center"
+                            className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center"
                           >
                             <div className="w-full text-center mt-2">
                               <img
@@ -482,7 +482,7 @@ const MyGarage = () => {
                               <p className=" text-sm">Edit</p>
                             </div>
                           </Link>
-                          <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                          <div className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center">
                             <div
                               onClick={() => removeFunction(product?._id)}
                               className="w-full text-center mt-2"
@@ -497,7 +497,7 @@ const MyGarage = () => {
                           </div>
                           {product?.featuredAt? (
                             <div
-                              className={`w-[100px] h-[50px] bg-[#0BA645] rounded-[5px] text-white text-center`}
+                              className={`w-[100px] h-[50px] bg-[#0BA645]  rounded-[5px] text-white text-center`}
                             >
                               <div className="w-full text-center mt-2">
                                 <img
@@ -511,7 +511,7 @@ const MyGarage = () => {
                           ) : (
                             <Link
                               to={`/featured-plan/${product?._id}`}
-                              className={`w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center`}
+                              className={`w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center`}
                             >
                               <div className="w-full text-center mt-2">
                                 <img
@@ -608,14 +608,14 @@ const MyGarage = () => {
                 carsPending?.map((product, index) => (
                   <div
                     key={index}
-                    className={`p-4 bg-[#F3F3F5] h-[460px] w-[350px] rounded-[20px] mt-2 ${
+                    className={`p-4 bg-[#F3F3F5]  h-[460px] w-[350px] rounded-[20px] mt-2 ${
                       product.featured === "Yes"
                         ? " border-sky-800"
                         : "border-blue-500"
                     }`}
                   >
                     {/* Display card content */}
-                    <div className="flex-col w-[350px]">
+                    <div className="flex-col  w-[350px]">
                       <img
                         src={product.car_images[0]}
                         className="h-[160px] rounded-xl w-[320px]"
@@ -632,7 +632,7 @@ const MyGarage = () => {
                     <div className="flex justify-center gap-3 mt-1 w-[320px]">
                       <Link
                         to={`/dashboard/upgrade-plan/${product?._id}`}
-                        className="w-[100px] h-[50px] bg-[#0C53AB] cursor-pointer rounded-[5px] text-white text-center"
+                        className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary cursor-pointer rounded-[5px] text-white text-center"
                       >
                         <div className="w-full text-center mt-2">
                           <img
@@ -648,7 +648,7 @@ const MyGarage = () => {
                           setOpenModal(true);
                           setSingleData(product);
                         }}
-                        className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] rounded-[5px] text-white text-center"
+                        className="w-[100px] h-[50px] cursor-pointer hover:bg-primary bg-[#0C53AB] rounded-[5px] text-white text-center"
                       >
                         <div className="w-full text-center mt-2 cursor-pointer">
                           <img
@@ -661,7 +661,7 @@ const MyGarage = () => {
                       </div>
                       <div
                         onClick={() => RefreshFun(product?._id)}
-                        className={`w-[100px] h-[50px] cursor-pointer  ${
+                        className={`w-[100px] h-[50px] cursor-pointer  hover:bg-primary ${
                           product?.hasRefreshed === true
                             ? "bg-[#0BA645]"
                             : "  bg-[rgb(12,83,171)]"
@@ -682,7 +682,7 @@ const MyGarage = () => {
                     <div className="flex gap-3 mt-4 justify-center w-[320px]">
                     <Link
                       to={`/update_car_detail/${product?._id}`}
-                      className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center"
+                      className="w-[100px] h-[50px] bg-[#0C53AB]  hover:bg-primary rounded-[5px] text-white text-center"
                     >
                       <div className="w-full text-center mt-2">
                         <img
@@ -693,7 +693,7 @@ const MyGarage = () => {
                         <p className=" text-sm">Edit</p>
                       </div>
                     </Link>
-                      <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                      <div className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center">
                         <div
                           onClick={() => removeFunction(product?._id)}
                           className="w-full text-center cursor-pointer mt-2"
@@ -706,7 +706,7 @@ const MyGarage = () => {
                           <p className=" text-sm">Remove</p>
                         </div>
                       </div>
-                      <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                      <div className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center">
                         <div className="w-full text-center mt-2">
                           <img
                             src={feature}
@@ -792,7 +792,7 @@ const MyGarage = () => {
                     <div className="flex justify-center gap-3 mt-1 w-[320px]">
                       <Link
                         to={`/dashboard/upgrade-plan/${product?._id}`}
-                        className="w-[100px] h-[50px] bg-[#0C53AB] cursor-pointer rounded-[5px] text-white text-center"
+                        className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary cursor-pointer rounded-[5px] text-white text-center"
                       >
                         <div className="w-full text-center mt-2">
                           <img
@@ -808,7 +808,7 @@ const MyGarage = () => {
                           setOpenModal(true);
                           setSingleData(product);
                         }}
-                        className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] rounded-[5px] text-white text-center"
+                        className="w-[100px] h-[50px] cursor-pointer bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center"
                       >
                         <div className="w-full text-center mt-2 cursor-pointer">
                           <img src={stats} className="mx-auto h-5" alt="Icon" />
@@ -817,7 +817,7 @@ const MyGarage = () => {
                       </div>
                       <div
                         onClick={() => RefreshFun(product?._id)}
-                        className={`w-[100px] h-[50px] cursor-pointer  ${
+                        className={`w-[100px] h-[50px] cursor-pointer  hover:bg-primary ${
                           product?.hasRefreshed === true
                             ? "bg-[#0BA645]"
                             : "  bg-[rgb(12,83,171)]"
@@ -838,7 +838,7 @@ const MyGarage = () => {
                     <div className="flex gap-3 mt-4 justify-center w-[320px]">
                       <Link
                         to={`/update_car_detail/${product?._id}`}
-                        className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center"
+                        className="w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center"
                       >
                         <div className="w-full text-center mt-2">
                           <img
@@ -849,7 +849,7 @@ const MyGarage = () => {
                           <p className=" text-sm">Edit</p>
                         </div>
                       </Link>
-                      <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                      <div className="w-[100px] h-[50px] bg-[#0C53AB]  hover:bg-primary rounded-[5px] text-white text-center">
                         <div
                           onClick={() => removeFunction(product?._id)}
                           className="w-full text-center mt-2"
@@ -864,7 +864,7 @@ const MyGarage = () => {
                       </div>
                       {product?.featuredAt? (
                         <div
-                          className={`w-[100px] h-[50px] bg-[#0C53AB]   rounded-[5px] text-white text-center`}
+                          className={`w-[100px] h-[50px] bg-[#0C53AB]  hover:bg-primary  rounded-[5px] text-white text-center`}
                         >
                           <div className="w-full text-center mt-2">
                             <img
@@ -878,7 +878,7 @@ const MyGarage = () => {
                       ) : (
                         <Link
                           to={`/featured-plan/${product?._id}`}
-                          className={`w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center`}
+                          className={`w-[100px] h-[50px] bg-[#0C53AB] hover:bg-primary rounded-[5px] text-white text-center`}
                         >
                           <div className="w-full text-center mt-2">
                             <img

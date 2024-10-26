@@ -153,7 +153,10 @@ const ChoosePlane = () => {
                         {/* 5 Days Active Listing */}
                       </p>
                     </li>
-                    <h1 className=" text-secondary text-center text-xl pt-3 font-bold">{`{x10 more Views & Calls}`}</h1>
+                    <div className=" absolute bottom-32">
+                    <h1 className=" text-secondary text-center  text-xl pt-3 font-bold">{`{x10 more Views & Calls}`}</h1>
+                    </div>
+                    
                       </>
                     ) : item?.name === "Platinum" ? (
                      <>
@@ -167,7 +170,9 @@ const ChoosePlane = () => {
                       </p>
                     </li>
 
-<h1 className=" text-secondary text-center text-xl pt-3 font-bold">{`{x10 more Views & Calls}`}</h1>
+                    <div className=" absolute bottom-32">
+                    <h1 className=" text-secondary text-center  text-xl pt-3 font-bold">{`{x10 more Views & Calls}`}</h1>
+                    </div>
                      </>
                     ) : null}
                         

@@ -43,6 +43,7 @@ import FeaturedConfirmation from "./screens/FeaturesPlan/Confirmation";
 import GaragePrivateRoute from "./routes/GaragePrivateRoute";
 import GaragePublicRoute from "./routes/GaragePublicRoute";
 import CompareCar from "./screens/compareCars";
+import DetailsNews from "./screens/news/DetailsNews";
 function App() {
   const location = useLocation();
 
@@ -63,7 +64,7 @@ function App() {
             path="/choose_plane"
             element={
               // <PublicRoute>
-                <ChoosePlane />
+              <ChoosePlane />
               // </PublicRoute>
             }
           />
@@ -72,24 +73,25 @@ function App() {
             path="/forgotten_email"
             element={
               // <PublicRoute>
-                <ForgottenEmail />
+              <ForgottenEmail />
               // </PublicRoute>
             }
           />
           <Route path="/forgotten_password" element={<ForgottenPassword />} />
           <Route path="/ListingBookingConfirmation" element={<ListingBookingConfirmation />} />
-         
+
           <Route path="/new_lists" element={<NewLists />} />
           <Route path="/car_details_page/:id" element={<CarDetailPage />} />
           <Route element={<PrivateRoute />}>
-          
+
             <Route path="/car_photos" element={<CarPhotos />} />
             <Route path="/contact_details" element={<ContactDetails />} />
             <Route path="/car_inspection" element={<CarInspection />} />
 
             <Route path="/news" element={<News />} />
+            <Route path="/new-details/:id" element={<DetailsNews />} />
             <Route path="/featured-plan/:id" element={<FeaturedPlan />} />
-            <Route path="/FeaturedConfirmation" element={<FeaturedConfirmation/>} />
+            <Route path="/FeaturedConfirmation" element={<FeaturedConfirmation />} />
 
             {/* seller Dashboard */}
 
@@ -110,26 +112,26 @@ function App() {
           <Route path="/update_car_detail/:id" element={<UpdateCarDetails />} />
 
           {/* /garage-dashboard */}
-          
-       {/* Private routes */}
-       <Route path="/garage/garage-details/:id" element={<SingleGarageDetails />} />
-        <Route path="/garage/garage-date-time/:id" element={<GarageDateTime />} />
-        <Route path="/garage/garage-confirm/:id" element={<GarageConfirm />} />
-        <Route path="/garage-dashboard/garagePageWhite" element={<GaragePageWhite />} />
-       <Route element={<GaragePrivateRoute />}>
-        <Route path="/garage-dashboard/dashboard/my-inbox" element={<Inbox />} />
-       
-        <Route path="/garage_booking_confirmation/:id" element={<GarageBookingConfirmation />} />
-       
-        <Route path="/garage-dashboard/GarageDetails-upload" element={<GarageDetailsUpload />} />
-        <Route path="/garage/dashboard/garage-bookings" element={<GarageBooking />} />
-        <Route path="/garage/dashboard/my-account" element={<MyGarageAccount />} />
-      </Route>
 
-      {/* Public route for workshop services */}
-      <Route path="/garage/dashboard/workshop-services" element={<MyWorkshopServices />} />
+          {/* Private routes */}
+          <Route path="/garage/garage-details/:id" element={<SingleGarageDetails />} />
+          <Route path="/garage/garage-date-time/:id" element={<GarageDateTime />} />
+          <Route path="/garage/garage-confirm/:id" element={<GarageConfirm />} />
+          <Route path="/garage-dashboard/garagePageWhite" element={<GaragePageWhite />} />
+          <Route element={<GaragePrivateRoute />}>
+            <Route path="/garage-dashboard/dashboard/my-inbox" element={<Inbox />} />
 
-      {/* Redirect all other routes if serviceProviderId does not exist
+            <Route path="/garage_booking_confirmation/:id" element={<GarageBookingConfirmation />} />
+
+            <Route path="/garage-dashboard/GarageDetails-upload" element={<GarageDetailsUpload />} />
+            <Route path="/garage/dashboard/garage-bookings" element={<GarageBooking />} />
+            <Route path="/garage/dashboard/my-account" element={<MyGarageAccount />} />
+          </Route>
+
+          {/* Public route for workshop services */}
+          <Route path="/garage/dashboard/workshop-services" element={<MyWorkshopServices />} />
+
+          {/* Redirect all other routes if serviceProviderId does not exist
       <Route
         path="*"
         element={
@@ -140,10 +142,10 @@ function App() {
           )
         }
       /> */}
-          
-         
+
+
           <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/compare-car" element={<CompareCar/>} />
+          <Route path="/compare-car" element={<CompareCar />} />
           <Route path="/dealar" element={<Dealar />} />
         </Routes>
       </AnimatePresence>

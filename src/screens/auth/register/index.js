@@ -211,7 +211,7 @@ const Register = () => {
           <p className=" text-textColor">Create new account today.</p>
 
           <div className=" pt-10 gap-6 md:flex block items-center">
-            <h6 className=" text-black font-medium"> Continue with:</h6>
+            {/* <h6 className=" text-black font-medium"> Continue with:</h6>
             <div className="  flex gap-2">
               <Button
                 label={"Google"}
@@ -241,9 +241,9 @@ const Register = () => {
                   " bg-white border-gray-200  xs:mt-2 mt-0 font-semibold border-2 justify-between rounded-lg text-lg py-2.5   w-40 text-black"
                 }
               />
-            </div>
+            </div> */}
           </div>
-          <h3 className="   font-semibold  text-black  py-7 text-xl">OR</h3>
+          {/* <h3 className="   font-semibold  text-black  py-7 text-xl">OR</h3> */}
           <div className="  pb-7 pt-3 flex items-center gap-6">
             <div className=" gap-2 flex items-center">
               <input

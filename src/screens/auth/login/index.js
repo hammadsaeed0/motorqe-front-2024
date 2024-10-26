@@ -190,7 +190,7 @@ const Login = () => {
         </h3>
         <p className=" text-textColor">Welcome back! Sign in to your account</p>
 
-        <div className=" pt-10 gap-6 md:flex block items-center">
+        {/* <div className=" pt-10 gap-6 md:flex block items-center">
           <h6 className=" text-black font-medium"> Continue with:</h6>
           <div className=" flex gap-2">
             <Button
@@ -222,10 +222,10 @@ const Login = () => {
               }
             />
           </div>
-        </div>
-        <h3 className="   font-semibold  text-black  py-7 text-xl">OR</h3>
+        </div> */}
+        {/* <h3 className="   font-semibold  text-black  py-7 text-xl">OR</h3> */}
 
-        <form onSubmit={handlerLogin}>
+        <form onSubmit={handlerLogin} className="  pt-10">
           <div className=" sm:w-[70%] w-[100%] flex flex-col gap-5">
             <Input
               label={"Email or Username"}

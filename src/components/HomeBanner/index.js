@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Base_url } from "../../utils/Base_url";
+import { Link } from "react-router-dom";
 
 const HomeBanner = () => {
   const [banner, setBanner] = useState([]); // Initialize banner as an array
@@ -41,7 +42,10 @@ const HomeBanner = () => {
 
       {banner?.map((item,index)=>{
         return (
-            <img src={item?.imageUrl} alt="" /> 
+          <Link to={`${item?.redirectUrl}`}>
+           <img src={item?.imageUrl} alt="" /> 
+          </Link>
+           
 
         )
       })}

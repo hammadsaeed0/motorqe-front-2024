@@ -12,7 +12,12 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { TfiAngleLeft, TfiAngleRight } from "react-icons/tfi";
-import { FaLocationDot, FaRegCircleCheck } from "react-icons/fa6";
+import {
+  FaLocationDot,
+  FaPause,
+  FaPlay,
+  FaRegCircleCheck,
+} from "react-icons/fa6";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { MdLocationPin, MdOutlineWatchLater } from "react-icons/md";
 import Input from "../../components/Input";
@@ -34,8 +39,6 @@ const CarDetailPage = ({
   qty,
   setQty,
 }) => {
-
-
   const userData = JSON.parse(localStorage.getItem("Dealar"));
 
   const sliders = [
@@ -132,8 +135,6 @@ const CarDetailPage = ({
       });
   }, []);
 
- 
-
   const clickButtons = async (messages) => {
     const params = {
       id: newListings?._id,
@@ -170,11 +171,26 @@ const CarDetailPage = ({
     }
   };
 
-  const [yaw, setYaw] = React.useState(0);
-  const [pitch, setPitch] = React.useState(0);
-  const panImage = useRef(null);
+  const [yaw, setYaw] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const intervalRef = useRef(null);
 
-  
+  // Auto-move functionality
+  useEffect(() => {
+    if (isPlaying) {
+      intervalRef.current = setInterval(() => {
+        setYaw((prevYaw) => (prevYaw + 0.5) % 360); // Adjust the value to control rotation speed
+      }, 100); // Adjust for faster or slower movement
+    } else {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => clearInterval(intervalRef.current); // Clean up the interval on component unmount
+  }, [isPlaying]);
+
+  const handlePlayPause = () => {
+    setIsPlaying((prev) => !prev);
+  };
 
   const [activeTab, setActiveTab] = useState("Interior");
 
@@ -186,47 +202,52 @@ const CarDetailPage = ({
           <div className=" lg:w-[65%] w-[100%]">
             <div className="overflow-hidden relative border rounded-2xl md:w-[90%] w-[100%]">
               <div className="py-3 px-12 md:block hidden">
-              <ul className="flex justify-between relative z-20 items-center">
-  {newListings?.threeSixtyImage?.length > 0 && (
-    <li>
-      <span
-        onClick={() => setActiveTab("360Tour")}
-        className={`text-secondary text-xl font-bold cursor-pointer ${
-          activeTab === "360Tour" ? "border-b-4 border-primary" : ""
-        }`}
-      >
-        360 Tour
-      </span>
-    </li>
-  )}
-  
-  {newListings?.car_images?.length > 0 && (
-    <li>
-      <span
-        onClick={() => setActiveTab("Interior")}
-        className={`text-secondary text-xl font-bold cursor-pointer ${
-          activeTab === "Interior" ? "border-b-4 border-primary" : ""
-        }`}
-      >
-        Interior
-      </span>
-    </li>
-  )}
+                <ul className="flex justify-between relative z-20 items-center">
+                  {newListings?.threeSixtyImage?.length > 0 && (
+                    <li>
+                      <span
+                        onClick={() => setActiveTab("360Tour")}
+                        className={`text-secondary text-xl font-bold cursor-pointer ${
+                          activeTab === "360Tour"
+                            ? "border-b-4 border-primary"
+                            : ""
+                        }`}
+                      >
+                        360 Tour
+                      </span>
+                    </li>
+                  )}
 
-  {newListings?.car_images?.length > 0 && (
-    <li>
-      <span
-        onClick={() => setActiveTab("Exterior")}
-        className={`text-secondary text-xl font-bold cursor-pointer ${
-          activeTab === "Exterior" ? "border-b-4 border-primary" : ""
-        }`}
-      >
-        Exterior
-      </span>
-    </li>
-  )}
-</ul>
+                  {newListings?.car_images?.length > 0 && (
+                    <li>
+                      <span
+                        onClick={() => setActiveTab("Interior")}
+                        className={`text-secondary text-xl font-bold cursor-pointer ${
+                          activeTab === "Interior"
+                            ? "border-b-4 border-primary"
+                            : ""
+                        }`}
+                      >
+                        Interior
+                      </span>
+                    </li>
+                  )}
 
+                  {newListings?.car_images?.length > 0 && (
+                    <li>
+                      <span
+                        onClick={() => setActiveTab("Exterior")}
+                        className={`text-secondary text-xl font-bold cursor-pointer ${
+                          activeTab === "Exterior"
+                            ? "border-b-4 border-primary"
+                            : ""
+                        }`}
+                      >
+                        Exterior
+                      </span>
+                    </li>
+                  )}
+                </ul>
               </div>
 
               <div
@@ -257,19 +278,16 @@ const CarDetailPage = ({
 
                 {activeTab === "360Tour" &&
                   newListings?.threeSixtyImage?.map((item, index) => (
-                    <div
-                      className="flex-none rounded-md  relative z-40 overflow-hidden w-full h-full"
-                      key={index}
-                    >
+                    <div className="flex-none rounded-md relative z-40 overflow-hidden w-full h-full">
                       <Pannellum
                         width="100%"
                         height="500px"
                         image={item}
                         pitch={10}
-                        yaw={180}
+                        yaw={yaw}
                         hfov={110}
                         autoLoad
-                        showZoomCtrl={false}
+                        showZoomCtrl={true}
                       >
                         <Pannellum.Hotspot
                           type="custom"
@@ -279,6 +297,16 @@ const CarDetailPage = ({
                           name="image info"
                         />
                       </Pannellum>
+                      <button
+                        onClick={handlePlayPause}
+                        className="absolute bottom-10 left-4 w-12 flex justify-center items-center bg-transparent h-12 border border-white rounded-full    shadow"
+                      >
+                        {isPlaying ? (
+                          <FaPlay color="white" size={25} />
+                        ) : (
+                          <FaPause color="white" size={25} />
+                        )}
+                      </button>
                     </div>
                   ))}
               </div>
