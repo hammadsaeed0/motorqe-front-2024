@@ -9,6 +9,7 @@ import { Base_url } from "../../utils/Base_url";
 import axios from "axios";
 import { toast } from "react-toastify";
 import moment from "moment";
+import Input from "../../components/Input";
 
 const ListingCard = ({ item }) => {
   const user = useSelector((state) => state.authReducer);
@@ -75,6 +76,14 @@ const ListingCard = ({ item }) => {
         .catch((error) => {});
     }
   };
+
+
+
+  const handleCheckboxChange = (item) => {
+    navigate("/compare-car", { state: { item } });
+  };
+
+
 
   return (
     <>
@@ -208,8 +217,14 @@ const ListingCard = ({ item }) => {
               </div>
             </div>
             <div className=" flex  justify-between items-center">
-              <div>
-                <h2 className="   text-secondary font-bold">Compare</h2>
+              <div className=" flex cursor-pointer gap-2 items-center">
+                <h2 className="    text-secondary font-bold">Compare</h2>
+                <Input
+                  type="checkbox"
+                  className={" w-4 h-4 mt-1 cursor-pointer rounded-lg accent-secondary"}
+                  onChange={() => handleCheckboxChange(item)}
+                  
+                />
               </div>
 
               <div className=" flex gap-1 my-2">

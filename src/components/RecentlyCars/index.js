@@ -4,13 +4,12 @@ import axios from "axios";
 import Button from "../Button";
 import { Link } from "react-router-dom";
 
-const FeaturedCars = ({
+const RecentlyCars = ({
   children: slides,
   autoSlide = false,
   autoSlideInterval = 3000,
 }) => {
   const scrollContainerRef = useRef(null);
-
 
   const [property, setProperty] = useState([]);
 
@@ -29,19 +28,20 @@ const FeaturedCars = ({
   const isAtStart = curr === 0;
   const isAtEnd = curr === property.length - 1;
 
-
-
   useEffect(() => {
     axios
       .get(`${Base_url}/admin/all-cars`)
       .then((res) => {
-        console.log(res);
-        const filteredData = res.data.data.filter(
-          (item) => item.type_of_ad === "Featured" // Replace "desiredCondition" with the actual value you want to filter by
-        );
-        setProperty(filteredData);
+        // Sort data by creation date in descending order and get the latest 4 entries
+        const sortedData = res?.data?.data
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // assuming `createdAt` is the date field
+          .slice(0, 4);
+
+        setProperty(sortedData);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.error("Error fetching cars:", error);
+      });
   }, []);
 
   return (
@@ -51,113 +51,86 @@ const FeaturedCars = ({
         className=" flex     transition-transform ease-out duration-500"
         style={{ transform: `translateX(-${curr * 100}%)` }}
       >
-
-        {property?.map((item,index)=>{
+        {property?.map((item, index) => {
           return (
+            <Link  to={`/car_details_page/${item._id}`} className="flex-none  relative  w-full h-full">
+              <div className="mt-14 w-[90%]  mx-auto md:flex block gap-6">
+                <div className="border-4   md:w-[48%]   bg-cards  sm:block md:hidden  xl:block w-[100%] border-primary  rounded-2xl overflow-hidden">
+                  <div className="   relative md:h-[500px] h-64">
+                    <img
+                      src={item?.car_images[0]}
+                      className=" w-full h-full object-cover object-center"
+                      alt=""
+                    />
 
-            <Link to={`/car_details_page/${item._id}`} className="flex-none   w-full h-full">
-            <div className="mt-14 w-[90%]  mx-auto md:flex block gap-6">
-              <div className="border-4   md:w-[48%]   bg-cards  sm:block md:hidden  xl:block w-[100%] border-primary  rounded-2xl overflow-hidden">
-                <div className="   relative md:h-[500px] h-64">
-                  <img
-                    src={item?.car_images[0]}
-                    className=" w-full h-full object-cover object-center"
-                    alt=""
-                  />
-
-
-<div className=" absolute top-4 right-4">
-
-
-                <Button
-                  label={"featured"}
-                  className={
-                    " uppercase py-1 bg-lightBlue  text-sm  text-white font-semibold rounded-3xl"
-                  }
-                />
-              
-</div>
-
-
-
-
-                </div>
-                <div className=" p-4">
-                  <h5 className=" text-secondary font-bold uppercase">
-                    {item?.title}
-
-                   
-                  </h5>
-                  <div className="  mt-3 sm:flex block justify-between items-center">
-                    <div className=" flex justify-between gap-2 items-center">
-                      <img
-                        src={require("../../assets/images/can.png")}
-                        className=" w-4"
-                        alt=""
-                      />
-                      <span className=" text-textColor font-bold sm:text-base text-sm">
-                        {item?.year}
-                        
-                      </span>
-                    </div>
-                    <div className="flex justify-between gap-2 items-center">
-                      <img
-                        src={require("../../assets/images/cal.png")}
-                        className=" w-6"
-                        alt=""
-                      />
-                      <span className=" text-textColor font-bold sm:text-base text-sm">
-                        {item?.cylinder} Cylinder
-                        
-                      </span>
-                    </div>
-                    <div className="flex justify-between gap-2 items-center">
-                      <img
-                        src={require("../../assets/images/road.png")}
-                        className=" w-4"
-                        alt=""
-                      />
-                      <span className=" text-textColor font-bold sm:text-base text-sm">
-                        {item?.mileage} KM
-                        
-                      </span>
+                    <div className=" absolute top-4 right-4">
+                      {item?.type_of_ad === "Featured" ? (
+                        <Button
+                          label={"featured"}
+                          className={
+                            " uppercase py-1 bg-lightBlue  text-sm  text-white font-semibold rounded-3xl"
+                          }
+                        />
+                      ) : null}
                     </div>
                   </div>
-  
-                  <div className=" flex justify-between items-center mt-3">
-                    <h5 className=" text-green text-sm font-bold ">
-                      QR. {item?.price_QR} / Month
-                    
-                    </h5>
+                  <div className=" p-4">
                     <h5 className=" text-secondary font-bold uppercase">
-                      
-                      qr. {item?.price_QR}
+                      {item?.title}
                     </h5>
+                    <div className="  mt-3 sm:flex block justify-between items-center">
+                      <div className=" flex justify-between gap-2 items-center">
+                        <img
+                          src={require("../../assets/images/can.png")}
+                          className=" w-4"
+                          alt=""
+                        />
+                        <span className=" text-textColor font-bold sm:text-base text-sm">
+                          {item?.year}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-2 items-center">
+                        <img
+                          src={require("../../assets/images/cal.png")}
+                          className=" w-6"
+                          alt=""
+                        />
+                        <span className=" text-textColor font-bold sm:text-base text-sm">
+                          {item?.cylinder} Cylinder
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-2 items-center">
+                        <img
+                          src={require("../../assets/images/road.png")}
+                          className=" w-4"
+                          alt=""
+                        />
+                        <span className=" text-textColor font-bold sm:text-base text-sm">
+                          {item?.mileage} KM
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className=" flex justify-between items-center mt-3">
+                      <h5 className=" text-green text-sm font-bold ">
+                        QR. {item?.price_QR} / Month
+                      </h5>
+                      <h5 className=" text-secondary font-bold uppercase">
+                        qr. {item?.price_QR}
+                      </h5>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="  grid  grid-cols-2 md:mt-0 mt-9  xl:w-[60%] w-[100%] gap-5">
-                  {property?.slice(1, 4)?.map((item, index) => {
+                <div className="  grid  grid-cols-2 md:mt-0 mt-9  xl:w-[60%] w-[100%] gap-5">
+                  {property?.slice(0, 4)?.map((item, index) => {
                     return (
-                      <Link to={`/car_details_page/${item._id}`} className="border-4   md:block hidden  border-primary  rounded-2xl overflow-hidden">
-                        <div className="  relative  h-44">
+                      <Link to={`/car_details_page/${item._id}`} className="border-4   md:block hidden  border-secondary  rounded-2xl overflow-hidden">
+                        <div className="   h-44">
                           <img
                             src={item?.car_images[0]}
                             className=" w-full h-full object-cover object-center"
                             alt=""
                           />
-
-<div className=" absolute top-4 right-4">
-
-
-<Button
-  label={"featured"}
-  className={
-    " uppercase py-1 bg-lightBlue  text-sm  text-white font-semibold rounded-3xl"
-  }
-/>
-
-</div>
                         </div>
                         <div className=" p-2">
                           <h5 className=" text-secondary  md:text-base text-xs font-bold uppercase">
@@ -209,12 +182,10 @@ const FeaturedCars = ({
                     );
                   })}
                 </div>
-            </div>
-          </Link>
-        )
-    })}
-       
-        
+              </div>
+            </Link>
+          );
+        })}
       </div>
 
       <div className="">
@@ -249,4 +220,4 @@ const FeaturedCars = ({
   );
 };
 
-export default FeaturedCars;
+export default RecentlyCars;

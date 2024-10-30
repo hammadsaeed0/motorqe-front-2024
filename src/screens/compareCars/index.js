@@ -7,14 +7,37 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import CarModal from "./CarModal";
+import { useLocation } from "react-router-dom";
 
 const CompareCar = () => {
   const [selectMake, setSelectMake] = useState("");
   const [selectModel, setSelectModel] = useState("");
   const [selectYear, setSelectYear] = useState("");
-  const [selectedCars, setSelectedCars] = useState([]);
 
+  const location = useLocation();
+  const { item } = location.state || {};
+ 
+
+  const defaultCar = {
+    _id:item?._id,
+    car_images:item?.car_images,
+    name: "",
+    make:item?.make,
+    model:item?.model,
+    year:item?.year,
+    body_type: "Sedan",
+    vehicle_condition: "New",
+    fuel_type: "Gasoline",
+    engine_size: "2.0L",
+    cylinder: 4,
+    interior_colour: "Gray",
+    exterior_colour: "Blue",
+    price_QR: "100,000",
+  };
+
+  const [selectedCars, setSelectedCars] = useState([defaultCar]);
   console.log(selectedCars);
+
 
   // Store selected cars
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -146,6 +169,7 @@ const CompareCar = () => {
                     <select
                       className="mt-2.5 text-[#757272] p-2 border rounded-lg w-full border-[#E9DBDB]"
                       onChange={(e) => setSelectMake(e.target.value)}
+                      value={selectedCars[idx]?.make}
                     >
                       <option>Select Make</option>
                       {makes?.map((item) => (
@@ -159,6 +183,7 @@ const CompareCar = () => {
                     <select
                       className="mt-2.5 text-[#757272] p-2 border rounded-lg w-full border-[#E9DBDB]"
                       onChange={(e) => setSelectModel(e.target.value)}
+                      value={selectedCars[idx]?.model}
                     >
                       <option>Select Model</option>
                       {/* This assumes makes array also has models */}
@@ -173,6 +198,7 @@ const CompareCar = () => {
                     <select
                       className="mt-2.5 text-[#757272] p-2 border rounded-lg w-full border-[#E9DBDB]"
                       onChange={(e) => setSelectYear(e.target.value)}
+                      value={selectedCars[idx]?.year}
                     >
                       <option>Select Year</option>
                       {years?.map((year) => (
@@ -203,7 +229,7 @@ const CompareCar = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-2 my-8 gap-8">
+        <div className="grid grid-cols-3 my-8 gap-8">
           {overAllFilerData?.map((item, index) => {
             return (
               <div className="bg-[#ECECEC] rounded-2xl overflow-hidden border border-primary">

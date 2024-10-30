@@ -27,7 +27,7 @@ const DetailsNews = () => {
       <Header />
       <div className="relative h-80 overflow-hidden">
         <img
-          src={news?.images?.[0]}
+          src={news?.images}
           className="w-full h-full object-cover"
           alt=""
         />
@@ -35,20 +35,11 @@ const DetailsNews = () => {
           <h1 className=" text-white font-semibold text-3xl">{news?.title}</h1>
         </div>
       </div>
-      <div className="  grid grid-cols-3">
-        {news?.images?.map((item, index) => {
-          return (
-            <div className="">
-<img src={item} className="w-full h-full object-cover" alt="" />
-            </div>
-            
-          );
-        })}
-      </div>
+     
       <div className=" container mx-auto py-10">
         <div className=" pt-5">
           <p className="  font-semibold  text-xl">{news?.title}</p>
-          <h4 className="  text-gray-600">{news?.content}</h4>
+          <h4 className="  text-gray-600 pt-2" dangerouslySetInnerHTML={{ __html:news?.content}}></h4>
         </div>
       </div>
       

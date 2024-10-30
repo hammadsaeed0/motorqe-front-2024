@@ -136,6 +136,19 @@ console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
           setLoader(false);
 
           toast.success("User car listing add successfully!");
+
+
+          const params = {
+            message: `${state.name}, your new car has been created successfully!`
+
+
+          }
+            axios.post(`${Base_url}/user/create-notification`,params).then((res)=>{
+
+            }).catch((error)=>{
+
+            })
+
         } else {
           toast.error(res?.data?.message);
         }

@@ -1,5 +1,7 @@
 import React from "react";
 import Button from "../Button";
+import { FaCar, FaUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const WithMotorqeComponent = () => {
   const data = [
@@ -28,6 +30,10 @@ const WithMotorqeComponent = () => {
       des: " Looking to fix or service your Car? find your ideal garage now hassle free.",
     },
   ];
+
+
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
+
   return (
     <div>
       <h2 className=" h2  text-center">With Motorqe :</h2>
@@ -52,10 +58,53 @@ const WithMotorqeComponent = () => {
         })}
       </div>
 
-      <Button
+      
+
+{userData?.profileStatus === "dealer" ? (
+  <>
+    
+      
+      <Link
+        className="font-medium text-sm text-white capitalize"
+        to={"/car_details"}
+      >
+       
+        <Button
         label={"Sell your car now"}
         className={" bg-primary  text-white rounded-3xl py-2 mt-10 mx-auto"}
       />
+      </Link>
+  
+   
+  </>
+) : userData?.profileStatus === "privateSeller" ? (
+  <>
+    
+      <Link
+        className="font-medium text-sm text-white capitalize"
+        to={"/choose_plane"}
+      >
+       <Button
+        label={"Sell your car now"}
+        className={" bg-primary  text-white rounded-3xl py-2 mt-10 mx-auto"}
+      />
+      </Link>
+  
+  </>
+) : userData?.profileStatus === "serviceProvider" ? (
+  <>
+   
+  </>
+) :
+<Link
+  className="font-medium text-sm text-white capitalize"
+  to={"/choose_plane"}
+>
+<Button
+        label={"Sell your car now"}
+        className={" bg-primary  text-white rounded-3xl py-2 mt-10 mx-auto"}
+      />
+</Link>}
     </div>
   );
 };

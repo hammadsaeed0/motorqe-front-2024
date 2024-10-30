@@ -44,6 +44,7 @@ import GaragePrivateRoute from "./routes/GaragePrivateRoute";
 import GaragePublicRoute from "./routes/GaragePublicRoute";
 import CompareCar from "./screens/compareCars";
 import DetailsNews from "./screens/news/DetailsNews";
+import ImportantCars from "./screens/Dashboard/ImportantCars";
 function App() {
   const location = useLocation();
 
@@ -83,7 +84,7 @@ function App() {
           <Route path="/new_lists" element={<NewLists />} />
           <Route path="/car_details_page/:id" element={<CarDetailPage />} />
           <Route element={<PrivateRoute />}>
-
+          <Route path="/important-cars" element={<ImportantCars />} />
             <Route path="/car_photos" element={<CarPhotos />} />
             <Route path="/contact_details" element={<ContactDetails />} />
             <Route path="/car_inspection" element={<CarInspection />} />
@@ -145,6 +146,7 @@ function App() {
 
 
           <Route path="/contactus" element={<ContactUs />} />
+          
           <Route path="/compare-car" element={<CompareCar />} />
           <Route path="/dealar" element={<Dealar />} />
         </Routes>

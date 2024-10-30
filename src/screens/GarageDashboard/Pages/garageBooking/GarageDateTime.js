@@ -234,7 +234,7 @@ const GarageDateTime = () => {
            
           </ul>
           <div className="bg-primary border  border-[#575656] flex justify-end pr-4 items-center py-1.5">
-            <p className="m-0 text-xl text-white">Total Price QR.   {grandTotal}</p>
+            <p className="m-0 text-xl text-white">Total Price QR.   {totalPrice}</p>
           </div>
         </div>
       </div>

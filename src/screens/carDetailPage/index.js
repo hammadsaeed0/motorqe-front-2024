@@ -50,6 +50,8 @@ const CarDetailPage = ({
   const { id } = useParams();
 
   const user = useSelector((state) => state.authReducer);
+const [banners,setBanners] = useState([]);
+console.log(banners);
 
   console.log(user);
 
@@ -75,6 +77,17 @@ const CarDetailPage = ({
     //     console.log(res, "dashboard/click-counter");
     //   })
     //   .catch((error) => {});
+
+    axios
+    .get(`${Base_url}/user/ads`)
+    .then((res) => {
+      console.log(res);
+
+      setBanners(res.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }, [id]);
 
   const [curr, setCurr] = useState(0);
@@ -115,7 +128,18 @@ const CarDetailPage = ({
   });
 
   const [filteredResults, setFilteredResults] = useState([]);
+  const [carPrice, setCarPrice] = useState(0);
+
   useEffect(() => {
+    if (newListings?.price_QR) {
+      setCarPrice(Number(newListings.price_QR));
+    }
+  }, [newListings]);
+
+  useEffect(() => {
+
+
+
     const url = `${Base_url}/users/advance-searching`;
     const params = {
       make: newListings.make,
@@ -134,6 +158,9 @@ const CarDetailPage = ({
         console.error("Error fetching data:", error);
       });
   }, []);
+
+
+  
 
   const clickButtons = async (messages) => {
     const params = {
@@ -176,6 +203,7 @@ const CarDetailPage = ({
   const intervalRef = useRef(null);
 
   // Auto-move functionality
+  
   useEffect(() => {
     if (isPlaying) {
       intervalRef.current = setInterval(() => {
@@ -193,6 +221,33 @@ const CarDetailPage = ({
   };
 
   const [activeTab, setActiveTab] = useState("Interior");
+
+
+
+
+ 
+  const [downPaymentPercent, setDownPaymentPercent] = useState(20); 
+  const [interestRate, setInterestRate] = useState(2.9); 
+  const [repaymentPeriod, setRepaymentPeriod] = useState(48); 
+
+  const principalAmount = () => {
+    return carPrice - (carPrice * (downPaymentPercent / 100));
+  };
+
+  const interestAmount = () => {
+    const principal = principalAmount();
+    const interestRateDecimal = interestRate / 100;
+    const years = repaymentPeriod / 12;
+    return (principal * interestRateDecimal * years).toFixed(2);
+  };
+
+  const totalAmountPayable = () => {
+    return (parseFloat(interestAmount()) + principalAmount()).toFixed(2);
+  };
+
+  const calculateMonthlyPayment = () => {
+    return (totalAmountPayable() / repaymentPeriod).toFixed(2);
+  };
 
   return (
     <>
@@ -913,307 +968,219 @@ const CarDetailPage = ({
           </div>
         </div>
 
-        <div className=" py-12 md:px-0 px-6">
-          <h1 className=" h3 text-center">CAR LOAN CALCULATOR</h1>
+        <div className="py-12 md:px-0 px-6">
+      <h1 className="h3 text-center">CAR LOAN CALCULATOR</h1>
 
-          <div className=" md:flex block  justify-between pt-8 ">
-            <div className=" flex flex-col gap-10 md:w-96 w-[100%]">
-              <div className="">
-                <div className=" flex justify-between items-center">
-                  <h1 className=" text-textColor dark:text-white  font-semibold">
-                    Car Price
-                  </h1>
-                  <Input placeholder={"5000"} className={" w-32 border"} />
-                </div>
-
-                <>
-                  {/* between two numbers */}
-                  <div className="flex  items-center h-12 justify-center">
-                    <div className="py-1 relative min-w-full">
-                      <div className="h-1.5 bg-gray-200 rounded-full">
-                        <div
-                          className="absolute h-1.5 rounded-full  bg-secondary dark:bg-orange w-0"
-                          style={{ width: "33.1935%" }}
-                        />
-
-                        <div
-                          className="absolute h-6 flex items-center justify-center w-6 rounded-full  bg-primary shadow border border-gray-300 -ml-2 -top-1 cursor-pointer"
-                          unselectable="on"
-                          onselectstart="return false;"
-                          style={{ left: "35.4839%" }}
-                        >
-                          <div className="relative -mt-2 w-1">
-                            <div
-                              className="absolute z-40 opacity-100 bottom-100 mb-2 left-0 min-w-full"
-                              style={{ marginLeft: "-25px" }}
-                            >
-                              <div className="relative shadow-md">
-                                {/* <div className="bg-black -mt-8 text-white truncate text-xs rounded py-1 px-4">
-                  $ 30
-                </div> */}
-                                <svg
-                                  className="absolute text-black w-full h-2 left-0 top-100"
-                                  x="0px"
-                                  y="0px"
-                                  viewBox="0 0 255 255"
-                                  xmlSpace="preserve"
-                                >
-                                  <polygon
-                                    className="fill-current"
-                                    points="0,0 127.5,127.5 255,0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="absolute text-gray-800 -ml-1  bottom-0 left-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor font-semibold">0</p>
-                        </div>
-                        <div className="absolute text-gray-800 -mr-1  bottom-0 right-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor  font-semibold">+1M</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              </div>
-
-              <div className="">
-                <div className=" flex justify-between items-center">
-                  <h1 className=" text-textColor dark:text-white  font-semibold">
-                    Down Payment
-                  </h1>
-                  <Input placeholder={"5000"} className={" w-32 border"} />
-                </div>
-
-                <>
-                  {/* between two numbers */}
-                  <div className="flex  items-center h-12 justify-center">
-                    <div className="py-1 relative min-w-full">
-                      <div className="h-1.5 bg-gray-200 rounded-full">
-                        <div
-                          className="absolute h-1.5 rounded-full  bg-secondary dark:bg-orange w-0"
-                          style={{ width: "33.1935%" }}
-                        />
-
-                        <div
-                          className="absolute h-6 flex items-center justify-center w-6 rounded-full  bg-primary shadow border border-gray-300 -ml-2 -top-1 cursor-pointer"
-                          unselectable="on"
-                          onselectstart="return false;"
-                          style={{ left: "35.4839%" }}
-                        >
-                          <div className="relative -mt-2 w-1">
-                            <div
-                              className="absolute z-40 opacity-100 bottom-100 mb-2 left-0 min-w-full"
-                              style={{ marginLeft: "-25px" }}
-                            >
-                              <div className="relative shadow-md">
-                                {/* <div className="bg-black -mt-8 text-white truncate text-xs rounded py-1 px-4">
-                  $ 30
-                </div> */}
-                                <svg
-                                  className="absolute text-black w-full h-2 left-0 top-100"
-                                  x="0px"
-                                  y="0px"
-                                  viewBox="0 0 255 255"
-                                  xmlSpace="preserve"
-                                >
-                                  <polygon
-                                    className="fill-current"
-                                    points="0,0 127.5,127.5 255,0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="absolute text-gray-800 -ml-1  bottom-0 left-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor font-semibold">0</p>
-                        </div>
-                        <div className="absolute text-gray-800 -mr-1  bottom-0 right-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor  font-semibold">+1M</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              </div>
-
-              <div className="">
-                <div className=" flex justify-between items-center">
-                  <h1 className=" text-textColor dark:text-white  font-semibold">
-                    Interest Rate (p.a)
-                  </h1>
-                  <Input placeholder={"5000"} className={" w-32 border"} />
-                </div>
-
-                <>
-                  {/* between two numbers */}
-                  <div className="flex  items-center h-12 justify-center">
-                    <div className="py-1 relative min-w-full">
-                      <div className="h-1.5 bg-gray-200 rounded-full">
-                        <div
-                          className="absolute h-1.5 rounded-full  bg-secondary dark:bg-orange w-0"
-                          style={{ width: "33.1935%" }}
-                        />
-
-                        <div
-                          className="absolute h-6 flex items-center justify-center w-6 rounded-full  bg-primary shadow border border-gray-300 -ml-2 -top-1 cursor-pointer"
-                          unselectable="on"
-                          onselectstart="return false;"
-                          style={{ left: "35.4839%" }}
-                        >
-                          <div className="relative -mt-2 w-1">
-                            <div
-                              className="absolute z-40 opacity-100 bottom-100 mb-2 left-0 min-w-full"
-                              style={{ marginLeft: "-25px" }}
-                            >
-                              <div className="relative shadow-md">
-                                {/* <div className="bg-black -mt-8 text-white truncate text-xs rounded py-1 px-4">
-                  $ 30
-                </div> */}
-                                <svg
-                                  className="absolute text-black w-full h-2 left-0 top-100"
-                                  x="0px"
-                                  y="0px"
-                                  viewBox="0 0 255 255"
-                                  xmlSpace="preserve"
-                                >
-                                  <polygon
-                                    className="fill-current"
-                                    points="0,0 127.5,127.5 255,0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="absolute text-gray-800 -ml-1  bottom-0 left-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor font-semibold">0</p>
-                        </div>
-                        <div className="absolute text-gray-800 -mr-1  bottom-0 right-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor  font-semibold">+1M</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              </div>
-              <div className="">
-                <div className=" flex justify-between items-center">
-                  <h1 className=" text-textColor dark:text-white  font-semibold">
-                    Repayment Period
-                  </h1>
-                  <Input placeholder={"5000"} className={" w-32 border"} />
-                </div>
-
-                <>
-                  {/* between two numbers */}
-                  <div className="flex  items-center h-12 justify-center">
-                    <div className="py-1 relative min-w-full">
-                      <div className="h-1.5 bg-gray-200 rounded-full">
-                        <div
-                          className="absolute h-1.5 rounded-full  bg-secondary dark:bg-orange w-0"
-                          style={{ width: "33.1935%" }}
-                        />
-
-                        <div
-                          className="absolute h-6 flex items-center justify-center w-6 rounded-full  bg-primary shadow border border-gray-300 -ml-2 -top-1 cursor-pointer"
-                          unselectable="on"
-                          onselectstart="return false;"
-                          style={{ left: "35.4839%" }}
-                        >
-                          <div className="relative -mt-2 w-1">
-                            <div
-                              className="absolute z-40 opacity-100 bottom-100 mb-2 left-0 min-w-full"
-                              style={{ marginLeft: "-25px" }}
-                            >
-                              <div className="relative shadow-md">
-                                {/* <div className="bg-black -mt-8 text-white truncate text-xs rounded py-1 px-4">
-                  $ 30
-                </div> */}
-                                <svg
-                                  className="absolute text-black w-full h-2 left-0 top-100"
-                                  x="0px"
-                                  y="0px"
-                                  viewBox="0 0 255 255"
-                                  xmlSpace="preserve"
-                                >
-                                  <polygon
-                                    className="fill-current"
-                                    points="0,0 127.5,127.5 255,0"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="absolute text-gray-800 -ml-1  bottom-0 left-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor font-semibold">0</p>
-                        </div>
-                        <div className="absolute text-gray-800 -mr-1  bottom-0 right-0 -mb-6 flex gap-1">
-                          <p className=" text-textColor  font-semibold">+1M</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              </div>
-            </div>
-            <div className=" bg-[#E6E6E6] py-8 rounded-2xl  text-center     md:w-80 w-full  md:my-0 my-6 h-96">
-              <img
-                src={require("../../assets/images/carD.png")}
-                className=" mx-auto"
-                alt=""
-              />
-              <p className=" text-gray-700 text-lg font-semibold pt-3">
-                Monthly Payments
-              </p>
-              <h1 className=" text-secondary font-bold text-3xl py-4">
-                QR 62,000
-              </h1>
-              <Button
-                label={"Apply Now"}
-                className={
-                  " bg-primary  mx-auto mt-5 rounded-3xl py-2 text-white font-semibold"
-                }
+      <div className="md:flex block justify-between pt-8">
+        <div className="flex flex-col gap-4 md:w-96 w-[100%]">
+          {/* Car Price */}
+          <div>
+            <div className="flex justify-between items-center">
+              <h1 className="text-[#7D7D7D] dark:text-white font-semibold">Car Price</h1>
+              <input
+                type="number"
+                placeholder="5000"
+                className="w-32  py-1.5 px-3 border rounded-sm border-[#D5D5D5]"
+                value={carPrice}
+                onChange={(e) => setCarPrice(Number(e.target.value))}
               />
             </div>
+            <div className="flex items-center h-12 justify-center">
+              <input
+                type="range"
+                min="0"
+                max="1000000"
+                step="1000"
+                value={carPrice}
+                onChange={(e) => setCarPrice(Number(e.target.value))}
+                className="slider appearance-none bg-primary w-full"
+              />
 
-            <div>
-              <h4 className="h4 uppercase pb-3">Break-up of total payment</h4>
-              <img src={require("../../assets/images/graph.png")} alt="" />
-              <ul className=" p-0  leading-9">
-                <li className=" flex  justify-between items-center">
-                  <p className=" text-textColor font-semibold">Principal Amt</p>
-                  <p className=" text-secondary font-bold text-xl">QR 50,000</p>
-                </li>
-                <hr />
-                <li className=" flex  justify-between items-center">
-                  <p className=" text-textColor font-semibold">interest Amt</p>
-                  <p className=" text-primary font-bold text-xl">QR 2,500</p>
-                </li>
-                <hr />
-                <li className=" flex  justify-between items-center">
-                  <p className=" text-textColor font-semibold">
-                    total amt payable{" "}
-                  </p>
-                  <p className=" text-black font-bold text-xl">QR 52,500</p>
-                </li>
-              </ul>
+<style jsx>{`
+        input[type="range"] {
+          -webkit-appearance: none;
+          width: 100%;
+          background-color: #9e9ee3; /* Background color for the range input */
+        }
+
+        /* Track styling */
+        input[type="range"]::-webkit-slider-runnable-track {
+          background: #9e9ee3; /* Range bar theme */
+          height: 6px;
+          border-radius: 6px;
+        }
+        input[type="range"]::-moz-range-track {
+          background: #0c0cb8; /* Range bar theme */
+          height: 8px;
+          border-radius: 6px;
+        }
+
+        /* Thumb styling */
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          height: 24px;
+          width: 24px;
+          background-color: #FB5722; /* Thumb color */
+          border-radius: 50%;
+          cursor: pointer;
+          margin-top: -8px; /* Centers thumb on track */
+        }
+        input[type="range"]::-moz-range-thumb {
+          height: 24px;
+          width: 24px;
+          background-color: orange; /* Thumb color */
+          border-radius: 50%;
+          cursor: pointer;
+        }
+      `}</style>
+            </div>
+            
+            <div className=" flex  justify-between items-center">
+              <p className=" text-[#7D7D7D] font-semibold"> 0</p>
+              <p className="text-[#7D7D7D] font-semibold">1M+</p>
             </div>
           </div>
 
-          <p className=" text-textColor pt-3">
-            The Car Loan calculator results illustrated on Motorqe.com are only
-            intended as a guide. To obtain accurate figures do contact your bank
-            or loan provider before applying. Rates are subject to change at any
-            time & also based on your credit score. You must seek an advice from
-            a trained professional before applying for a loan. Your vehicle may
-            be repossessed if you do not keep up repayments on your car loan.
-          </p>
+          {/* Down Payment */}
+          <div>
+            <div className="flex justify-between items-center">
+              <h1 className="text-textColor dark:text-white font-semibold">Down Payment</h1>
+              <input
+                type="number"
+                placeholder="500"
+                className="w-32 py-1.5 px-3 rounded-md border"
+                value={downPaymentPercent}
+                onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex items-center h-12 justify-center">
+              <input
+                type="range"
+                min="0"
+                max="100" // Max is set to car price
+                // step="100"
+                value={downPaymentPercent}
+                onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
+                className="slider"
+              />
+            </div>
+
+            <div className=" flex  justify-between items-center">
+              <p className=" text-[#7D7D7D] font-semibold">{downPaymentPercent}%</p>
+              <p className="text-[#7D7D7D] font-semibold">100%</p>
+            </div>
+          </div>
+
+          {/* Interest Rate */}
+          <div>
+            <div className="flex justify-between items-center">
+              <h1 className="text-textColor dark:text-white font-semibold">Interest Rate (p.a)</h1>
+              <input
+                type="number"
+                placeholder="5"
+                className="w-32 py-1.5 px-3 rounded-md border"
+                value={interestRate}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex items-center h-12 justify-center">
+              <input
+                type="range"
+                min="0"
+                max="20"
+                step="0.1"
+                value={interestRate}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
+                className="slider"
+              />
+            </div>
+            <div className=" flex  justify-between items-center">
+              <p className=" text-[#7D7D7D] font-semibold">{interestRate}%</p>
+              <p className="text-[#7D7D7D] font-semibold">100%</p>
+            </div>
+          </div>
+
+          {/* Repayment Period */}
+          <div>
+            <div className="flex justify-between items-center">
+              <h1 className="text-textColor dark:text-white font-semibold">Repayment Period (months)</h1>
+              <input
+                type="number"
+                placeholder="36"
+                className="w-32 py-1.5 px-3 rounded-md border"
+                value={repaymentPeriod}
+                onChange={(e) => setRepaymentPeriod(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex items-center h-12 justify-center">
+              <input
+                type="range"
+                min="1"
+                max="72"
+                value={repaymentPeriod}
+                onChange={(e) => setRepaymentPeriod(Number(e.target.value))}
+                className="slider"
+              />
+            </div>
+            <div className=" flex  justify-between items-center">
+              <p className=" text-[#7D7D7D] font-semibold">0</p>
+              <p className="text-[#7D7D7D] font-semibold">72 Months</p>
+            </div>
+          </div>
         </div>
+
+        <div className="bg-[#E6E6E6] py-8 rounded-2xl text-center md:w-80 w-full md:my-0 my-6 h-96">
+          <Link to={`${banners?.special?.[0]?.imageUrl}`}>
+            <img
+              src={banners?.special?.[0]?.imageUrl}
+              className="mx-auto h-24 rounded-md"
+              alt=""
+            />
+          </Link>
+          <p className="text-gray-700 text-lg font-semibold pt-3">Monthly Payments</p>
+          <h1 className="text-secondary font-bold text-3xl py-4">QR {calculateMonthlyPayment()}</h1>
+          <Button
+            label={"Apply Now"}
+            className={"bg-primary mx-auto mt-5 rounded-3xl py-2 text-white font-semibold"}
+          />
+        </div>
+
+        <div>
+          <h4 className="h4 uppercase pb-3">Break-up of total payment</h4>
+          <div className=" relative">
+          <img src={require("../../assets/images/graph.png")} alt="" />
+          <div className=" absolute top-24 left-32 w-28 h-28 flex justify-center items-center bg-white rounded-full">
+            <h2 className=" font-bold m-0 text-center text-primary text-[22px] leading-6">{downPaymentPercent}% Deposit</h2>
+          </div>
+          </div>
+          <ul className="p-0 leading-9">
+            <li className="flex justify-between items-center">
+              <p className="text-textColor font-semibold">Principal Amt</p>
+              <p className="text-secondary font-bold text-xl">QR {principalAmount()}</p>
+            </li>
+            <hr />
+            <li className="flex justify-between items-center">
+              <p className="text-textColor font-semibold">Interest Amt</p>
+              <p className="text-primary font-bold text-xl">QR {interestAmount()}</p>
+            </li>
+            <hr />
+            <li className="flex justify-between items-center">
+              <p className="text-textColor font-semibold">Total Amt Payable</p>
+              <p className="text-black font-bold text-xl">QR {totalAmountPayable()}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <p className="text-textColor pt-3">
+        The Car Loan calculator results illustrated on Motorqe.com are only intended as a guide. To obtain accurate figures do contact your bank or loan provider before applying. Rates are subject to change at any time & also based on your credit score. You must seek advice from a trained professional before applying for a loan. Your vehicle may be repossessed if you do not keep up repayments on your car loan.
+      </p>
+    </div>
+
+
+
+
+    
 
         <div className=" md:px-0 px-6 ">
           <h1 className=" h2 mt-7">Similar Cars </h1>

@@ -168,12 +168,24 @@ const Register = () => {
           if (res?.data?.success === true) {
             setLoader(false);
             toast.success(res?.data?.message);
+
             setState({
               username: "",
               email: "",
               phone: "",
               password: "",
           });
+
+            const params = {
+              message: `${state.username}! Your account has been registered successfully.`
+
+            }
+              axios.post(`${Base_url}/user/create-notification`,params).then((res)=>{
+ 
+              }).catch((error)=>{
+
+              })
+
           } else {
             toast.error(res?.data?.message);
             // Swal.fire(res?.data?.message);

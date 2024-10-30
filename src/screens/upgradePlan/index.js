@@ -57,6 +57,16 @@ const UpgradePlan = () => {
             console.log(res.data);
 
             dispatch(setUserPlan(res?.data));
+
+            const params = {
+              message: `Your plan has been upgraded successfully!`
+            };
+              axios.post(`${Base_url}/user/create-notification`,params).then((res)=>{
+ 
+              }).catch((error)=>{
+
+              })
+            
           } else {
             setLoader(false);
           }

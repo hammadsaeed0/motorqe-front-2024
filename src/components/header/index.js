@@ -74,7 +74,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link className="uppercase text-sm" to={"#"}>
+            <Link className="uppercase text-sm" to={"/important-cars"}>
               imported cars
             </Link>
           </li>

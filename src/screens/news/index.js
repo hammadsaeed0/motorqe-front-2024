@@ -61,7 +61,7 @@ const News = () => {
             <Link  key={newsItem.id} to={`/new-details/${newsItem?._id}`} className="w-80 shadow-lg">
               <div className="relative w-80 h-44">
                 <img
-                  src={newsItem?.images[0]}
+                  src={newsItem?.images}
                   className="w-full h-full object-cover"
                   alt={newsItem.title}
                 />
@@ -74,7 +74,7 @@ const News = () => {
               </div>
               <div className="p-4">
                 <h1 className="font-bold text-lg">{newsItem.title}</h1>
-                <p className="text-textColor pt-4">{newsItem.content}</p>
+                <p className="text-textColor pt-4" dangerouslySetInnerHTML={{ __html: newsItem.content }}></p>
               </div>
             </Link>
           ))}

@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-import Button from "../../components/Button";
+import Button from "../../../components/Button";
 import { FaWhatsapp } from "react-icons/fa6";
 import { IoCall } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
 import { TfiLayoutGrid2Alt } from "react-icons/tfi";
 import { FaSortAmountUpAlt } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
-import Option from "../../components/Option";
+import Option from "../../../components/Option";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Base_url } from "../../utils/Base_url";
-import Header from "../../components/header";
-import Footer from "../../components/footer";
+import { Base_url } from "../../../utils/Base_url";
+import Header from "../../../components/header";
+import Footer from "../../../components/footer";
 import { useSelector } from "react-redux";
-import ListingCard from "../cards/ListingCard";
+import ListingCard from "../../cards/ListingCard";
 import { toast } from "react-toastify";
-import Input from "../../components/Input";
-const NewLists = () => {
+import Input from "../../../components/Input";
+const ImportantCars = () => {
   const location = useLocation();
   const receivedData = location.state?.filter;
 
@@ -26,7 +26,9 @@ const NewLists = () => {
 
   const [distinct, setDistinct] = useState([]);
   const [banners, setBanners] = useState([]);
-
+  const [importCars,setImportCars] = useState([])
+  console.log(importCars);
+  
   useEffect(() => {
     axios
       .get(`${Base_url}/admin/all-distinct-details`)
@@ -46,6 +48,31 @@ const NewLists = () => {
       .catch((error) => {
         console.log(error);
       });
+
+
+      const url = `${Base_url}/admin/all-cars`;
+  
+      axios
+        .get(url)
+        .then((response) => {
+        //   console.log("Response data:", response?.data?.data);
+        if (response?.data?.data) {
+            // Filter the data based on `vehicle_conditionImportant`
+            const filteredData = response.data.data.filter(
+              (item) => item.vehicle_condition === "Important" // Replace "desiredCondition" with the actual value you want to filter by
+            );
+            
+            // Set the filtered data in state
+            setImportCars(filteredData);
+          }
+  
+          
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+
+
   }, []);
   const navigate = useNavigate();
   const userData = JSON.parse(localStorage.getItem("Dealar"));
@@ -238,8 +265,8 @@ const NewLists = () => {
 
         {newLists === "grid" ? (
           <div className="my-12 mx-6">
-            {receivedData?.data?.length > 0 ? (
-              receivedData.data.reduce((acc, item, index) => {
+            {importCars?.length > 0 ? (
+              importCars?.reduce((acc, item, index) => {
                 // Start a new row of 3 car listings
                 if (index % 5 === 0) {
                   const adSetIndex = Math.floor(index / 5);
@@ -253,7 +280,7 @@ const NewLists = () => {
                       <div className="w-28 flex-shrink-0  hidden lg:block">
                         {banners?.sideAds?.map((item, index) => {
                           return (
-                            <a href={item?.redirectUrl?item?.redirectUrl:'/'} target="_blank" rel="noopener noreferrer">
+                            <a href={item?.redirectUrl} target="_blank" rel="noopener noreferrer">
                             <img
                               src={item?.imageUrl}
                               className="h-60 w-full mt-10 rounded-xl object-cover"
@@ -267,11 +294,11 @@ const NewLists = () => {
                       {/* Car Listings */}
                       <div className="flex flex-wrap justify-center gap-3 lg:gap-6 lg:flex-1">
                         {[0, 1, 2, 3, 4, 5].map((i) => {
-                          if (index + i < receivedData.data.length) {
+                          if (index + i < importCars?.length) {
                             return (
                               <ListingCard
                                 key={`car-${index + i}`}
-                                item={receivedData.data[index + i]}
+                                item={importCars?.[index + i]}
                                 className=""
                               />
                             );
@@ -284,7 +311,7 @@ const NewLists = () => {
                       <div className="w-28 flex-shrink-0 hidden lg:block">
                         {banners?.sideAds?.map((item, index) => {
                           return (
-                            <Link to={`${item?.redirectUrl?item?.redirectUrl:'/'}`}>
+                            <Link to={`${item?.redirectUrl}`}>
 
                               <img
                                 src={item?.imageUrl}
@@ -308,7 +335,7 @@ const NewLists = () => {
                         className="h-72 w-full my-6"
                       >
                         {/* <Link to={`${banners.bannerAds[adSetIndex]?.redirectUrl}`}> */}
-                        <a href={banners.bannerAds[adSetIndex]?.redirectUrl?banners.bannerAds[adSetIndex]?.redirectUrl:'/'} target="_blank" rel="noopener noreferrer">
+                        <a href={banners.bannerAds[adSetIndex]?.redirectUrl} target="_blank" rel="noopener noreferrer">
                           <img
                             src={banners.bannerAds[adSetIndex]?.imageUrl}
                             className="h-full w-full rounded-xl object-cover"
@@ -332,7 +359,7 @@ const NewLists = () => {
           </div>
         ) : (
           <div className=" my-12 flex container  mx-auto flex-col gap-12">
-            {receivedData?.data?.map((item, index) => {
+            {importCars?.map((item, index) => {
               return (
                 <div
                   className={` shadow-lg md:flex block    ${item?.type_of_ad === "Featured"
@@ -363,7 +390,7 @@ const NewLists = () => {
                       {item?.status === "sold" ? (
                         <div className=" absolute top-0 w-full h-full flex justify-center items-center   bg-[rgba(255,255,255,0.5)]">
                           <img
-                            src={require("../../assets/images/sold_img.png")}
+                            src={require("../../../assets/images/sold_img.png")}
                             alt=""
                           />
                         </div>
@@ -372,7 +399,7 @@ const NewLists = () => {
                       <div className=" absolute bottom-0 flex justify-between w-full items-center px-2">
                         <div>
                           <img
-                            src={require("../../assets/images/speed.png")}
+                            src={require("../../../assets/images/speed.png")}
                             alt=""
                           />
                         </div>
@@ -397,7 +424,7 @@ const NewLists = () => {
                       <div className="  mt-3 flex justify-between items-center">
                         <div className=" flex gap-2 items-center">
                           <img
-                            src={require("../../assets/images/can.png")}
+                            src={require("../../../assets/images/can.png")}
                             className=" w-4"
                             alt=""
                           />
@@ -407,7 +434,7 @@ const NewLists = () => {
                         </div>
                         <div className="flex gap-2 items-center">
                           <img
-                            src={require("../../assets/images/cal.png")}
+                            src={require("../../../assets/images/cal.png")}
                             className=" w-6"
                             alt=""
                           />
@@ -417,7 +444,7 @@ const NewLists = () => {
                         </div>
                         <div className="flex gap-2 items-center">
                           <img
-                            src={require("../../assets/images/road.png")}
+                            src={require("../../../assets/images/road.png")}
                             className=" w-4"
                             alt=""
                           />
@@ -432,7 +459,7 @@ const NewLists = () => {
                           label={"Warranty"}
                           Icons={
                             <img
-                              src={require("../../assets/images/security.png")}
+                              src={require("../../../assets/images/security.png")}
                               alt=""
                             />
                           }
@@ -444,7 +471,7 @@ const NewLists = () => {
                           label={"Inspected"}
                           Icons={
                             <img
-                              src={require("../../assets/images/Frame.png")}
+                              src={require("../../../assets/images/Frame.png")}
                               alt=""
                             />
                           }
@@ -475,7 +502,7 @@ const NewLists = () => {
                         }}
                         Icons={
                           <img
-                            src={require("../../assets/images/chat.png")}
+                            src={require("../../../assets/images/chat.png")}
                             alt=""
                           />
                         }
@@ -511,7 +538,7 @@ const NewLists = () => {
 
                       <div className=" pt-2 float-right">
                         <img
-                          src={require("../../assets/images/brands.png")}
+                          src={require("../../../assets/images/brands.png")}
                           className=" text-right"
                           alt=""
                         />
@@ -529,4 +556,4 @@ const NewLists = () => {
   );
 };
 
-export default NewLists;
+export default ImportantCars;

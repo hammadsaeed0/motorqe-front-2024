@@ -141,8 +141,31 @@ const UpdateCarDetails = () => {
 
   console.log(state);
 
+  const [models, setModels] = useState([]);
   const handleInputs = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Update the state for the input field
+    setState((prevState) => ({ ...prevState, [name]: value }));
+
+    // Check if the selected input is for 'make' to fetch models
+    if (name === "make") {
+      axios
+        .get(`${Base_url}/user/model-by-make/${value}`)
+        .then((res) => {
+          // Check if data is returned and set the models
+          if (res.data && res?.data?.data?.models) {
+            setModels(res?.data?.data?.models);
+            // toast.success("Models loaded successfully!");
+          } else {
+            // toast.warn("No models found for the selected make.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching models:", error);
+          // toast.error("Error fetching models. Please try again.");
+        });
+    }
   };
 
   const navigate = useNavigate();
@@ -329,7 +352,7 @@ const UpdateCarDetails = () => {
       .catch((error) => {});
 
     axios
-      .get(`${Base_url}/admin/all-make`)
+      .get(`${Base_url}/user/all-latest-makes`)
       .then((res) => {
         console.log(res.data);
         setMakes(res.data.data);
@@ -501,9 +524,9 @@ const UpdateCarDetails = () => {
                 Select Model
               </option>
 
-              {makes?.map((item, index) => (
-                <option key={index} value={item.name}>
-                  {item.name}
+              {models?.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
                 </option>
               ))}
             </select>

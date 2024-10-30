@@ -10,6 +10,7 @@ import Header from "../../components/header";
 import Footer from "../../components/footer";
 import FeaturedCars from "../../components/FeaturedCars";
 import WithMotorqeComponent from "../../components/WithMotorqeComponent";
+import RecentlyCars from "../../components/RecentlyCars";
 
 const Home = () => {
   const [accordions, setAccordion] = useState([
@@ -88,6 +89,8 @@ const Home = () => {
     setAccordion(updatedAccordions);
   };
 
+  const [bigSlider, setBigSlider] = useState("features");
+
   return (
     <div>
       <Header />
@@ -105,35 +108,41 @@ const Home = () => {
       <SearchForCar />
 
       <div className=" mt-28 mb-9 ">
-       <div className="md:px-12 px-6">
-       <h2 className=" h2  text-center">Featured cars in Qatar:</h2>
+        <div className="md:px-12 px-6">
+          <h2 className=" h2  text-center">Featured cars in Qatar:</h2>
 
-<hr className=" m-0 border-b-2 w-64 border-primary mt-2 mx-auto" />
-<p className=" text-center py-10">
-  You will find your favourite cars on our website including Jaguar,
-  Porsche, Mercedes, BMW, Ford, and many others. Have a look at our
-  featured cars and check their price, specifications, and pictures to
-  find your ideal car.
-</p>
-<div className=" scroll-container  flex  gap-1 md:justify-center justify-start  items-center productOverflow  overflow-x-auto whitespace-nowrap">
-  <Button
-    label={"Featured Cars"}
-    className={
-      "border-b-2  py-2 sm:text-base text-sm   text-primary border-primary font-semibold w-48"
-    }
-  />
-  <Button
-    label={"Recently Added Cars"}
-    className={
-      "  py-2  text-secondary sm:text-base text-sm  font-bold"
-    }
-  />
-</div>
-       </div>
+          <hr className=" m-0 border-b-2 w-64 border-primary mt-2 mx-auto" />
+          <p className=" text-center py-10">
+            You will find your favourite cars on our website including Jaguar,
+            Porsche, Mercedes, BMW, Ford, and many others. Have a look at our
+            featured cars and check their price, specifications, and pictures to
+            find your ideal car.
+          </p>
+          <div className=" scroll-container  flex  gap-1 md:justify-center justify-start  items-center productOverflow  overflow-x-auto whitespace-nowrap">
+            <Button
+              onClick={() => setBigSlider("features")}
+              label={"Featured Cars"}
+              className={` py-2 sm:text-base text-sm  ${
+                bigSlider === "features"
+                  ? "text-primary border-b-2  border-primary"
+                  : " text-secondary sm:text-base text-sm"
+              }   font-semibold  w-48`}
+            />
+            <Button
+              onClick={() => setBigSlider("Recently")}
+              label={"Recently Added Cars"}
+              className={` ${
+                bigSlider === "Recently"
+                  ? "text-primary border-primary border-b-2"
+                  : "text-secondary sm:text-base text-sm  "
+              } py-2 font-bold  `}
+            />
+          </div>
+        </div>
 
-        <FeaturedCars />
+        {bigSlider==='features'?
+        <FeaturedCars />:<RecentlyCars/>}
       </div>
-
 
       <div className=" md:mt-28  mt-0 mb-9 px-10">
         <h2 className=" h2  text-center">Popular Showrooms & Dealers:</h2>

@@ -17,7 +17,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Input from "../../../../components/Input";
 const GarageConfirm = () => {
   const { id } = useParams();
-
+  const userData = JSON.parse(localStorage.getItem("Dealar"));
   const location = useLocation();
   const { date, time, contact, additionalNotes } = location.state || {};
 
@@ -37,6 +37,7 @@ const GarageConfirm = () => {
     e.preventDefault();
 
     const params = {
+      userId:userData?._id,
       garageId: newListings?._id,
       date: date,
       time: time,
@@ -236,7 +237,7 @@ const GarageConfirm = () => {
               <div className="bg-primary border  border-[#575656] flex    justify-end  pr-4 items-center py-1.5">
                 <div>
                   <p className="m-0 text-xl text-right text-white font-semibold">
-                    Total Price QR. {grandTotal}
+                    Total Price QR. {totalPrice}
                   </p>
 
                   <p className=" flex gap-2 m-0 text-lg text-white">

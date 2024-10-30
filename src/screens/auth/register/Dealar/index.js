@@ -149,6 +149,18 @@ export const Dealar = () => {
             // localStorage.setItem("user_data", res?.data?.newUser?._id);
             toast.success(res?.data?.message);
             navigate("/register");
+
+
+            const params = {
+              message: `${state.firstName} ${state.lastName}! Your account has been registered successfully.`
+
+            }
+              axios.post(`${Base_url}/user/create-notification`,params).then((res)=>{
+ 
+              }).catch((error)=>{
+
+              })
+
           } else {
             toast.error(res?.data?.message);
           }

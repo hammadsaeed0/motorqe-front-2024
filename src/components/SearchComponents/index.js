@@ -5,6 +5,7 @@ import { Base_url } from "../../utils/Base_url";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { toast } from "react-toastify";
 const SearchComponents = () => {
   const [filter, setFilter] = useState("all");
 
@@ -29,8 +30,32 @@ const SearchComponents = () => {
     type_of_ad: "",
   });
 
+  const [models, setModels] = useState([]);
+
   const handleInputs = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Update the state for the input field
+    setState((prevState) => ({ ...prevState, [name]: value }));
+
+    // Check if the selected input is for 'make' to fetch models
+    if (name === "make") {
+      axios
+        .get(`${Base_url}/user/model-by-make/${value}`)
+        .then((res) => {
+          // Check if data is returned and set the models
+          if (res.data && res?.data?.data?.models) {
+            setModels(res?.data?.data?.models);
+            // toast.success("Models loaded successfully!");
+          } else {
+            // toast.warn("No models found for the selected make.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching models:", error);
+          // toast.error("Error fetching models. Please try again.");
+        });
+    }
   };
 
   const navigate = useNavigate();
@@ -114,6 +139,8 @@ const SearchComponents = () => {
   const [distinct, setDistinct] = useState([]);
   const [allData, setAllData] = useState([]);
 
+  const [makes,setMakes] = useState([])
+
   const user = useSelector((state) => state.authReducer);
 
   console.log(user);
@@ -138,7 +165,20 @@ const SearchComponents = () => {
       .catch((error) => { });
 
 
+      axios
+      .get(`${Base_url}/user/all-latest-makes`)
+      .then((res) => {
+        console.log(res.data);
+        setMakes(res.data.data);
+      })
+      .catch((error) => { });
+
+
   }, []);
+
+
+
+  const [advanceFilter,setAdvanceFilter] = useState(false);
 
   return (
     <div>
@@ -192,9 +232,9 @@ const SearchComponents = () => {
                     className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
                   >
                     <option selected>Select Make</option>
-                    {distinct?.makes?.map((item, index) => (
-                      <option key={index} value={item}>
-                        {item}
+                    {makes?.map((item, index) => (
+                      <option key={index} value={item?.name}>
+                        {item?.name}
                       </option>
                     ))}
                   </select>
@@ -210,7 +250,7 @@ const SearchComponents = () => {
                     className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
                   >
                     <option selected>Select Model</option>
-                    {distinct?.models?.map((item, index) => (
+                    {models?.map((item, index) => (
                       <option key={index} value={item}>
                         {item}
                       </option>
@@ -358,7 +398,11 @@ const SearchComponents = () => {
                     {/* ))} */}
                   </select>
                 </div>
-                <div className="  md:w-48 w-full">
+
+
+                {advanceFilter===true && (
+                  <>
+                  <div className="  md:w-48 w-full">
                 <label className="block text-sm text-left font-semibold text-textColor">
   Price From
 </label>
@@ -748,6 +792,8 @@ const SearchComponents = () => {
                     <option value={"Featured"}>Featured</option>
                   </select>
                 </div>
+                  </>
+                )}
               </div>
 
               <div className=" pt-12">
@@ -787,10 +833,10 @@ const SearchComponents = () => {
                 )}
 
                 <div className=" flex gap-2 justify-center pt-2">
-                  <p className="text-secondary  border-b  border-secondary  font-semibold">
+                  <p  onClick={()=>setAdvanceFilter(true)}  className="text-secondary  cursor-pointer border-b  border-secondary  font-semibold">
                     Advance search
                   </p>
-                  <p className=" text-secondary  border-b  border-secondary  font-semibold">
+                  <p  onClick={()=>setAdvanceFilter(false)} className=" text-secondary  cursor-pointer border-b  border-secondary  font-semibold">
                     Clear search
                   </p>
                 </div>

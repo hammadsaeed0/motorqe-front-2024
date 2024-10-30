@@ -15,7 +15,7 @@ const SearchForCar = () => {
 
   useEffect(() => {
     axios
-      .get(`${Base_url}/admin/all-make`)
+      .get(`${Base_url}/user/all-latest-makes`)
       .then((res) => {
         console.log(res.data);
         setMakes(res.data.data);

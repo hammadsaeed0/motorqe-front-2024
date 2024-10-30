@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import {
   calender,
@@ -21,6 +21,13 @@ import {
 import Header from "../../../../components/header";
 import Footer from "../../../../components/footer";
 import DashboardNavbar from "../../NavBAr/DashboardNavbar";
+import axios from "axios";
+import { Base_url } from "../../../../utils/Base_url";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import Reschedule from "./ReschedueModal";
+import moment from "moment";
+import EditBooking from "./EditBookingGarage";
 // import CarDetails from '../../../../carDetails';
 
 const Input = ({ Icon, ...props }) => {
@@ -125,10 +132,72 @@ const ProductData = [
 ];
 
 const SellerGarageBooking = () => {
+
+  const [openModal, setOpenModal] = useState(false);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [single, setSingle] = useState({});
+  const [single2, setSingle2] = useState({});
+  const user = useSelector((state) => state.authReducer);
+  const [getBooking, setGetBooking] = useState([]);
+  console.log(user);
+
+  useEffect(() => {
+    axios
+      .get(`${Base_url}/user/user-garage-booking/${user?.userToken}`)
+      .then((res) => {
+        const pendingBookings = res?.data?.bookings?.filter(
+          (booking) => booking.status === "pending" || booking.stats === "approved"
+        );
+        setGetBooking(pendingBookings);
+        console.log(pendingBookings);
+      })
+      .catch((err) => {});
+  }, []);
+
+  const UpdateStatus = (id, newStatus) => {
+    console.log(id, newStatus);
+
+    const params = {
+      bookingId: id,
+      status: newStatus,
+    };
+    axios
+      .patch(`${Base_url}/user/book-garage`, params)
+      .then((res) => {
+        console.log(res);
+
+        if (res.status === 200) {
+          toast.success(res.data.message);
+          axios
+      .get(`${Base_url}/user/user-garage-booking/${user?.userToken}`)
+      .then((res) => {
+        console.log(res);
+        
+        const pendingBookings = res?.data?.bookings?.filter(
+          (booking) => booking.status === "pending" || booking.stats === "approved"
+        );
+        setGetBooking(pendingBookings);
+        console.log(pendingBookings);
+      })
+      .catch((err) => {});
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
+
+  
+
   return (
     <>
+   
+   
       <Header />
       <DashboardNavbar />
+     
       <div className="flex flex-col items-center  mb-4">
         <div className="mt-16 flex items-center justify-between w-[90%]">
           <h1 className="font-inter text-3xl font-semibold leading-10 tracking-normal text-left">
@@ -143,6 +212,18 @@ const SellerGarageBooking = () => {
             />
           </div>
         </div>
+        <Reschedule 
+  setIsModalOpen={setOpenModal} 
+  isModalOpen={openModal} 
+  getData={single} 
+  setGetBooking={setGetBooking}
+/>
+        <EditBooking 
+  setIsModalOpen={setOpenModalEdit} 
+  isModalOpen={openModalEdit} 
+  getData={single2} 
+  setGetBooking={setGetBooking}
+/>
 
         {/* --------------------------------- main product card -------------------------------------- */}
         <div className="w-[90%]">
@@ -167,7 +248,7 @@ const SellerGarageBooking = () => {
             </div>
             {/* Use map to create cards */}
             <div className=" justify-between justify-end flex flex-wrap">
-              {ProductData?.map((product, index) => (
+              {getBooking?.map((product, index) => (
                 <div
                   key={index}
                   className={`p-4 bg-[#F3F3F5] h-[460px] w-[350px] rounded-[20px] mt-5 mb-2 ml-2 mr-2`}
@@ -175,22 +256,24 @@ const SellerGarageBooking = () => {
                   {/* Display card content */}
                   <div className="flex-col w-[350px]">
                     <img
-                      src={product.img}
+                      src={product?.garageId?.logo}
                       alt={product?.carName}
-                      className="h-[160px] w-[320px]"
+                      className="h-[160px] w-[320px] rounded-md"
                     />
-                    <h2 className="text-xl font-bold p-2">
-                      {product?.carName}
+                    <h2 className="text-xl text-center font-bold p-2">
+                      {product?.garageId?.garageName}
                     </h2>
-                    <p className=" size-[24px] w-full font-semibold leading-27">
+                    {/* <p className=" size-[24px]  text-center w-full font-semibold leading-27">
                       {product?.WorkShopName}
+                    </p> */}
+                    {/* <p className=" text-center">{product?.Service}</p> */}
+                    <p className=" text-center">
+                      {product?.garageId?.serviceName}
                     </p>
-                    <p className="">{product?.Service}</p>
-                    <p className="">{product?.CarModal}</p>
                   </div>
 
                   {/* Display actions - Row 1 */}
-                  <div className="flex justify-center gap-3 mt-1 w-[320px]">
+                  <div className="flex justify-center gap-6 mt-2 w-[320px]">
                     <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
                       <div className="w-full text-center mt-2">
                         <img src={call} className="mx-auto h-5" alt="Icon" />
@@ -219,14 +302,23 @@ const SellerGarageBooking = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-center gap-3 mt-1 w-[320px]">
-                    <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                  <div   className="flex justify-center cursor-pointer gap-3 mt-4 w-[320px]">
+                    <div onClick={()=>{setOpenModalEdit(true)
+                      setSingle2(product)
+                    }} className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
                       <div className="w-full  mt-2">
                         <img src={edit} className="mx-auto h-5" alt="Icon" />
                         <p className="ml-2 text-sm">Edit</p>
                       </div>
                     </div>
-                    <div className="w-[100px] h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
+                    <div onClick={()=>{
+
+                      setOpenModal(true);
+                      setSingle(product);
+                      
+                    }} 
+                    
+                    className="w-[100px]  cursor-pointer h-[50px] bg-[#0C53AB] rounded-[5px] text-white text-center">
                       <div className="w-full text-center mt-2">
                         <img
                           src={calender}
@@ -236,7 +328,10 @@ const SellerGarageBooking = () => {
                         <p className="ml-2 text-sm">Reschedule</p>
                       </div>
                     </div>
-                    <div className="w-[100px] h-[50px] bg-[#D32525] rounded-[5px] text-white text-center">
+                    <div
+                      onClick={() => UpdateStatus(product?._id, "canceled")}
+                      className="w-[100px] h-[50px] bg-[#D32525] rounded-[5px] text-white text-center"
+                    >
                       <div className="w-full text-center mt-2">
                         <img src={cancel} className="mx-auto h-5" alt="Icon" />
                         <p className="ml-2 text-sm">Cancel</p>
@@ -244,13 +339,7 @@ const SellerGarageBooking = () => {
                     </div>
                   </div>
 
-                  {/* Sold indicator */}
-                  <div className="w-[320px] h-[30px] bg-[#FB5722] rounded mt-2 text-bold justify-center text-white font-bold flex align-center">
-                    <img src={sold} className="h-[20px] mt-1 mr-1" alt="Sold" />
-                    <p className="mt-[3px]"> Car Sold</p>
-                  </div>
-
-                  {/* Featured Ad information */}
+                  <h5 className=" text-center pt-3">{moment.utc(product?.date).format('MM/DD/YYYY')}</h5>
                 </div>
               ))}
             </div>
