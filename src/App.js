@@ -89,8 +89,7 @@ function App() {
             <Route path="/contact_details" element={<ContactDetails />} />
             <Route path="/car_inspection" element={<CarInspection />} />
 
-            <Route path="/news" element={<News />} />
-            <Route path="/new-details/:id" element={<DetailsNews />} />
+           
             <Route path="/featured-plan/:id" element={<FeaturedPlan />} />
             <Route path="/FeaturedConfirmation" element={<FeaturedConfirmation />} />
 
@@ -149,6 +148,8 @@ function App() {
           
           <Route path="/compare-car" element={<CompareCar />} />
           <Route path="/dealar" element={<Dealar />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/new-details/:id" element={<DetailsNews />} />
         </Routes>
       </AnimatePresence>
     </div>

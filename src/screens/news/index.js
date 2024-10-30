@@ -74,7 +74,7 @@ const News = () => {
               </div>
               <div className="p-4">
                 <h1 className="font-bold text-lg">{newsItem.title}</h1>
-                <p className="text-textColor pt-4" dangerouslySetInnerHTML={{ __html: newsItem.content }}></p>
+                <p className="text-textColor pt-4">{newsItem?.subContent.slice(0, 90)}{newsItem?.subContent.length > 100 ? "..." : ""}</p>
               </div>
             </Link>
           ))}
