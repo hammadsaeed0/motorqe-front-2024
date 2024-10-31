@@ -140,9 +140,7 @@ if (storedData !== null) {
                         </td>
                         <td className="align-middle text-center text-sm font-normal px-6  whitespace-nowrap">
                           <span className="text-base text-black font-bold py-1 px-2.5 leading-none bg-green-200 rounded-full">
-                            {` ${moment(item?.createdAt).format(
-                              "MM-DD-YYYY"
-                            )} ${item?.time}`}
+                          {moment.utc(item?.date).format('MM/DD/YYYY')}
                           </span>
                         </td>
                         <td className="align-middle text-sm font-normal px-6  whitespace-nowrap">
