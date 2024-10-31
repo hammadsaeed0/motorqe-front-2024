@@ -13,15 +13,15 @@ const SearchForCar = () => {
   const [years, setYears] = useState([]);
   const [distinct, setDistinct] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get(`${Base_url}/user/all-latest-makes`)
-      .then((res) => {
-        console.log(res.data);
-        setMakes(res.data.data);
-      })
-      .catch((error) => {});
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [visibleNews, setVisibleNews] = useState(15);
 
+
+
+  useEffect(() => {
+  
+    fetchMakes(page);
     axios
       .get(`${Base_url}/admin/all-year`)
       .then((res) => {
@@ -37,7 +37,39 @@ const SearchForCar = () => {
         setDistinct(res.data.data);
       })
       .catch((error) => {});
-  }, []);
+  }, [page]);
+
+
+
+  const fetchMakes = ()=>{
+    axios
+    .get(`${Base_url}/user/all-latest-makes?page=${page}`)
+    .then((res) => {
+      console.log(res.data);
+      // setMakes(res.data.data);
+
+      if (res?.data?.data?.length > 0) {
+        setMakes((prevNews) => [...prevNews, ...res?.data?.data]); // Append new data
+      } else {
+        setHasMore(false); // No more news available
+      }
+      // setLoading(false);
+
+    })
+    .catch((error) => {});
+  }
+
+
+
+  const handleShowMore = () => {
+    if (visibleNews < makes.length) {
+      // If there are still news to show in the current set
+      setVisibleNews((prevVisible) => prevVisible + 3); // Show 3 more news items
+    } else if (hasMore) {
+      // Fetch more news if there are more pages
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   const AllFilterFun = (filterValue) => {
     setLoader(true);
@@ -146,6 +178,9 @@ const SearchForCar = () => {
   };
 
   const [allFilter, setFilter] = useState("body_type");
+
+
+  
   return (
     <div className=" container mx-auto mt-16 px-10">
       <h2 className=" h2  text-center">Search for a car by</h2>
@@ -481,7 +516,7 @@ const SearchForCar = () => {
       ) : allFilter === "brands" ? (
         <>
           <div className=" flex flex-wrap justify-center items-center mt-14 gap-12">
-            {makes?.map((item, index) => {
+            {makes.slice(0, visibleNews)?.map((item, index) => {
               return (
                 <>
                   <div
@@ -519,14 +554,29 @@ const SearchForCar = () => {
         </>
       )}
 
-      <div className=" mt-12">
-        <Button
-          label={"View Less"}
+     
+
+      {(hasMore || visibleNews < makes.length) && (
+            <div className="text-center mt-12">
+              
+              <Button
+         
+          label={loading ? "Loading..." : "View Less"}
+                onClick={handleShowMore}
+                disabled={loading}
           className={
             " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
           }
         />
-      </div>
+            </div>
+          )}
+          {!hasMore && visibleNews >= makes.length && (
+            <div className="text-center mt-8">
+              <p>No more brands available</p>
+            </div>
+          )}
+        
+      
     </div>
   );
 };

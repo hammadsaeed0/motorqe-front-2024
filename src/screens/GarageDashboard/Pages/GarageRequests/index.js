@@ -49,8 +49,8 @@ if (storedData !== null) {
       .then((res) => {
         console.log(res);
 
-        if (res?.success === true) {
-          toast.success(res?.message);
+        if (res?.data?.success === true) {
+          toast.success(res?.data?.message);
           axios
           .get(`${Base_url}/user/my-booking/${userData}`)
           .then((res) => {
@@ -146,7 +146,7 @@ if (storedData !== null) {
                           </span>
                         </td>
                         <td className="align-middle text-sm font-normal px-6  whitespace-nowrap">
-                          <div className="flex justify-center relative items-center">
+                          <div className="flex cursor-pointer justify-center relative items-center">
                             <p
                               onClick={() => toggleDropdown(item._id)}
                               className="m-0 w-12 h-10 bg-[#E3E0E0] flex justify-center items-center rounded-md border"
@@ -156,6 +156,8 @@ if (storedData !== null) {
                             {openDropdownId === item._id && (
                               <Dropdown
                                 isOpen={openDropdownId === item._id}
+                                setGarageRequest={setGarageRequest}
+                                getData={item}
                                 onClose={() => setOpenDropdownId(null)}
                               />
                             )}
@@ -163,7 +165,7 @@ if (storedData !== null) {
                         </td>
                         <td className="align-middle flex gap-2 text-sm font-normal px-6 py-4 whitespace-nowrap">
                           {item?.status === "approved" ? (
-                            <div className="flex gap-2 justify-center">
+                            <div className="flex gap-2 cursor-pointer justify-center">
                               <img
                                 src={require("../../../../assets/images/check.png")}
                                 className="w-12 h-12"
@@ -174,7 +176,7 @@ if (storedData !== null) {
                             <div className="flex  gap-2 ">
                               <img
                                 src={require("../../../../assets/images/check.png")}
-                                className="w-12 h-12 "
+                                className="w-12 h-12 cursor-pointer "
                                 onClick={() =>
                                   BookingRequest(item?._id, "approved")
                                 }
@@ -183,7 +185,7 @@ if (storedData !== null) {
 
                               <img
                                 src={require("../../../../assets/images/close.png")}
-                                className="w-12 h-12"
+                                className="w-12 cursor-pointer h-12"
                                 onClick={() =>
                                   BookingRequest(item?._id, "canceled")
                                 }

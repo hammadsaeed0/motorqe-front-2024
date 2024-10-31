@@ -13,10 +13,35 @@ const CompareCar = () => {
   const [selectMake, setSelectMake] = useState("");
   const [selectModel, setSelectModel] = useState("");
   const [selectYear, setSelectYear] = useState("");
-
+  const [models, setModels] = useState([]);
   const location = useLocation();
   const { item } = location.state || {};
  
+
+
+
+
+  const handleMakeChange = (e) => {
+    const selectedMake = e.target.value;
+    setSelectMake(selectedMake);
+
+    if (selectedMake) {
+      axios
+        .get(`${Base_url}/user/model-by-make/${selectedMake}`)
+        .then((res) => {
+          if (res.data && res.data.data && res.data.data.models) {
+            setModels(res.data.data.models);
+            // Optionally show a success toast here
+          } else {
+            // Optionally show a warning toast here if no models are found
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching models:", error);
+          // Optionally show an error toast here
+        });
+    }
+  };
 
   const defaultCar = {
     _id:item?._id,
@@ -53,7 +78,7 @@ const CompareCar = () => {
 
   useEffect(() => {
     axios
-      .get(`${Base_url}/admin/all-make`)
+      .get(`${Base_url}/user/all-latest-makes`)
       .then((res) => {
         setMakes(res.data.data);
       })
@@ -168,7 +193,7 @@ const CompareCar = () => {
                   <div>
                     <select
                       className="mt-2.5 text-[#757272] p-2 border rounded-lg w-full border-[#E9DBDB]"
-                      onChange={(e) => setSelectMake(e.target.value)}
+                      onChange={handleMakeChange}
                       value={selectedCars[idx]?.make}
                     >
                       <option>Select Make</option>
@@ -187,9 +212,9 @@ const CompareCar = () => {
                     >
                       <option>Select Model</option>
                       {/* This assumes makes array also has models */}
-                      {makes?.map((model) => (
-                        <option key={model} value={model.name}>
-                          {model.name}
+                      {models?.map((model) => (
+                        <option key={model} value={model}>
+                          {model}
                         </option>
                       ))}
                     </select>
