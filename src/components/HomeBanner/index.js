@@ -57,12 +57,12 @@ const HomeBanner = () => {
         <div>
         <h1 className=" uppercase text-center  pt-3 font-bold sm:text-xl text-sm">download the app now</h1>
         <div className="   pt-3 flex  justify-end gap-3">
-        <div>
+        <Link to={`https://www.apple.com/app-store/`}>
         <img src={require('../../assets/images/App Store.png')} className=" md:w-44 w-20" />
-      </div>
-      <div>
+      </Link>
+      <Link to={'https://play.google.com/'}>
         <img src={require('../../assets/images/Google Play.png')} className="md:w-44 w-20"  />
-      </div>
+      </Link>
         </div>
         </div>
         </div>

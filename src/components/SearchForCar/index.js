@@ -15,7 +15,10 @@ const SearchForCar = () => {
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [visibleNews, setVisibleNews] = useState(15);
+  const [hasMoreBody, setHasMoreBody] = useState(true);
+  const [visibleNews, setVisibleNews] = useState(10);
+
+  const [visibleBody, setVisibleBody] = useState(12);
 
 
 
@@ -180,6 +183,51 @@ const SearchForCar = () => {
   const [allFilter, setFilter] = useState("body_type");
 
 
+  const bodyTypes = [
+    { label: 'SUV', image: require("../../assets/images/car1.png") },
+    { label: 'Coupe', image: require("../../assets/images/car2.png") },
+    { label: 'Luxury', image: require("../../assets/images/car3.png") },
+    { label: 'Electric/Hybrid', image: require("../../assets/images/car4.png") },
+    { label: 'MPV', image: require("../../assets/images/car5.png") },
+    { label: 'Pickup', image: require("../../assets/images/car6.png") },
+    { label: 'Wagon', image: require("../../assets/images/car7.png") },
+    { label: 'Sedan', image: require("../../assets/images/car8.png") },
+    { label: 'Sports', image: require("../../assets/images/car9.png") },
+    { label: 'Classic', image: require("../../assets/images/car10.png") },
+    { label: 'Muscle Car', image: require("../../assets/images/car11.png") },
+    { label: 'Convertible', image: require("../../assets/images/car12.png") },
+    { label: 'Compact', image: require("../../assets/images/car13.png") },
+    { label: 'Motorbike', image: require("../../assets/images/car14.png") },
+    { label: 'Buggy', image: require("../../assets/images/car15.png") },
+    { label: 'Van', image: require("../../assets/images/car16.png") },
+    { label: 'Bus', image: require("../../assets/images/car17.png") },
+    { label: 'Truck', image: require("../../assets/images/car18.png") },
+    { label: 'Boat', image: require("../../assets/images/car19.png") },
+  ];
+
+  const handleShowMoreBody= () => {
+    setLoader(true);
+    setTimeout(() => {
+        setVisibleBody(prevVisible => {
+            const newVisible = prevVisible + 6; // Show 6 more items
+            if (newVisible >= bodyTypes.length) {
+                setHasMoreBody(false);
+                return bodyTypes.length; // Cap the visible items
+            }
+            return newVisible;
+        });
+        setLoader(false);
+    }, 500); // Simulate loading time
+};
+
+  const BodyTypeItem = ({ label, image, onClick }) => (
+    <div onClick={onClick} className="text-center cursor-pointer">
+      <img src={image} alt={label} />
+      <span className="uppercase text-textColor font-semibold">{label}</span>
+    </div>
+  );
+
+
   
   return (
     <div className=" container mx-auto mt-16 px-10">
@@ -237,186 +285,40 @@ const SearchForCar = () => {
       {allFilter === "body_type" ? (
         <>
           <div className=" grid md:grid-cols-6 grid-cols-2 mt-8 gap-10">
-            <div>
-              <div onClick={() => AllBodyFun("SUV")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car1.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  SUV
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Coupe")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car2.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Coupe
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("Luxury")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car3.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Luxury{" "}
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("Electric/Hybrid")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car4.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Electric/Hybrid
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("MPV")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car5.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  MPV
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("Pickup")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car6.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Pickup
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Wagon")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car7.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Wagon
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Sedan")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car8.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Sedan
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("Sports")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car9.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Sports
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("Classic")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car10.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Classic
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("  Muscle Car")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car11.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Muscle Car
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("convertible")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car12.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  convertible
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("compact")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car13.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  compact
-                </span>
-              </div>
-            </div>
-            <div>
-              <div
-                onClick={() => AllBodyFun("Motorbike")}
-                className=" text-center cursor-pointer"
-              >
-                <img src={require("../../assets/images/car14.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Motorbike
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Buggy")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car15.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Buggy
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Van")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car16.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Van
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Bus")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car17.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Bus
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Truck")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car18.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  Truck
-                </span>
-              </div>
-            </div>
-            <div>
-              <div onClick={() => AllBodyFun("Boat")} className=" text-center cursor-pointer">
-                <img src={require("../../assets/images/car19.png")} alt="" />
-                <span className=" uppercase text-textColor font-semibold">
-                  BOAT
-                </span>
-              </div>
-            </div>
+          {bodyTypes?.slice(0, visibleBody)?.map((bodyType, index) => (
+          <div key={index}>
+            <BodyTypeItem
+              label={bodyType.label}
+              image={bodyType.image}
+              onClick={() => AllBodyFun(bodyType.label)}
+            />
           </div>
+        ))}
+          </div>
+
+
+
+          {(hasMoreBody || visibleBody < bodyTypes.length) && (
+            <div className="text-center mt-12">
+              
+              <Button
+         
+          label={loading ? "Loading..." : "View More"}
+                onClick={handleShowMoreBody}
+                disabled={loading}
+          className={
+            " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
+          }
+        />
+            </div>
+          )}
+          {!hasMoreBody && visibleBody >= bodyTypes.length && (
+            <div className="text-center mt-8">
+              <p>No more Body Type available</p>
+            </div>
+          )}
+
+
         </>
       ) : allFilter === "year" ? (
         <>
@@ -435,6 +337,8 @@ const SearchForCar = () => {
               );
             })}
           </div>
+
+         
         </>
       ) : allFilter === "engine" ? (
         <>
@@ -533,6 +437,27 @@ const SearchForCar = () => {
               );
             })}
           </div>
+
+
+          {(hasMore || visibleNews < makes.length) && (
+            <div className="text-center mt-12">
+              
+              <Button
+         
+          label={loading ? "Loading..." : "View More"}
+                onClick={handleShowMore}
+                disabled={loading}
+          className={
+            " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
+          }
+        />
+            </div>
+          )}
+          {!hasMore && visibleNews >= makes.length && (
+            <div className="text-center mt-8">
+              <p>No more brands available</p>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -556,25 +481,7 @@ const SearchForCar = () => {
 
      
 
-      {(hasMore || visibleNews < makes.length) && (
-            <div className="text-center mt-12">
-              
-              <Button
-         
-          label={loading ? "Loading..." : "View Less"}
-                onClick={handleShowMore}
-                disabled={loading}
-          className={
-            " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
-          }
-        />
-            </div>
-          )}
-          {!hasMore && visibleNews >= makes.length && (
-            <div className="text-center mt-8">
-              <p>No more brands available</p>
-            </div>
-          )}
+      
         
       
     </div>

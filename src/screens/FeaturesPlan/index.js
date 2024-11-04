@@ -13,6 +13,13 @@ import { feature } from "../../assets/images/images";
 const FeaturedPlan = () => {
   const { id } = useParams();
   const location = useLocation();
+  const plans = [
+    { id: 1, label: "7 Days", price: "QR 1001", days: 7 },
+    { id: 2, label: "14 Days", price: "QR 1001", days: 14 },
+    { id: 3, label: "30 Days", price: "QR 1001", days: 30 },
+    { id: 4, label: "1 Week Homepage", price: "QR 1001", days: 7 },
+  ];
+
   const [loading, setLoader] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   console.log(selectedPlan,'selected Plan....');
@@ -28,7 +35,7 @@ const FeaturedPlan = () => {
       } else {
         setLoader(true);
         navigate('/FeaturedConfirmation', {
-          state: { selectedPlan,minutes,id},
+          state: { selectedPlan,minutes:selectedPlan?.days,id},
         });
       }
 
@@ -53,13 +60,7 @@ const FeaturedPlan = () => {
   }, []);
 
   // Define the available plans
-  const plans = [
-    { id: 1, label: "7 Days", price: "QR 1001", days: 7 },
-    { id: 2, label: "14 Days", price: "QR 1001", days: 14 },
-    { id: 3, label: "30 Days", price: "QR 1001", days: 30 },
-    { id: 4, label: "1 Week Homepage", price: "QR 1001", days: 7 },
-  ];
-
+  
   // Handle plan selection and calculate minutes
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);

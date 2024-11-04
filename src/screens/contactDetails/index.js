@@ -21,19 +21,18 @@ const ContactDetails = () => {
   const userData = JSON.parse(localStorage.getItem("planData"));
 
   console.log("Parsed planData from localStorage:", userData?.featureAdsDays);
-const featureAdsDays = Number(userData?.featureAdsDays);
-console.log('Feature Ads Days:', featureAdsDays);
-const featureTimePeriod = receivedData?.type_of_ad === "Standard"
-  ? 1
-  : featureAdsDays > 0
-    ? featureAdsDays * 24 * 60 
-    : 1; 
-console.log(`Feature Time Period: ${featureTimePeriod}`);
+  const featureAdsDays = Number(userData?.featureAdsDays);
+  console.log("Feature Ads Days:", featureAdsDays);
+  const featureTimePeriod =
+    receivedData?.type_of_ad === "Standard"
+      ? 1
+      : featureAdsDays > 0
+      ? featureAdsDays * 24 * 60
+      : 1;
+  console.log(`Feature Time Period: ${featureTimePeriod}`);
 
+  console.log(featureTimePeriod);
 
-
-      console.log(featureTimePeriod);
-      
   const [state, setState] = useState({
     name: "",
     // contact_details: "",
@@ -57,24 +56,24 @@ console.log(`Feature Time Period: ${featureTimePeriod}`);
   console.log(user);
   console.log(plan);
 
-
   const userToken = JSON.parse(localStorage.getItem("Dealar"));
-  console.log(userToken?.profileStatus,'userToken');
+  console.log(userToken?.profileStatus, "userToken");
 
   const handlerSubmit = (e) => {
     setLoader(true);
     e.preventDefault();
 
-
-
-console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
+    console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
 
     const params = {
       userId: user?.userToken,
       enrollmentId: plan?.userPlan?.data?._id,
-      featureTimePeriod:userToken?.profileStatus==='dealer'?1:featureTimePeriod,
+      featureTimePeriod:
+        userToken?.profileStatus === "dealer" ? 1 : featureTimePeriod,
       title: receivedData.title,
       type_of_ad: receivedData.type_of_ad,
+      imported: receivedData.imported,
+      type_of_ad_show: receivedData.type_of_ad_show,
       body_type: receivedData.body_type,
       make: receivedData.make,
       model: receivedData.model,
@@ -82,7 +81,7 @@ console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
       year: 2024,
       vehicle_condition: receivedData.vehicle_condition,
       mileage: Number(receivedData.mileage),
-      vehicle_category: receivedData.vehicle_category,
+      // vehicle_category: receivedData.vehicle_category,
       specifications: receivedData.specifications,
       cylinder: Number(receivedData.cylinder),
       engine_size: receivedData.engine_size,
@@ -132,23 +131,18 @@ console.log(`Feature Days in Minutes: ${featureTimePeriod}`);
       .then((res) => {
         console.log(res);
         if (res.data.success === true) {
-          navigate("/ListingBookingConfirmation");
+          navigate("/ListingBookingConfirmation", { state: { data: res.data.data } });
           setLoader(false);
 
           toast.success("User car listing add successfully!");
 
-
           const params = {
-            message: `${state.name}, your new car has been created successfully!`
-
-
-          }
-            axios.post(`${Base_url}/user/create-notification`,params).then((res)=>{
-
-            }).catch((error)=>{
-
-            })
-
+            message: `${state.name}, your new car has been created successfully!`,
+          };
+          axios
+            .post(`${Base_url}/user/create-notification`, params)
+            .then((res) => {})
+            .catch((error) => {});
         } else {
           toast.error(res?.data?.message);
         }

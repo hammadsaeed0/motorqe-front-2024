@@ -1,108 +1,162 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { Base_url } from "../../utils/Base_url";
-import { Pannellum } from "pannellum-react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 const News = () => {
   const [news, setNews] = useState([]); // Store news data
   const [page, setPage] = useState(1); // Page number for pagination
   const [loading, setLoading] = useState(false); // Loading state
   const [hasMore, setHasMore] = useState(true); // To check if more news is available
-  const [visibleNews, setVisibleNews] = useState(6); // Set default visible news to 3
+  const [visibleNews, setVisibleNews] = useState(6); // Set default visible news to 6
+  const [banners, setBanners] = useState([]); // Store banner ads data
 
   useEffect(() => {
-    fetchNews(page); // Fetch news when component mounts or page changes
+    // Fetch ads data
+    axios.get(`${Base_url}/user/ads`)
+      .then((res) => setBanners(res.data))
+      .catch((error) => console.error(error));
+
+    // Fetch news data for initial page
+    fetchNews(page);
   }, [page]);
 
-  const fetchNews = (page) => {
+  const fetchNews = async (page) => {
     setLoading(true);
-    const requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
-
-    fetch(`${Base_url}/admin/blog?page=${page}`, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        let data = JSON.parse(result);
-        if (data.blogs.length > 0) {
-          setNews((prevNews) => [...prevNews, ...data.blogs]); // Append new data
-        } else {
-          setHasMore(false); // No more news available
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+    try {
+      const response = await fetch(`${Base_url}/admin/blog?page=${page}`);
+      const data = await response.json();
+      if (data.blogs.length > 0) {
+        setNews((prevNews) => [...prevNews, ...data.blogs]);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleShowMore = () => {
     if (visibleNews < news.length) {
-      // If there are still news to show in the current set
-      setVisibleNews((prevVisible) => prevVisible + 3); // Show 3 more news items
+      setVisibleNews((prevVisible) => prevVisible + 3);
     } else if (hasMore) {
-      // Fetch more news if there are more pages
       setPage((prevPage) => prevPage + 1);
     }
   };
 
+  const BannerAd = ({ ads }) => (
+    <div className="w-28 flex-shrink-0 hidden lg:block">
+      {ads?.map((ad, index) => (
+        <a
+          href={ad?.redirectUrl || "/"}
+          target="_blank"
+          rel="noopener noreferrer"
+          key={`ad-${index}`}
+        >
+          <img
+            src={ad?.imageUrl}
+            className="h-60 w-full mt-10 rounded-xl object-cover"
+            alt={`Ad ${index}`}
+          />
+        </a>
+      ))}
+    </div>
+  );
 
   return (
     <>
       <Header />
       <div className="container mx-auto py-12 px-10">
-        <div className="flex-wrap flex gap-8 justify-center">
-          {/* Map over the news array to render only the visible news items */}
-          {news.slice(0, visibleNews).map((newsItem) => (
-            <Link  key={newsItem.id} to={`/new-details/${newsItem?._id}`} className="w-80 shadow-lg">
-              <div className="relative w-80 h-44">
-                <img
-                  src={newsItem?.images}
-                  className="w-full h-full object-cover"
-                  alt={newsItem.title}
-                />
-                <Button
-                  className={
-                    "absolute top-3 right-3 text-xs uppercase text-white bg-primary py-1 font-semibold rounded-3xl"
-                  }
-                  label={"car news-al sharo"}
-                />
-              </div>
-              <div className="p-4">
-                <h1 className="font-bold text-lg">{newsItem.title}</h1>
-                <p className="text-textColor pt-4">{newsItem?.subContent.slice(0, 90)}{newsItem?.subContent.length > 100 ? "..." : ""}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {news.reduce((acc, item, index) => {
+          if (index % 5 === 0) {
+            const adSetIndex = Math.floor(index / 5);
 
-        {/* Show More button */}
+            acc.push(
+              <div className="flex flex-wrap justify-between items-center gap-4 lg:flex-nowrap" key={`row-${adSetIndex}`}>
+                <BannerAd ads={banners?.sideAds} />
 
-        <div className="  mx-auto flex justify-center">
-          {(hasMore || visibleNews < news.length) && (
-            <div className="text-center mt-8">
-              <Button
-                className="bg-primary text-white py-2 px-6 rounded-md"
-                label={loading ? "Loading..." : "Show More"}
-                onClick={handleShowMore}
-                disabled={loading}
-              />
-            </div>
-          )}
+                <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3">
+                  {[0, 1, 2, 3, 4, 5].map((i) => (
+                    index + i < news.length && (
+                      <Link
+                        key={`news-${index + i}`}
+                        to={`/new-details/${news[index + i]?._id}`}
+                        className=" shadow-lg"
+                      >
+                        <div className="relative  h-44">
+                          <img
+                            src={news[index + i]?.images}
+                            className="w-full h-full object-cover"
+                            alt={news[index + i].title}
+                          />
+                          {news[index+i].ads_text?
+                          <Link to={`${news[index+i].ads_link}`}>
+
+                          <Button
+                            className="absolute top-3 right-3 text-xs uppercase text-white bg-primary py-1 font-semibold rounded-3xl"
+                            label={`${news[index+i].ads_text}`}
+                          />
+                          </Link>:null
+                        }
+                          
+                          
+                        </div>
+                        <div className="p-4">
+                          <h1 className="font-bold text-lg">{news[index + i].title}</h1>
+                          <p className="text-textColor pt-4">
+                            {news[index + i]?.subContent.slice(0, 90)}
+                            {news[index + i]?.subContent.length > 100 ? "..." : ""}
+                          </p>
+                        </div>
+                      </Link>
+                    )
+                  ))}
+                </div>
+
+                <BannerAd ads={banners?.sideAds} />
+              </div>
+            );
+
+            if (banners?.bannerAds?.[adSetIndex]) {
+              acc.push(
+                <div className="h-72 w-full my-6" key={`banner-${adSetIndex}`}>
+                  <a
+                    href={banners.bannerAds[adSetIndex]?.redirectUrl || "/"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={banners.bannerAds[adSetIndex]?.imageUrl}
+                      className="h-full w-full rounded-xl object-center"
+                      alt={`Banner ad ${adSetIndex}`}
+                    />
+                  </a>
+                </div>
+              );
+            }
+          }
+          return acc;
+        }, [])}
+
+        <div className="mx-auto flex justify-center">
+          {/* {(hasMore || visibleNews < news.length) && (
+            <Button
+              className="bg-primary text-white py-2 px-6 rounded-md mt-8"
+              label={loading ? "Loading..." : "Show More"}
+              onClick={handleShowMore}
+              disabled={loading}
+            />
+          )} */}
           {!hasMore && visibleNews >= news.length && (
-            <div className="text-center mt-8">
-              <p>No more news available</p>
-            </div>
+            <p className="text-center mt-8">No more news available</p>
           )}
         </div>
       </div>
-
-     
-
       <Footer />
     </>
   );

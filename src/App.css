@@ -1,3 +1,22 @@
 body{
     overflow-x: hidden;
 }
+
+
+.select2-container--default .select2-selection--single{
+    height: 43px !important;
+    border-radius: 8px !important;
+    margin-top:3px !important;
+    background-color:#FEFBFB !important;
+    border-color: #E9DBDB !important;
+}
+.select2-selection__rendered{
+    padding-top: 6px !important ;
+}
+
+.select2-selection__clear{
+    padding-top: 9px !important;
+}
+.select2-selection__arrow{
+   top: 10px !important;
+}

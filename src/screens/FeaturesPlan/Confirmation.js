@@ -24,9 +24,11 @@ const FeaturedConfirmation= () => {
     setLoader(true);
       
     const params = {
+      carId:id,
+      price:Number(newListings?.price_QR),
         featureTimePeriod:minutes
     }
-    axios.post(`${Base_url}/user/make-feature/${id}`,params).then((res)=>{
+    axios.post(`${Base_url}/user/apply_feature`,params).then((res)=>{
 
         navigate('/dashboard/my-garage')
         toast.success(res.data.message)

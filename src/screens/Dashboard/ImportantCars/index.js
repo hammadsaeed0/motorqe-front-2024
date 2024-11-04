@@ -55,11 +55,11 @@ const ImportantCars = () => {
       axios
         .get(url)
         .then((response) => {
-        //   console.log("Response data:", response?.data?.data);
+          console.log("Response data:", response?.data?.data);
         if (response?.data?.data) {
             // Filter the data based on `vehicle_conditionImportant`
             const filteredData = response.data.data.filter(
-              (item) => item.vehicle_condition === "Important" // Replace "desiredCondition" with the actual value you want to filter by
+              (item) => item.imported === "true" // Replace "desiredCondition" with the actual value you want to filter by
             );
             
             // Set the filtered data in state

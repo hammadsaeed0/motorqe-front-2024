@@ -15,8 +15,9 @@ const CompareCar = () => {
   const [selectYear, setSelectYear] = useState("");
   const [models, setModels] = useState([]);
   const location = useLocation();
-  const { item } = location.state || {};
+  const { cars } = location.state || {};
  
+console.log(cars,'dsssssssssssssssssss');
 
 
 
@@ -44,12 +45,12 @@ const CompareCar = () => {
   };
 
   const defaultCar = {
-    _id:item?._id,
-    car_images:item?.car_images,
+    _id:cars?._id,
+    car_images:cars?.car_images,
     name: "",
-    make:item?.make,
-    model:item?.model,
-    year:item?.year,
+    make:cars?.make,
+    model:cars?.model,
+    year:cars?.year,
     body_type: "Sedan",
     vehicle_condition: "New",
     fuel_type: "Gasoline",
@@ -60,7 +61,7 @@ const CompareCar = () => {
     price_QR: "100,000",
   };
 
-  const [selectedCars, setSelectedCars] = useState([defaultCar]);
+  const [selectedCars, setSelectedCars] = useState(cars || [defaultCar]);
   console.log(selectedCars);
 
 
@@ -197,9 +198,9 @@ const CompareCar = () => {
                       value={selectedCars[idx]?.make}
                     >
                       <option>Select Make</option>
-                      {makes?.map((item) => (
-                        <option key={item} value={item.name}>
-                          {item.name}
+                      {makes?.map((cars) => (
+                        <option key={cars} value={cars.name}>
+                          {cars.name}
                         </option>
                       ))}
                     </select>
@@ -254,13 +255,13 @@ const CompareCar = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-3 my-8 gap-8">
-          {overAllFilerData?.map((item, index) => {
+        <div className={`grid grid-cols-${Math.min(overAllFilerData?.length, 4)} my-8 gap-8`}>
+          {overAllFilerData?.map((cars, index) => {
             return (
               <div className="bg-[#ECECEC] rounded-2xl overflow-hidden border border-primary">
                 <div className="h-60">
                   <img
-                    src={item?.car_images[0]}
+                    src={cars?.car_images[0]}
                     className="w-full h-full object-cover"
                     alt=""
                   />
@@ -268,14 +269,14 @@ const CompareCar = () => {
 
                 <div className="px-6 py-6">
                   <h1 className="text-xl text-secondary font-semibold">
-                    {item?.title}
+                    {cars?.title}
                   </h1>
                   <p className="text-sm">116! Hatchback</p>
                   <div className="pt-3">
                     <h1 className="font-semibold text-xl">
-                      QR. {item?.price_QR}
+                      QR. {cars?.price_QR}
                     </h1>
-                    <p className="">{item?.year}</p>
+                    <p className="">{cars?.year}</p>
                   </div>
                 </div>
 
@@ -284,7 +285,7 @@ const CompareCar = () => {
                     <tbody>
                       <tr className="">
                         <td className="py-2 font-semibold">Make:</td>
-                        <td className="py-2">{item?.make}</td>
+                        <td className="py-2">{cars?.make}</td>
                       </tr>
                       <tr className="">
                         <td className="py-2 font-semibold">Model:</td>
@@ -296,36 +297,36 @@ const CompareCar = () => {
                       </tr>
                       <tr>
                         <td className="py-2 font-semibold">Body Type:</td>
-                        <td className="py-2">{item?.body_type}</td>
+                        <td className="py-2">{cars?.body_type}</td>
                       </tr>
                       <tr>
                         <td className="py-2 font-semibold">Condition:</td>
-                        <td className="py-2">{item?.vehicle_condition}</td>
+                        <td className="py-2">{cars?.vehicle_condition}</td>
                       </tr>
                       <tr>
                         <td className="py-2 font-semibold">Fuel Type:</td>
-                        <td className="py-2">{item?.fuel_type}</td>
+                        <td className="py-2">{cars?.fuel_type}</td>
                       </tr>
                       <tr>
                         <td className="py-2 font-semibold">Engine Size:</td>
-                        <td className="py-2">{item?.engine_size}</td>
+                        <td className="py-2">{cars?.engine_size}</td>
                       </tr>
 
                       <tr>
                         <td className="py-2 font-semibold">Cylinder:</td>
-                        <td className="py-2">{item?.cylinder}</td>
+                        <td className="py-2">{cars?.cylinder}</td>
                       </tr>
                       <tr>
                         <td className="py-2 font-semibold">exterior colour:</td>
-                        <td className="py-2">{item?.interior_colour}</td>
+                        <td className="py-2">{cars?.interior_colour}</td>
                       </tr>
                       <tr>
                         <td className="py-2 font-semibold">exterior colour:</td>
-                        <td className="py-2">{item?.exterior_colour}</td>
+                        <td className="py-2">{cars?.exterior_colour}</td>
                       </tr>
                       <tr>
                         <td className="py-2 font-semibold">exterior colour:</td>
-                        <td className="py-2">{item?.exterior_colour}</td>
+                        <td className="py-2">{cars?.exterior_colour}</td>
                       </tr>
                     </tbody>
                   </table>

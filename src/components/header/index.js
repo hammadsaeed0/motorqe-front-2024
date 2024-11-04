@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { FaUser } from "react-icons/fa6";
+import uk from '../../assets/images/uk.png';
+import qt from '../../assets/images/qt.png';
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const userData = JSON.parse(localStorage.getItem("Dealar"));
@@ -206,32 +208,27 @@ const Header = () => {
                   class="py-2 text-sm text-gray-700 dark:text-gray-200"
                   aria-labelledby="dropdownDefaultButton"
                 >
-                  <li>
+                  <li >
                     <Link
                       href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      class="block px-4 py-2 flex justify-between  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                      EN
+                      English
+                      <img src={uk} alt=""  className=" w-6 h-5" />
                     </Link>
                   </li>
                   <hr />
                   <li>
                     <Link
                       href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      class="block px-4 py-2 flex justify-between  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                      CH
+                      Arabic
+                      <img src={qt} alt=""  className=" w-6 h-5" />
                     </Link>
                   </li>
                   <hr />
-                  <li>
-                    <Link
-                      href="#"
-                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      UR
-                    </Link>
-                  </li>
+                 
                 </ul>
               </div>
             ) : null}

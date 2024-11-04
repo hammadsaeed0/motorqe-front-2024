@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import Input from "../../components/Input";
 
-const ListingCard = ({ item }) => {
+const ListingCard = ({ item, handleSelectCar, selectedCars }) => {
   const user = useSelector((state) => state.authReducer);
   const navigate = useNavigate();
   console.log(user?.userToken);
@@ -19,6 +19,8 @@ const ListingCard = ({ item }) => {
   const [isLiked, setIsLiked] = useState(
     item?.favorited_by_users?.includes(user?.userToken)
   );
+
+  const isChecked = selectedCars.some((car) => car._id === item._id);
 
   const handleLikeDislike = async () => {
     try {
@@ -77,18 +79,14 @@ const ListingCard = ({ item }) => {
     }
   };
 
-
-
   const handleCheckboxChange = (item) => {
     navigate("/compare-car", { state: { item } });
   };
 
-
-
   return (
     <>
       <div
-        className={` shadow-lg  w-[400px]  ${
+        className={` shadow-lg    ${
           item?.type_of_ad === "Featured"
             ? "border-primary border-4 "
             : "border-[#B7DBFF] border"
@@ -104,14 +102,30 @@ const ListingCard = ({ item }) => {
               />
             </Link>
 
-            <div className=" absolute top-2 right-2">
+            <div className=" absolute top-0 flex w-full justify-between ">
+              <div>
+              {item?.vehicle_condition === "New" && item?.mileage > 1000 ? (
+  <div>
+    <img src={require("../../assets/images/new.png")} alt="New" />
+  </div>
+) : null}
+
+{item?.mileage < 1000 ? (
+  <div>
+    <img src={require("../../assets/images/lowmileage.png")} alt="Low Mileage" />
+  </div>
+) : null}
+              </div>
+
               {item?.type_of_ad === "Featured" ? (
-                <Button
-                  label={"featured"}
-                  className={
-                    " uppercase py-1 bg-lightBlue  text-sm  text-white font-semibold rounded-3xl"
-                  }
-                />
+                <div className=" pt-3 pr-2.5">
+                  <Button
+                    label={"featured"}
+                    className={
+                      " uppercase py-1 bg-lightBlue  text-sm  text-white font-semibold rounded-3xl"
+                    }
+                  />
+                </div>
               ) : null}
             </div>
 
@@ -152,7 +166,7 @@ const ListingCard = ({ item }) => {
         <div className="  justify-between p-4">
           <div>
             <div className=" flex justify-between items-center">
-              <h5 className=" text-textColor text-lg font-bold uppercase">
+              <h5 className=" text-textColor text-md font-bold uppercase">
                 {item?.title}
               </h5>
               <div className="  float-right">
@@ -175,12 +189,12 @@ const ListingCard = ({ item }) => {
               </div>
             </div>
 
-            <div className=" flex justify-between  items-center">
-              <h5 className=" pt-3 text-secondary text-lg font-bold uppercase">
+            <div className=" flex pt-2 justify-between  items-center">
+              <h5 className="  text-secondary  font-bold uppercase">
                 qr {item?.price_QR}
               </h5>
-              <h5 className=" text-green text-lg font-bold uppercase">
-                QR 16,00/month
+              <h5 className=" text-green font-bold uppercase">
+                QR ${item?.installement}/month
               </h5>
             </div>
 
@@ -191,7 +205,7 @@ const ListingCard = ({ item }) => {
                   className=" w-4"
                   alt=""
                 />
-                <span className=" text-textColor font-bold sm:text-base text-sm">
+                <span className=" text-textColor font-bold  text-sm">
                   {item?.year}
                 </span>
               </div>
@@ -201,7 +215,7 @@ const ListingCard = ({ item }) => {
                   className=" w-6"
                   alt=""
                 />
-                <span className=" text-textColor  sm:text-base text-sm font-bold">
+                <span className=" text-textColor  text-sm font-bold">
                   {item?.cylinder} Cylinder
                 </span>
               </div>
@@ -211,25 +225,28 @@ const ListingCard = ({ item }) => {
                   className=" w-4"
                   alt=""
                 />
-                <span className=" text-textColor sm:text-base text-sm font-bold">
-                  44, 882 KM
+                <span className=" text-textColor  text-sm font-bold">
+                  {item?.mileage ? item?.mileage : 0} KM
                 </span>
               </div>
             </div>
             <div className=" flex  justify-between items-center">
               <div className=" flex cursor-pointer gap-2 items-center">
-                <h2 className="    text-secondary font-bold">Compare</h2>
+                <h2 className="    text-secondary text-sm font-bold">Compare</h2>
                 <Input
                   type="checkbox"
-                  className={" w-4 h-4 mt-1 cursor-pointer rounded-lg accent-secondary"}
-                  onChange={() => handleCheckboxChange(item)}
-                  
+                  className={
+                    " w-4 h-4 mt-1 cursor-pointer rounded-lg accent-secondary"
+                  }
+                  checked={isChecked}
+                  onChange={() => handleSelectCar(item)}
                 />
               </div>
 
               <div className=" flex gap-1 my-2">
                 {item?.warranty === true ? (
                   <img
+                    className=" "
                     src={require("../../assets/images/security.png")}
                     alt=""
                   />
@@ -240,20 +257,20 @@ const ListingCard = ({ item }) => {
                 ) : null}
               </div>
               <div>
-                <h5 className=" font-bold text-textColor">
+                <h5 className=" text-sm font-bold text-textColor">
                   {moment(item?.updatedAt).startOf("hour").fromNow()}
                 </h5>
               </div>
             </div>
           </div>
 
-          <div className="  sm:flex block justify-between gap-3 items-center">
+          <div className="  sm:flex block  justify-center gap-1 items-center">
             <Button
               onClick={() => clickButtons("call")}
-              Icons={<IoCall size={20} />}
+              Icons={<IoCall size={16} />}
               label={"Call"}
               className={
-                " py-1.5 text-sm mt-3  w-full  bg-secondary text-white  rounded-3xl"
+                " py-1.5 mt-3 text-[13px]   w-full  bg-secondary text-white  rounded-3xl"
               }
             />
             <Button
@@ -263,19 +280,19 @@ const ListingCard = ({ item }) => {
                 checkFunChat(item?.user?._id);
               }}
               Icons={
-                <img src={require("../../assets/images/chat.png")} alt="" />
+                <img src={require("../../assets/images/chat.png")} className=" w-5" alt="" />
               }
               label={"Chat"}
               className={
-                " py-1.5 text-sm bg-primary w-full  font-bold  mt-3 text-white  rounded-3xl"
+                " py-1.5 text-[13px] bg-primary w-full  font-bold  mt-3 text-white  rounded-3xl"
               }
             />
             <Button
               onClick={() => clickButtons("whatsapp")}
               label={"Whatsapp"}
-              Icons={<FaWhatsapp size={20} />}
+              Icons={<FaWhatsapp size={16} />}
               className={
-                " py-1.5 text-sm bg-green w-full   mt-3 text-white  rounded-3xl"
+                " py-1.5 text-[13px] bg-green w-full    mt-3 text-white  rounded-3xl"
               }
             />
           </div>
