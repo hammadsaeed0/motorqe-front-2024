@@ -596,7 +596,7 @@ const UpdateCarDetails = () => {
               </option>
 
               <option value={"New"}>New</option>
-              <option value={"User"}>User</option>
+              <option value={"Used"}>Used</option>
             </select>
           </div>
           <div>
