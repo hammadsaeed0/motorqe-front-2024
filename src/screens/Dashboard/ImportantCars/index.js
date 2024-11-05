@@ -4,7 +4,7 @@ import { FaWhatsapp } from "react-icons/fa6";
 import { IoCall } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
 import { TfiLayoutGrid2Alt } from "react-icons/tfi";
-import { FaSortAmountUpAlt } from "react-icons/fa";
+import { FaBalanceScale, FaSortAmountUpAlt } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
 import Option from "../../../components/Option";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -16,20 +16,41 @@ import { useSelector } from "react-redux";
 import ListingCard from "../../cards/ListingCard";
 import { toast } from "react-toastify";
 import Input from "../../../components/Input";
+import ComparisonModal from "../../cards/ComparisonModal";
 const ImportantCars = () => {
-  const location = useLocation();
-  const receivedData = location.state?.filter;
-
-  console.log(receivedData?.data);
-
   const [newLists, setNewLists] = useState("grid");
-
   const [distinct, setDistinct] = useState([]);
   const [banners, setBanners] = useState([]);
   const [importCars,setImportCars] = useState([])
-  console.log(importCars);
+
+  console.log(importCars,'dfdfdfdfd');
   
   useEffect(() => {
+
+
+    const url = `${Base_url}/admin/all-cars`;
+  
+    axios
+      .get(url)
+      .then((response) => {
+        console.log("Response data:", response?.data?.data);
+      if (response?.data?.data) {
+          // Filter the data based on `vehicle_conditionImportant`
+          const filteredData = response?.data?.data.filter(
+            (item) => item.imported === "true" // Replace "desiredCondition" with the actual value you want to filter by
+          );
+          
+          // Set the filtered data in state
+          setImportCars(filteredData);
+        }
+
+        
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+
+
     axios
       .get(`${Base_url}/admin/all-distinct-details`)
       .then((res) => {
@@ -48,31 +69,6 @@ const ImportantCars = () => {
       .catch((error) => {
         console.log(error);
       });
-
-
-      const url = `${Base_url}/admin/all-cars`;
-  
-      axios
-        .get(url)
-        .then((response) => {
-          console.log("Response data:", response?.data?.data);
-        if (response?.data?.data) {
-            // Filter the data based on `vehicle_conditionImportant`
-            const filteredData = response.data.data.filter(
-              (item) => item.imported === "true" // Replace "desiredCondition" with the actual value you want to filter by
-            );
-            
-            // Set the filtered data in state
-            setImportCars(filteredData);
-          }
-  
-          
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-
-
   }, []);
   const navigate = useNavigate();
   const userData = JSON.parse(localStorage.getItem("Dealar"));
@@ -117,6 +113,31 @@ const ImportantCars = () => {
   const handleCheckboxChange = (item) => {
     navigate("/compare-car", { state: { item } });
   };
+
+
+
+
+  const [selectedCars, setSelectedCars] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleSelectCar = (importCars) => {
+    const isAlreadySelected = selectedCars.some((c) => c._id === importCars._id);
+
+    if (isAlreadySelected) {
+      // Remove car if it's already selected
+      setSelectedCars(selectedCars.filter((c) => c._id !== importCars._id));
+    } else if (selectedCars.length < 3) {
+      // Add car if it’s not already selected and less than 3 cars selected
+      setSelectedCars([...selectedCars, importCars]);
+    }
+  };
+
+  const openComparisonModal = () => {
+    if (selectedCars.length > 0) {
+      setModalOpen(true);
+    }
+  };
+
 
   return (
     <>
@@ -280,7 +301,7 @@ const ImportantCars = () => {
                       <div className="w-28 flex-shrink-0  hidden lg:block">
                         {banners?.sideAds?.map((item, index) => {
                           return (
-                            <a href={item?.redirectUrl} target="_blank" rel="noopener noreferrer">
+                            <a href={item?.redirectUrl?item?.redirectUrl:'/'} target="_blank" rel="noopener noreferrer">
                             <img
                               src={item?.imageUrl}
                               className="h-60 w-full mt-10 rounded-xl object-cover"
@@ -292,14 +313,16 @@ const ImportantCars = () => {
                       </div>
 
                       {/* Car Listings */}
-                      <div className="flex flex-wrap justify-center gap-3 lg:gap-6 lg:flex-1">
+                      <div className=" grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3">
                         {[0, 1, 2, 3, 4, 5].map((i) => {
                           if (index + i < importCars?.length) {
                             return (
                               <ListingCard
                                 key={`car-${index + i}`}
-                                item={importCars?.[index + i]}
+                                item={importCars[index + i]}
                                 className=""
+                                handleSelectCar={handleSelectCar}
+                                selectedCars={selectedCars}
                               />
                             );
                           }
@@ -311,7 +334,7 @@ const ImportantCars = () => {
                       <div className="w-28 flex-shrink-0 hidden lg:block">
                         {banners?.sideAds?.map((item, index) => {
                           return (
-                            <Link to={`${item?.redirectUrl}`}>
+                            <Link to={`${item?.redirectUrl?item?.redirectUrl:'/'}`}>
 
                               <img
                                 src={item?.imageUrl}
@@ -335,10 +358,10 @@ const ImportantCars = () => {
                         className="h-72 w-full my-6"
                       >
                         {/* <Link to={`${banners.bannerAds[adSetIndex]?.redirectUrl}`}> */}
-                        <a href={banners.bannerAds[adSetIndex]?.redirectUrl} target="_blank" rel="noopener noreferrer">
+                        <a href={banners.bannerAds[adSetIndex]?.redirectUrl?banners.bannerAds[adSetIndex]?.redirectUrl:'/'} target="_blank" rel="noopener noreferrer">
                           <img
                             src={banners.bannerAds[adSetIndex]?.imageUrl}
-                            className="h-full w-full rounded-xl object-cover"
+                            className="h-full w-full rounded-xl object-center"
                             alt={`Banner ad ${adSetIndex}`}
                           />
                           </a>
@@ -359,7 +382,7 @@ const ImportantCars = () => {
           </div>
         ) : (
           <div className=" my-12 flex container  mx-auto flex-col gap-12">
-            {importCars?.map((item, index) => {
+            {importCars?.data?.map((item, index) => {
               return (
                 <div
                   className={` shadow-lg md:flex block    ${item?.type_of_ad === "Featured"
@@ -551,6 +574,42 @@ const ImportantCars = () => {
           </div>
         )}
       </div>
+
+
+      {modalOpen && (
+        <ComparisonModal
+          isOpen={modalOpen}
+          carData={selectedCars}
+          onClose={() => setModalOpen(false)} 
+          getData={selectedCars.map(car => ({
+            _id: car._id,
+            title: car.title,
+            car_images: car.car_images,
+            make: car.make,
+            model: car.model,
+            year: car.year,
+          }))}
+          // onSelect={handleSelectCar} // Uncomment and implement if needed
+        />
+      )}
+
+
+       
+       {selectedCars.length > 0 && (
+        <button
+        onClick={openComparisonModal}
+        className="mt-4 bg-primary text-white fixed right-4 w-14 h-14 bottom-5 flex justify-center items-center rounded-full"
+      >
+        <FaBalanceScale className="text-xl" /> 
+        {selectedCars.length > 0 && (
+          <span className="absolute -top-2 -right-2  bg-secondary text-white text-xs w-6 h-6 flex justify-center items-center rounded-full">
+            {selectedCars.length}
+          </span>
+        )}
+      </button>
+      )}
+
+
       <Footer />
     </>
   );

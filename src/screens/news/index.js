@@ -30,7 +30,7 @@ const News = () => {
       const response = await fetch(`${Base_url}/admin/blog?page=${page}`);
       const data = await response.json();
       if (data.blogs.length > 0) {
-        setNews((prevNews) => [...prevNews, ...data.blogs]);
+        setNews(data.blogs);
       } else {
         setHasMore(false);
       }
