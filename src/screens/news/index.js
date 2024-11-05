@@ -80,32 +80,35 @@ const News = () => {
               <div className="flex flex-wrap justify-between items-center gap-4 lg:flex-nowrap" key={`row-${adSetIndex}`}>
                 <BannerAd ads={banners?.sideAds} />
 
-                <div className="flex flex-wrap w-full gap-4">
+                <div className="flex flex-wrap  w-full gap-4">
                   {[0, 1, 2, 3, 4, 5].map((i) => (
                     index + i < news.length && (
-                      <Link
-                        key={`news-${index + i}`}
-                        to={`/new-details/${news[index + i]?._id}`}
-                        className="flex flex-col w-full md:w-1/3 sm:w-1/2 shadow-lg"
+                      <div
+                        
+                        className="flex flex-col w-full relative  md:w-1/3 sm:w-1/2 shadow-lg"
                       >
-                        <div className="relative  h-44">
+                        <Link key={`news-${index + i}`}
+                        to={`/new-details/${news[index + i]?._id}`} className="relative   h-44">
                           <img
                             src={news[index + i]?.images}
                             className="w-full h-full object-cover"
                             alt={news[index + i].title}
                           />
-                          {news[index+i].ads_text?
-                          <Link to={`${news[index+i].ads_link}`}>
-
-                          <Button
-                            className="absolute top-3 right-3 text-xs uppercase text-white bg-primary py-1 font-semibold rounded-3xl"
-                            label={`${news[index+i].ads_text}`}
-                          />
-                          </Link>:null
-                        }
+                          </Link>
+                          {news[index + i].ads_text && (
+          <div className="absolute top-3 right-3">
+            <Link to={news[index + i].ads_link} target="_blank"  
+              rel="noopener noreferrer">
+              <Button
+                className="text-xs uppercase text-white hover:bg-white  hover:text-primary bg-primary py-1 font-semibold rounded-3xl"
+                label={news[index + i].ads_text}
+              />
+            </Link>
+          </div>
+        )}
                           
                           
-                        </div>
+                     
                         <div className="p-4">
                           <h1 className="font-bold text-lg">{news[index + i].title}</h1>
                           <p className="text-textColor pt-4">
@@ -113,7 +116,7 @@ const News = () => {
                             {news[index + i]?.subContent.length > 100 ? "..." : ""}
                           </p>
                         </div>
-                      </Link>
+                      </div>
                     )
                   ))}
                 </div>
