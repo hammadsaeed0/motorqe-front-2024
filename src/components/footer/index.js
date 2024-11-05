@@ -36,7 +36,7 @@ const Footer = () => {
                 </div>
                 <ul className=' flex gap-4 pt-5'>
                     <li className=' w-12 flex justify-center items-center h-12 bg-white rounded-full'>
-                        <Link  to=''>
+                        <Link  to='https://www.facebook.com/MOTORQEQA?mibextid=ZbWKwL'>
 
                         <img src={require('../../assets/images/social/facebook.png')} className=' w-4' alt='' />
                             
@@ -50,7 +50,7 @@ const Footer = () => {
                         </Link>
                     </li>
                     <li className=' w-12 flex justify-center items-center h-12 bg-white rounded-full'>
-                        <Link  to=''>
+                        <Link  to='https://www.instagram.com/motorqeqtr/profilecard/?igsh=MW1yZ2s2NGxxaDB4ZA=='>
 
                         <img src={require('../../assets/images/social/instagrams.png')} className=' w-7' alt='' />
                             

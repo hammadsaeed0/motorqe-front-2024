@@ -80,13 +80,13 @@ const News = () => {
               <div className="flex flex-wrap justify-between items-center gap-4 lg:flex-nowrap" key={`row-${adSetIndex}`}>
                 <BannerAd ads={banners?.sideAds} />
 
-                <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3">
+                <div className="flex flex-wrap w-full gap-4">
                   {[0, 1, 2, 3, 4, 5].map((i) => (
                     index + i < news.length && (
                       <Link
                         key={`news-${index + i}`}
                         to={`/new-details/${news[index + i]?._id}`}
-                        className=" shadow-lg"
+                        className="flex flex-col w-full md:w-1/3 sm:w-1/2 shadow-lg"
                       >
                         <div className="relative  h-44">
                           <img
