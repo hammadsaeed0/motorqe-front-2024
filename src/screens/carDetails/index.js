@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FaAngleRight, FaLocationDot } from "react-icons/fa6";
 import Input from "../../components/Input";
 import { Link, useNavigate } from "react-router-dom";
+import { Viewer, Worker } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
 import {
   LiaLongArrowAltLeftSolid,
   LiaLongArrowAltRightSolid,
@@ -107,7 +109,8 @@ const CarDetails = () => {
 
   const [selectImages, setSelectedImages] = useState([]);
   console.log(selectImages, "selected images....");
-
+  const [fileUrl, setFileUrl] = useState(null); 
+  const [fileType, setFileType] = useState("");
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedImages(file);
@@ -118,6 +121,13 @@ const CarDetails = () => {
         setSelectedImage(reader.result);
       };
       reader.readAsDataURL(file);
+    }else if (file.type === "application/pdf") {
+      // For PDFs, create an object URL
+      const pdfUrl = URL.createObjectURL(file);
+      setFileUrl(pdfUrl);
+      setFileType("pdf");
+    } else {
+      // alert("Please upload an image or PDF file.");
     }
   };
 
@@ -1024,16 +1034,16 @@ const CarDetails = () => {
           </div>
           <div>
             <p className=" text-textColor font-semibold">Inspection Report</p>
-            {selectedImage ? (
+            {fileUrl ? (
               <label
                 htmlFor="fileInput"
                 className=" rounded-md  border overflow-hidden flex w-40  h-40 "
               >
-                <img
-                  src={selectedImage}
-                  className="  object-cover w-full h-full"
-                  alt=""
-                />
+                <div className="w-full h-full">
+                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                <Viewer fileUrl={fileUrl} />
+              </Worker>
+            </div>
                 <input
                   accept="image/*"
                   onChange={handleFileChange}

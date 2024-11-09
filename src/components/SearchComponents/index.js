@@ -290,7 +290,7 @@ const SearchComponents = () => {
                 </div>
                 <div className="  md:w-48 w-full">
                   <label className="block text-sm text-left  font-semibold  text-textColor">
-                    {advanceFilter===true?'Year From':'Year'}  
+                    {advanceFilter === true ? "Year From" : "Year"}
                   </label>
                   <select
                     name="yearFrom"
@@ -348,115 +348,68 @@ const SearchComponents = () => {
                     <option value={"<1980"}>{"<1980"}</option>
                   </select>
                 </div>
-
-                <div className="  md:w-48 w-full">
-                  <label className="block text-sm text-left  font-semibold  text-textColor">
-                    Specifications
-                  </label>
-                  <select
-                    name="specifications"
-                    onChange={handleInputs}
-                    value={state.specifications}
-                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
-                  >
-                    <option>Select Specifications </option>
-                    <option value={"Airbags"}>Airbags</option>
-                    <option value={"Dimensions"}>Dimensions</option>
-                    <option value={"Drivetrain"}>Drivetrain</option>
-                    <option value={"EBD"}>EBD</option>
-                    <option value={"Engine"}>Engine</option>
-                    <option value={"Torque"}>Torque</option>
-
-                    {/* {allData?.fieldArrays?.specifications?.map(
-                      (item, index) => (
-                        <option key={index} value={item}>
-                          {item}
-                        </option>
-                      )
-                    )} */}
-                  </select>
-                </div>
-                <div className=" md:w-48 w-full">
-                  <label className="block text-sm text-left  font-semibold  text-textColor">
-                    Vehicle Condition
-                  </label>
-                  <select
-                    name="vehicleCondition"
-                    onChange={handleInputs}
-                    value={state.vehicleCondition}
-                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
-                  >
-                    <option>Select Condition</option>
-                    {/* {distinct?.vehicleConditions?.map((item, index) => ( */}
-                    <option value={"new"}>New</option>
-                    <option value={"old"}>Old</option>
-                    <option value={"Scraped"}>Scraped</option>
-                    {/* ))} */}
-                  </select>
-                </div>
-
                 {advanceFilter === true && (
                   <>
-                   <div className="  md:w-48 w-full">
-                  <label className="block text-sm text-left  font-semibold  text-textColor">
-                    Year To
-                  </label>
-                  <select
-                    name="yearTo"
-                    onChange={handleInputs}
-                    value={state.yearTo}
-                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
-                  >
-                    <option value="">Select Year</option>
-                    <option value={"2025"}>2025</option>
-                    <option value={"2024"}>2024</option>
-                    <option value={"2023"}>2023</option>
-                    <option value={"2022"}>2022</option>
-                    <option value={"2021"}>2021</option>
-                    <option value={"2020"}>2020</option>
-                    <option value={"2019"}>2019</option>
-                    <option value={"2018"}>2018</option>
-                    <option value={"2017"}>2017</option>
-                    <option value={"2016"}>2016</option>
-                    <option value={"2015"}>2015</option>
-                    <option value={"2014"}>2014</option>
-                    <option value={"2013"}>2013</option>
-                    <option value={"2012"}>2012</option>
-                    <option value={"2011"}>2011</option>
-                    <option value={"2010"}>2010</option>
-                    <option value={"2009"}>2009</option>
-                    <option value={"2008"}>2008</option>
-                    <option value={"2007"}>2007</option>
-                    <option value={"2006"}>2006</option>
-                    <option value={"2005"}>2005</option>
-                    <option value={"2004"}>2004</option>
-                    <option value={"2003"}>2003</option>
-                    <option value={"2002"}>2002</option>
-                    <option value={"2001"}>2001</option>
-                    <option value={"2000"}>2000</option>
-                    <option value={"1999"}>1999</option>
-                    <option value={"1998"}>1998</option>
-                    <option value={"1997"}>1997</option>
-                    <option value={"1996"}>1996</option>
-                    <option value={"1995"}>1995</option>
-                    <option value={"1994"}>1994</option>
-                    <option value={"1993"}>1993</option>
-                    <option value={"1992"}>1992</option>
-                    <option value={"1991"}>1991</option>
-                    <option value={"1990"}>1990</option>
-                    <option value={"1989"}>1989</option>
-                    <option value={"1988"}>1988</option>
-                    <option value={"1987"}>1987</option>
-                    <option value={"1986"}>1986</option>
-                    <option value={"1985"}>1985</option>
-                    <option value={"1984"}>1984</option>
-                    <option value={"1983"}>1983</option>
-                    <option value={"1982"}>1982</option>
-                    <option value={"1981"}>1981</option>
-                    <option value={"1980"}>1980</option>
-                    <option value={"<1980"}>{"<1980"}</option>
-                  </select>
-                </div>
+                    <div className="  md:w-48 w-full">
+                      <label className="block text-sm text-left  font-semibold  text-textColor">
+                        Year To
+                      </label>
+                      <select
+                        name="yearTo"
+                        onChange={handleInputs}
+                        value={state.yearTo}
+                        className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                      >
+                        <option value="">Select Year</option>
+                        <option value={"2025"}>2025</option>
+                        <option value={"2024"}>2024</option>
+                        <option value={"2023"}>2023</option>
+                        <option value={"2022"}>2022</option>
+                        <option value={"2021"}>2021</option>
+                        <option value={"2020"}>2020</option>
+                        <option value={"2019"}>2019</option>
+                        <option value={"2018"}>2018</option>
+                        <option value={"2017"}>2017</option>
+                        <option value={"2016"}>2016</option>
+                        <option value={"2015"}>2015</option>
+                        <option value={"2014"}>2014</option>
+                        <option value={"2013"}>2013</option>
+                        <option value={"2012"}>2012</option>
+                        <option value={"2011"}>2011</option>
+                        <option value={"2010"}>2010</option>
+                        <option value={"2009"}>2009</option>
+                        <option value={"2008"}>2008</option>
+                        <option value={"2007"}>2007</option>
+                        <option value={"2006"}>2006</option>
+                        <option value={"2005"}>2005</option>
+                        <option value={"2004"}>2004</option>
+                        <option value={"2003"}>2003</option>
+                        <option value={"2002"}>2002</option>
+                        <option value={"2001"}>2001</option>
+                        <option value={"2000"}>2000</option>
+                        <option value={"1999"}>1999</option>
+                        <option value={"1998"}>1998</option>
+                        <option value={"1997"}>1997</option>
+                        <option value={"1996"}>1996</option>
+                        <option value={"1995"}>1995</option>
+                        <option value={"1994"}>1994</option>
+                        <option value={"1993"}>1993</option>
+                        <option value={"1992"}>1992</option>
+                        <option value={"1991"}>1991</option>
+                        <option value={"1990"}>1990</option>
+                        <option value={"1989"}>1989</option>
+                        <option value={"1988"}>1988</option>
+                        <option value={"1987"}>1987</option>
+                        <option value={"1986"}>1986</option>
+                        <option value={"1985"}>1985</option>
+                        <option value={"1984"}>1984</option>
+                        <option value={"1983"}>1983</option>
+                        <option value={"1982"}>1982</option>
+                        <option value={"1981"}>1981</option>
+                        <option value={"1980"}>1980</option>
+                        <option value={"<1980"}>{"<1980"}</option>
+                      </select>
+                    </div>
 
                     <div className="  md:w-48 w-full">
                       <label className="block text-sm text-left font-semibold text-textColor">
@@ -832,17 +785,59 @@ const SearchComponents = () => {
                         className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
                       >
                         <option>Select </option>
-                        {/* {allData?.type_of_ad?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
+
                         <option value={"Standard"}>Standard</option>
                         <option value={"Featured"}>Featured</option>
                       </select>
                     </div>
                   </>
                 )}
+
+                <div className="  md:w-48 w-full">
+                  <label className="block text-sm text-left  font-semibold  text-textColor">
+                    Specifications
+                  </label>
+                  <select
+                    name="specifications"
+                    onChange={handleInputs}
+                    value={state.specifications}
+                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                  >
+                    <option>Select Specifications </option>
+                    <option value={"Airbags"}>Airbags</option>
+                    <option value={"Dimensions"}>Dimensions</option>
+                    <option value={"Drivetrain"}>Drivetrain</option>
+                    <option value={"EBD"}>EBD</option>
+                    <option value={"Engine"}>Engine</option>
+                    <option value={"Torque"}>Torque</option>
+
+                    {/* {allData?.fieldArrays?.specifications?.map(
+                      (item, index) => (
+                        <option key={index} value={item}>
+                          {item}
+                        </option>
+                      )
+                    )} */}
+                  </select>
+                </div>
+                <div className=" md:w-48 w-full">
+                  <label className="block text-sm text-left  font-semibold  text-textColor">
+                    Vehicle Condition
+                  </label>
+                  <select
+                    name="vehicleCondition"
+                    onChange={handleInputs}
+                    value={state.vehicleCondition}
+                    className="mt-1 bg-[#FEFBFB] text-gray-600 p-2 border rounded-lg w-full border-[#E9DBDB]"
+                  >
+                    <option>Select Condition</option>
+                    {/* {distinct?.vehicleConditions?.map((item, index) => ( */}
+                    <option value={"new"}>New</option>
+                    <option value={"old"}>Old</option>
+                    <option value={"Scraped"}>Scraped</option>
+                    {/* ))} */}
+                  </select>
+                </div>
               </div>
 
               <div className=" pt-12">

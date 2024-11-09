@@ -213,8 +213,9 @@ const Header = () => {
                       href="#"
                       class="block px-4 py-2 flex justify-between  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
-                      English
                       <img src={uk} alt=""  className=" w-6 h-5" />
+                      English
+                      
                     </Link>
                   </li>
                   <hr />
@@ -223,8 +224,9 @@ const Header = () => {
                       href="#"
                       class="block px-4 py-2 flex justify-between  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
+                        <img src={qt} alt=""  className=" w-6 h-5" />
                       Arabic
-                      <img src={qt} alt=""  className=" w-6 h-5" />
+                    
                     </Link>
                   </li>
                   <hr />

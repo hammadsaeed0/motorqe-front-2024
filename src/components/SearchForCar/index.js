@@ -67,7 +67,7 @@ const SearchForCar = () => {
   const handleShowMore = () => {
     if (visibleNews < makes.length) {
       // If there are still news to show in the current set
-      setVisibleNews((prevVisible) => prevVisible + 3); // Show 3 more news items
+      setVisibleNews((prevVisible) => prevVisible + makes?.length); // Show 3 more news items
     } else if (hasMore) {
       // Fetch more news if there are more pages
       setPage((prevPage) => prevPage + 1);
@@ -209,7 +209,7 @@ const SearchForCar = () => {
     setLoader(true);
     setTimeout(() => {
         setVisibleBody(prevVisible => {
-            const newVisible = prevVisible + 6; // Show 6 more items
+            const newVisible = prevVisible + bodyTypes?.length; // Show 6 more items
             if (newVisible >= bodyTypes.length) {
                 setHasMoreBody(false);
                 return bodyTypes.length; // Cap the visible items
@@ -425,12 +425,12 @@ const SearchForCar = () => {
                 <>
                   <div
                     onClick={() => AllBrandFun(`${item?.name}`)}
-                    className="  m-2  bg-white w-44  cursor-pointer rounded"
+                    className="  m-2  bg-white     w-40 h-24  cursor-pointer rounded"
                   >
                     <img
                       src={item?.logoUrl}
                       alt=""
-                      className=" w-full  h-full object-cover"
+                      className=" w-full  h-full object-contain "
                     />
                   </div>
                 </>

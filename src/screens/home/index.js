@@ -11,6 +11,7 @@ import Footer from "../../components/footer";
 import FeaturedCars from "../../components/FeaturedCars";
 import WithMotorqeComponent from "../../components/WithMotorqeComponent";
 import RecentlyCars from "../../components/RecentlyCars";
+import Announcement from "../../components/Announcement";
 
 const Home = () => {
   const [accordions, setAccordion] = useState([
@@ -94,6 +95,7 @@ const Home = () => {
   return (
     <div>
       <Header />
+      <Announcement/>
       <HomeBanner />
       <div className=" -translate-y-[75px]">
         <div className=" w-[90%]  mx-auto">

@@ -9,7 +9,7 @@ const PopularShowRooms = ({ items }) => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
         left: -200,
-        behavior: "smooth",  // Slow and smooth scrolling
+        behavior: "smooth", // Slow and smooth scrolling
       });
     }
   };
@@ -18,7 +18,7 @@ const PopularShowRooms = ({ items }) => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
         left: 200,
-        behavior: "smooth",  // Slow and smooth scrolling
+        behavior: "smooth", // Slow and smooth scrolling
       });
     }
   };
