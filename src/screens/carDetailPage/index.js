@@ -230,23 +230,31 @@ console.log(banners);
   const [interestRate, setInterestRate] = useState(2.9); 
   const [repaymentPeriod, setRepaymentPeriod] = useState(48); 
 
+  
+
   const principalAmount = () => {
+
     return carPrice - (carPrice * (downPaymentPercent / 100));
-  };
+};
+
+
 
   const interestAmount = () => {
     const principal = principalAmount();
     const interestRateDecimal = interestRate / 100;
     const years = repaymentPeriod / 12;
-    return (principal * interestRateDecimal * years).toFixed(2);
+    const interest = principal * interestRateDecimal * years;
+    return interest.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
+  
   const totalAmountPayable = () => {
-    return (parseFloat(interestAmount()) + principalAmount()).toFixed(2);
+    const total = parseFloat(interestAmount().replace(/,/g, "")) + principalAmount();
+    return total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
+  
   const calculateMonthlyPayment = () => {
-    return (totalAmountPayable() / repaymentPeriod).toFixed(2);
+    const monthlyPayment = parseFloat(totalAmountPayable().replace(/,/g, "")) / repaymentPeriod;
+    return monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   return (
@@ -607,7 +615,7 @@ console.log(banners);
 
             <div className=" flex justify-between mt-4 items-center py-2">
               <h1 className=" text-secondary font-bold text-3xl">
-                QR {newListings.price_QR}
+                QR {Number(newListings.price_QR).toLocaleString()}
               </h1>
               <Button
                 label={"Track Price"}
@@ -1115,8 +1123,9 @@ console.log(banners);
             <div className="flex items-center h-12 justify-center">
               <input
                 type="range"
-                min="1"
+                min="12"
                 max="72"
+                 step="12"
                 value={repaymentPeriod}
                 onChange={(e) => setRepaymentPeriod(Number(e.target.value))}
                 className="slider"
@@ -1156,7 +1165,7 @@ console.log(banners);
           <ul className="p-0 leading-9">
             <li className="flex justify-between items-center">
               <p className="text-textColor font-semibold">Principal Amt</p>
-              <p className="text-secondary font-bold text-xl">QR {principalAmount()}</p>
+              <p className="text-secondary font-bold text-xl">QR {principalAmount().toLocaleString()}</p>
             </li>
             <hr />
             <li className="flex justify-between items-center">

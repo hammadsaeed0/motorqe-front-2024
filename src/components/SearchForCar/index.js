@@ -20,16 +20,16 @@ const SearchForCar = () => {
 
   const [visibleBody, setVisibleBody] = useState(12);
 
-
-
   useEffect(() => {
-  
     fetchMakes(page);
     axios
       .get(`${Base_url}/admin/all-year`)
       .then((res) => {
-        console.log(res.data);
-        setYears(res.data.data);
+        const filteredYears = res.data.data.filter(
+          (year) => year >= 2016 && year <= 2024
+        );
+        console.log(filteredYears);
+        setYears(filteredYears);
       })
       .catch((error) => {});
 
@@ -42,27 +42,22 @@ const SearchForCar = () => {
       .catch((error) => {});
   }, [page]);
 
-
-
-  const fetchMakes = ()=>{
+  const fetchMakes = () => {
     axios
-    .get(`${Base_url}/user/all-latest-makes?page=${page}`)
-    .then((res) => {
-      console.log(res.data);
-      // setMakes(res.data.data);
+      .get(`${Base_url}/user/all-latest-makes?page=${page}`)
+      .then((res) => {
+        console.log(res.data);
+        // setMakes(res.data.data);
 
-      if (res?.data?.data?.length > 0) {
-        setMakes((prevNews) => [...prevNews, ...res?.data?.data]); // Append new data
-      } else {
-        setHasMore(false); // No more news available
-      }
-      // setLoading(false);
-
-    })
-    .catch((error) => {});
-  }
-
-
+        if (res?.data?.data?.length > 0) {
+          setMakes((prevNews) => [...prevNews, ...res?.data?.data]); // Append new data
+        } else {
+          setHasMore(false); // No more news available
+        }
+        // setLoading(false);
+      })
+      .catch((error) => {});
+  };
 
   const handleShowMore = () => {
     if (visibleNews < makes.length) {
@@ -182,43 +177,45 @@ const SearchForCar = () => {
 
   const [allFilter, setFilter] = useState("body_type");
 
-
   const bodyTypes = [
-    { label: 'SUV', image: require("../../assets/images/car1.png") },
-    { label: 'Coupe', image: require("../../assets/images/car2.png") },
-    { label: 'Luxury', image: require("../../assets/images/car3.png") },
-    { label: 'Electric/Hybrid', image: require("../../assets/images/car4.png") },
-    { label: 'MPV', image: require("../../assets/images/car5.png") },
-    { label: 'Pickup', image: require("../../assets/images/car6.png") },
-    { label: 'Wagon', image: require("../../assets/images/car7.png") },
-    { label: 'Sedan', image: require("../../assets/images/car8.png") },
-    { label: 'Sports', image: require("../../assets/images/car9.png") },
-    { label: 'Classic', image: require("../../assets/images/car10.png") },
-    { label: 'Muscle Car', image: require("../../assets/images/car11.png") },
-    { label: 'Convertible', image: require("../../assets/images/car12.png") },
-    { label: 'Compact', image: require("../../assets/images/car13.png") },
-    { label: 'Motorbike', image: require("../../assets/images/car14.png") },
-    { label: 'Buggy', image: require("../../assets/images/car15.png") },
-    { label: 'Van', image: require("../../assets/images/car16.png") },
-    { label: 'Bus', image: require("../../assets/images/car17.png") },
-    { label: 'Truck', image: require("../../assets/images/car18.png") },
-    { label: 'Boat', image: require("../../assets/images/car19.png") },
+    { label: "SUV", image: require("../../assets/images/car1.png") },
+    { label: "Coupe", image: require("../../assets/images/car2.png") },
+    { label: "Luxury", image: require("../../assets/images/car3.png") },
+    {
+      label: "Electric/Hybrid",
+      image: require("../../assets/images/car4.png"),
+    },
+    { label: "MPV", image: require("../../assets/images/car5.png") },
+    { label: "Pickup", image: require("../../assets/images/car6.png") },
+    { label: "Wagon", image: require("../../assets/images/car7.png") },
+    { label: "Sedan", image: require("../../assets/images/car8.png") },
+    { label: "Sports", image: require("../../assets/images/car9.png") },
+    { label: "Classic", image: require("../../assets/images/car10.png") },
+    { label: "Muscle Car", image: require("../../assets/images/car11.png") },
+    { label: "Convertible", image: require("../../assets/images/car12.png") },
+    { label: "Compact", image: require("../../assets/images/car13.png") },
+    { label: "Motorbike", image: require("../../assets/images/car14.png") },
+    { label: "Buggy", image: require("../../assets/images/car15.png") },
+    { label: "Van", image: require("../../assets/images/car16.png") },
+    { label: "Bus", image: require("../../assets/images/car17.png") },
+    { label: "Truck", image: require("../../assets/images/car18.png") },
+    { label: "Boat", image: require("../../assets/images/car19.png") },
   ];
 
-  const handleShowMoreBody= () => {
+  const handleShowMoreBody = () => {
     setLoader(true);
     setTimeout(() => {
-        setVisibleBody(prevVisible => {
-            const newVisible = prevVisible + bodyTypes?.length; // Show 6 more items
-            if (newVisible >= bodyTypes.length) {
-                setHasMoreBody(false);
-                return bodyTypes.length; // Cap the visible items
-            }
-            return newVisible;
-        });
-        setLoader(false);
+      setVisibleBody((prevVisible) => {
+        const newVisible = prevVisible + bodyTypes?.length; // Show 6 more items
+        if (newVisible >= bodyTypes.length) {
+          setHasMoreBody(false);
+          return bodyTypes.length; // Cap the visible items
+        }
+        return newVisible;
+      });
+      setLoader(false);
     }, 500); // Simulate loading time
-};
+  };
 
   const BodyTypeItem = ({ label, image, onClick }) => (
     <div onClick={onClick} className="text-center cursor-pointer">
@@ -227,8 +224,6 @@ const SearchForCar = () => {
     </div>
   );
 
-
-  
   return (
     <div className=" container mx-auto mt-16 px-10">
       <h2 className=" h2  text-center">Search for a car by</h2>
@@ -285,31 +280,27 @@ const SearchForCar = () => {
       {allFilter === "body_type" ? (
         <>
           <div className=" grid md:grid-cols-6 grid-cols-2 mt-8 gap-10">
-          {bodyTypes?.slice(0, visibleBody)?.map((bodyType, index) => (
-          <div key={index}>
-            <BodyTypeItem
-              label={bodyType.label}
-              image={bodyType.image}
-              onClick={() => AllBodyFun(bodyType.label)}
-            />
+            {bodyTypes?.slice(0, visibleBody)?.map((bodyType, index) => (
+              <div key={index}>
+                <BodyTypeItem
+                  label={bodyType.label}
+                  image={bodyType.image}
+                  onClick={() => AllBodyFun(bodyType.label)}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-          </div>
-
-
 
           {(hasMoreBody || visibleBody < bodyTypes.length) && (
             <div className="text-center mt-12">
-              
               <Button
-         
-          label={loading ? "Loading..." : "View More"}
+                label={loading ? "Loading..." : "View More"}
                 onClick={handleShowMoreBody}
                 disabled={loading}
-          className={
-            " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
-          }
-        />
+                className={
+                  " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
+                }
+              />
             </div>
           )}
           {!hasMoreBody && visibleBody >= bodyTypes.length && (
@@ -317,8 +308,6 @@ const SearchForCar = () => {
               <p>No more Body Type available</p>
             </div>
           )}
-
-
         </>
       ) : allFilter === "year" ? (
         <>
@@ -328,17 +317,15 @@ const SearchForCar = () => {
                 <>
                   <Button
                     onClick={() => AllYearFun(`${item}`)}
-                    label={`${item}`}
+                    label={`${item} `}
                     className={
-                      "  border shadow-lg w-52 cursor-pointer rounded-md py-1.5  font-medium  text-secondary border-secondary"
-                    }
+                      "border shadow-lg w-52 text-sm cursor-pointer rounded-md py-1.5 whitespace-nowrap font-medium text-secondary border-secondary text-center"
+                    } 
                   />
                 </>
               );
             })}
           </div>
-
-         
         </>
       ) : allFilter === "engine" ? (
         <>
@@ -438,19 +425,16 @@ const SearchForCar = () => {
             })}
           </div>
 
-
           {(hasMore || visibleNews < makes.length) && (
             <div className="text-center mt-12">
-              
               <Button
-         
-          label={loading ? "Loading..." : "View More"}
+                label={loading ? "Loading..." : "View More"}
                 onClick={handleShowMore}
                 disabled={loading}
-          className={
-            " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
-          }
-        />
+                className={
+                  " border-2 md:float-end float-none mx-auto rounded-3xl border-primary w-48 text-secondary font-bold py-1.5"
+                }
+              />
             </div>
           )}
           {!hasMore && visibleNews >= makes.length && (
@@ -467,7 +451,7 @@ const SearchForCar = () => {
                 <>
                   <Button
                     onClick={() => AllBurgetFun(`${item}`)}
-                    label={`Under QAR ${item}`}
+                    label={`Under QAR ${Number(item).toLocaleString()}`}
                     className={
                       "  border shadow-lg w-52 rounded-md py-1.5  font-medium  text-secondary border-secondary"
                     }
@@ -478,12 +462,6 @@ const SearchForCar = () => {
           </div>
         </>
       )}
-
-     
-
-      
-        
-      
     </div>
   );
 };

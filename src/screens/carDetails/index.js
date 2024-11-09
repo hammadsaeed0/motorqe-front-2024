@@ -185,6 +185,7 @@ const CarDetails = () => {
   });
 
   console.log(state);
+  
   const [models, setModels] = useState([]);
   const handleInputs = (e) => {
     const { name, value } = e.target;
@@ -1040,7 +1041,7 @@ const CarDetails = () => {
                 className=" rounded-md  border overflow-hidden flex w-40  h-40 "
               >
                 <div className="w-full h-full">
-                <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+                <Worker workerUrl="https://unpkg.com/pdfjs-dist@http://35.92.10.241:3000/build/pdf.worker.min.js">
                 <Viewer fileUrl={fileUrl} />
               </Worker>
             </div>

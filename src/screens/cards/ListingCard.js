@@ -191,10 +191,10 @@ const ListingCard = ({ item, handleSelectCar, selectedCars }) => {
 
             <div className=" flex pt-2 justify-between  items-center">
               <h5 className="  text-secondary  font-bold uppercase">
-                qr {item?.price_QR}
+                qr  {Number(item?.price_QR).toLocaleString()}
               </h5>
               <h5 className=" text-green font-bold uppercase">
-                QR ${item?.installement}/month
+                QR {item?.installement}/month
               </h5>
             </div>
 
