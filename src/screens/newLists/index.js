@@ -267,8 +267,8 @@ const NewLists = () => {
             {receivedData?.data?.length > 0 ? (
               receivedData.data.reduce((acc, item, index) => {
                 // Start a new row of 3 car listings
-                if (index % 5 === 0) {
-                  const adSetIndex = Math.floor(index / 5);
+                if (index % 9 === 0) {
+                  const adSetIndex = Math.floor(index / 9);
 
                   acc.push(
                     <div
@@ -292,7 +292,7 @@ const NewLists = () => {
 
                       {/* Car Listings */}
                       <div className=" grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3">
-                        {[0, 1, 2, 3, 4, 5].map((i) => {
+                        {[0, 1, 2, 3, 4, 5,6,7,8].map((i) => {
                           if (index + i < receivedData.data.length) {
                             return (
                               <ListingCard
@@ -333,7 +333,7 @@ const NewLists = () => {
                     acc.push(
                       <div
                         key={`banner-${adSetIndex}`}
-                        className="h-72 w-full my-6"
+                        className=" h-60  w-[90%] mx-auto my-6"
                       >
                         {/* <Link to={`${banners.bannerAds[adSetIndex]?.redirectUrl}`}> */}
                         <a href={banners.bannerAds[adSetIndex]?.redirectUrl?banners.bannerAds[adSetIndex]?.redirectUrl:'/'} target="_blank" rel="noopener noreferrer">

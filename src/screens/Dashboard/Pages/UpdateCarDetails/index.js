@@ -601,7 +601,7 @@ const UpdateCarDetails = () => {
           </div>
           <div>
             <label className="block text-sm text-left  font-medium  text-textColor">
-              Important Car
+            Imported Car
             </label>
             <select
               onChange={handleInputs}
@@ -614,7 +614,7 @@ const UpdateCarDetails = () => {
               
             >
               <option  selected>
-                Select Important
+                Select Imported
               </option>
 
               <option value={"true"}>Yes</option>
@@ -651,60 +651,13 @@ const UpdateCarDetails = () => {
               <option>Select Specifications</option>
               <option value="All">All</option>
               <option value="GCC">GCC</option>
-              <option value="China">China</option>
-              <option value="Italy">Italy</option>
-              <option value="United Kingdom">United Kingdom</option>
-              <option value="United States">United States</option>
+              <option value="USA">USA</option>
+              <option value="Canada">Canada</option>
+              <option value="EURO">EURO</option>
               <option value="Japan">Japan</option>
-              <option value="Germany">Germany</option>
-              <option value="France">France</option>
-              <option value="Netherlands">Netherlands</option>
-              <option value="India">India</option>
-              <option
-                value="South Korea
-"
-              >
-                South Korea{" "}
-              </option>
-              <option value="Sweden">Sweden</option>
-              <option value="Taiwan">Taiwan</option>
-              <option value="Australia">Australia</option>
-              <option value="Spain">Spain</option>
-              <option value="Malaysia">Malaysia</option>
-              <option
-                value="Czech Republic
-"
-              >
-                Czech Republic
-              </option>
-              <option value="Russia">Russia</option>
-              <option value="Austria">Austria</option>
-              <option
-                value="Switzerland
-"
-              >
-                Switzerland
-              </option>
-              <option
-                value="Switzerland
-"
-              >
-                Argentina
-              </option>
-
-              <option
-                value="Brazil
-"
-              >
-                Brazil
-              </option>
-
-              <option
-                value="Other
-"
-              >
-                Other
-              </option>
+              <option value="Korea">Korea</option>
+              <option value="China">China</option>
+              <option value="Other">Other</option>
             </select>
           </div>
           <div>

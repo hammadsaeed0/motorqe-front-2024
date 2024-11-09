@@ -127,7 +127,7 @@ const News = () => {
 
             if (banners?.bannerAds?.[adSetIndex]) {
               acc.push(
-                <div className="h-72 w-full my-6" key={`banner-${adSetIndex}`}>
+                <div className="h-60  w-[90%] mx-auto my-6" key={`banner-${adSetIndex}`}>
                   <a
                     href={banners.bannerAds[adSetIndex]?.redirectUrl || "/"}
                     target="_blank"

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { FaAngleRight, FaLocationDot } from "react-icons/fa6";
 import Input from "../../components/Input";
 import { Link, useNavigate } from "react-router-dom";
-import { Viewer, Worker } from "@react-pdf-viewer/core";
-import "@react-pdf-viewer/core/lib/styles/index.css";
 import {
   LiaLongArrowAltLeftSolid,
   LiaLongArrowAltRightSolid,
@@ -185,7 +183,6 @@ const CarDetails = () => {
   });
 
   console.log(state);
-  
   const [models, setModels] = useState([]);
   const handleInputs = (e) => {
     const { name, value } = e.target;
@@ -625,7 +622,7 @@ const CarDetails = () => {
           </div>
           <div>
             <label className="block text-sm text-left  font-medium  text-textColor">
-              Important Car
+            Imported Car
             </label>
             <select
               onChange={handleInputs}
@@ -635,7 +632,7 @@ const CarDetails = () => {
               required
             >
               <option  selected>
-                Select Important
+                Select imported
               </option>
 
               <option value={"true"}>Yes</option>
@@ -691,66 +688,15 @@ const CarDetails = () => {
               <option>Select</option>
               <option value="All">All</option>
               <option value="GCC">GCC</option>
-              <option value="China">China</option>
-              <option value="Italy">Italy</option>
-              <option value="United Kingdom">United Kingdom</option>
-              <option value="United States">United States</option>
+              <option value="USA">USA</option>
+              <option value="Canada">Canada</option>
+              <option value="EURO">EURO</option>
               <option value="Japan">Japan</option>
-              <option value="Germany">Germany</option>
-              <option value="France">France</option>
-              <option value="Netherlands">Netherlands</option>
-              <option value="India">India</option>
-              <option
-                value="South Korea
-"
-              >
-                South Korea{" "}
-              </option>
-              <option value="Sweden">Sweden</option>
-              <option value="Taiwan">Taiwan</option>
-              <option value="Australia">Australia</option>
-              <option value="Spain">Spain</option>
-              <option value="Malaysia">Malaysia</option>
-              <option
-                value="Czech Republic
-"
-              >
-                Czech Republic
-              </option>
-              <option value="Russia">Russia</option>
-              <option value="Austria">Austria</option>
-              <option
-                value="Switzerland
-"
-              >
-                Switzerland
-              </option>
-              <option
-                value="Switzerland
-"
-              >
-                Argentina
-              </option>
+              <option value="Korea">Korea</option>
+              <option value="China">China</option>
+              <option value="Other">Other</option>
+              
 
-              <option
-                value="Brazil
-"
-              >
-                Brazil
-              </option>
-
-              <option
-                value="Other
-"
-              >
-                Other
-              </option>
-
-              {/* {allData?.fieldArrays?.specifications?.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))} */}
             </select>
           </div>
           <div>
@@ -1038,12 +984,10 @@ const CarDetails = () => {
             {fileUrl ? (
               <label
                 htmlFor="fileInput"
-                className=" rounded-md  border overflow-hidden flex w-40  h-40 "
+                className=" rounded-md  bg-[#FEFBFB]  border overflow-hidden flex flex-col w-40  h-40 "
               >
-                <div className="w-full h-full">
-                <Worker workerUrl="https://unpkg.com/pdfjs-dist@http://35.92.10.241:3000/build/pdf.worker.min.js">
-                <Viewer fileUrl={fileUrl} />
-              </Worker>
+                <div className="  flex justify-center items-center pt-8">
+                 <img src={require('../../assets/images/pdf.png')} className=" w-24 h-24   mx-auto" alt="" />
             </div>
                 <input
                   accept="image/*"
@@ -1053,6 +997,12 @@ const CarDetails = () => {
                   id="fileInput"
                   className="hidden"
                 />
+<span className=" text-secondary text-sm pb-2 pl-1 font-semibold">
+                    {selectImages?.length === 0
+                      ? "Inspection Report"
+                      : selectImages?.name}
+                  </span>
+                
               </label>
             ) : (
               <label
